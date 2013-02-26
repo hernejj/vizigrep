@@ -1,12 +1,12 @@
-vizigrep
+Vizigrep
 ========
 
 Graphical file contents search tool using regular expressions.
 
-This program is under active development adn is not ready for prime time yet :)
+This program is under active development and is not ready for prime time yet :)
 Although if you are interested you can play with it.
 
-Starting vizigrep
+Starting Vizigrep
 ------------------
 python vizigrep
 

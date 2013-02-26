@@ -1,4 +1,14 @@
 vizigrep
 ========
 
-Graphical file contents search tool using regular expressions
+Graphical file contents search tool using regular expressions.
+
+This program is under active development adn is not ready for prime time yet :)
+Although if you are interested you can play with it.
+
+Starting vizigrep
+------------------
+python vizigrep
+
+Your current working directory must be the directory containing all of the
+source code.

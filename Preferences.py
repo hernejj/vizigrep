@@ -18,7 +18,7 @@ class Preferences:
         self.defaults['exclude-dirs'] = ['.git', '.svn']
         self.defaults['exclude-files'] = ['*~']
         self.defaults['show-line-numbers'] = True
-        self.defaults['editor'] = 'gedit %s'
+        self.defaults['editor'] = 'gedit $1'
         
     def ensure_appdir_exists(self):
         if not os.path.exists(self.appdir):
@@ -53,6 +53,6 @@ class Preferences:
     def set(self, prefname, value):
         self.pdict[prefname] = value
         
-    def reset_to_default(prefname):
+    def reset_to_default(self, prefname):
         self.set(prefname, self.defaults[prefname])
 

@@ -14,12 +14,34 @@ class PreferencesWindow(Window):
         self.btn_close.connect('clicked', self.close)
         
     def activate(self):
-        self.txt_editor_default.set_text( self.prefs.defaults['editor'] )
+        self.load_editor()
         self.gtk_window.show_all()
     
     def close(self, win=None, event=None):
+        self.save_editor()
+        self.prefs.write_prefs()
         self.gtk_window.hide()
         return True
-
+                
+    def load_editor(self):
+        default_editor = self.prefs.defaults['editor']
+        editor = self.prefs.get('editor')
+        self.txt_editor_default.set_text(default_editor)
+        
+        if editor == default_editor:
+            self.rad_editor_default.set_active(True)
+        else:
+            self.rad_editor_custom.set_active(True)
+            self.txt_editor_custom.set_text(editor)
+    
+    def save_editor(self):
+        use_default_editor = self.rad_editor_default.get_active()
+        custom_editor_cmd  = self.txt_editor_custom.get_text().strip()
+        
+        if self.rad_editor_default.get_active() or len(custom_editor_cmd) == 0:
+            self.prefs.reset_to_default('editor')
+        else:
+            self.prefs.set('editor', custom_editor_cmd)
+        
     
 

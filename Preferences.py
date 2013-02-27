@@ -18,7 +18,7 @@ class Preferences:
         self.defaults['exclude-dirs'] = ['.git', '.svn']
         self.defaults['exclude-files'] = ['*~']
         self.defaults['show-line-numbers'] = True
-        self.defaults['editor'] = 'anjuta'
+        self.defaults['editor'] = 'gedit %s'
         
     def ensure_appdir_exists(self):
         if not os.path.exists(self.appdir):

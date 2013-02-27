@@ -14,6 +14,7 @@ class PreferencesWindow(Window):
         self.btn_close.connect('clicked', self.close)
         
     def activate(self):
+        self.txt_editor_default.set_text( self.prefs.defaults['editor'] )
         self.gtk_window.show_all()
     
     def close(self, win=None, event=None):

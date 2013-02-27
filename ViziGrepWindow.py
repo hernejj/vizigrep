@@ -6,10 +6,8 @@ from PreferencesWindow import PreferencesWindow
 
 # TODO for v1
 # prefs:
-#       editor
 #       ignore dirs!! pref!
 #       ignore files
-#       line number option
 #
 # Add spinner and thread search
 # Allow copy/paste!

@@ -15,10 +15,13 @@ class PreferencesWindow(Window):
         
     def activate(self):
         self.load_editor()
+        self.load_linenum()
         self.gtk_window.show_all()
     
     def close(self, win=None, event=None):
         self.save_editor()
+        self.save_linenum()
+        
         self.prefs.write_prefs()
         self.gtk_window.hide()
         return True
@@ -43,5 +46,9 @@ class PreferencesWindow(Window):
         else:
             self.prefs.set('editor', custom_editor_cmd)
         
-    
+    def load_linenum(self):    
+        self.chk_linenum.set_active(self.prefs.get('show-line-numbers'))
 
+    
+    def save_linenum(self):
+        self.prefs.set('show-line-numbers', self.chk_linenum.get_active())

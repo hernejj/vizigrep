@@ -12,11 +12,11 @@ from PreferencesWindow import PreferencesWindow
 #       line number option
 #
 # Add spinner and thread search
-# fix tab focus issues
 # Allow copy/paste!
 # Icon
 # figure out status string
 # Quit on ctrl+q
+# Fix uri's
 
 # TODO extra
 # Red bg and/or focus on error
@@ -49,29 +49,23 @@ class ViziGrepWindow(Window):
         self.txt_results.connect('motion-notify-event', self.results_mouse_motion)
         self.txt_results.connect('key-press-event', self.results_keypress)
         self.lbl_options.connect('activate-link', self.options_clicked)
-        self.win_main.connect('set-focus', self.foo1)
         
         (win_width, win_height) = self.prefs.get('window-size')
         self.win_main.resize(win_width,win_height)
-
-        # Seems to be being ignored!  Changing to doing this on grid1 makes things worse
-        focus_order = [self.cbox_path.get_child(), self.cbox_search.get_child(), self.btn_search, self.lbl_options, self.lbl_path]  
-        self.win_main.set_focus_chain(focus_order)
-        print self.win_main.get_focus_chain()
         
-    def foo1(self, win, widget):
+        self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
+        self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
+
+    # GtkComboBoxes have an internal GtkToggleButton widget that accepts focus. This is 
+    # quite annoying to a user trying to navigate via keyboard so we disable it's focus.
+    def cbox_disable_togglebutton_focus(self, widget, data):
         if isinstance(widget,Gtk.ToggleButton):
-            print "!!!!!"
             widget.set_can_focus(False)
-        #if isinstance(widget,Gtk.LinkButton):
-        #    widget.set_can_focus(False)
-        #    print "@@@"
-        print type(widget)
 
     def activate(self):
         self.reload_search_box()
         self.reload_path_box()
-        #self.cbox_search.get_child().grab_focus()
+        self.cbox_search.get_child().grab_focus()
         self.gtk_window.show_all()
     
     def close(self, win, event):

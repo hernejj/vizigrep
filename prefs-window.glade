@@ -293,7 +293,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_file_remove">
-                        <property name="label" translatable="yes">remove</property>
+                        <property name="label" translatable="yes">Remove</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -378,7 +378,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="btn_dir_remove">
-                        <property name="label" translatable="yes">button</property>
+                        <property name="label" translatable="yes">Remove</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>

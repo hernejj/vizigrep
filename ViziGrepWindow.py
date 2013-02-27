@@ -5,10 +5,9 @@ from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, 
 from PreferencesWindow import PreferencesWindow
 
 # TODO for v1
-# prefs:
-#       ignore dirs!! pref!
-#       ignore files
-#
+# ignore list: check for dupes
+# ignore list: sort
+# ignore list: real error msgs
 # Add spinner and thread search
 # Allow copy/paste!
 # Icon

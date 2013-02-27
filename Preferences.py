@@ -55,4 +55,10 @@ class Preferences:
         
     def reset_to_default(self, prefname):
         self.set(prefname, self.defaults[prefname])
+        
+    def list_add(self, prefname, item):
+        self.pdict[prefname].append(item)
+    
+    def list_remove(self, prefname, item):
+        self.pdict[prefname].remove(item)
 

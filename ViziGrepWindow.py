@@ -99,52 +99,34 @@ class ViziGrepWindow(Window):
         path = self.trunc_path(path)
         self.cbox_path.get_child().set_text(path)
         
-        new_thread = Thread(target=self.grep_thread, args=(string, path))
+        self.disable_all()
+        new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done))
         new_thread.start()
-        
-        #try:
-        #    results = self.ge.grep(string, path)
-        #    self.set_results(results, string)
-        #    self.add_path_history(path)
-        #    self.reload_path_box()
-        #    self.add_search_history(string)
-        #    self.reload_search_box()
 
-        #except Exception as e:
-        #    if isinstance(e, BadPathException):
-        #        self.lbl_message.set_text("The given folder does not exist: %s" % path)
-        #    elif isinstance(e, NoResultsException):
-        #        self.lbl_message.set_text("No results found")
-        #    else:
-        #        print traceback.format_exc()
-        #        self.lbl_message.set_text("Unexpected Error: " + str(e))
-        return True
-
-    def grep_thread(self, string, path):
-        GObject.idle_add(self.disable_all)
-        
+    def grep_thread(self, string, path, donefn):
         try:
             results = self.ge.grep(string, path)
-            GObject.idle_add(self.set_results, results, string)
+            ex = None
+        except Exception as e:
+            results = None
+            ex = e
+        GObject.idle_add(donefn, string, path, results, ex)
+        
+    def grep_thread_done(self, string, path, results, exception):
+        if results:
+            self.set_results(results, string)
             self.add_path_history(path)
             self.add_search_history(string)
-            GObject.idle_add(self.reload_path_box)
-            GObject.idle_add(self.reload_search_box)
-        except Exception as e:
-            if isinstance(e, BadPathException):
-                GObject.idle_add(self.set_msg, "The given folder does not exist: %s" % path) 
-            elif isinstance(e, NoResultsException):
-                GObject.idle_add(self.set_msg, "No results found" % path) 
+        else:
+            if isinstance(exception, BadPathException):
+                self.lbl_message.set_text("The given folder does not exist: %s" % path)
+            elif isinstance(exception, NoResultsException):
+                self.lbl_message.set_text("No results found")
             else:
                 print traceback.format_exc()
-                GObject.idle_add(self.set_msg, "Unexpected Error: " + str(e))
-        
-        GObject.idle_add(self.enable_all)
-        return True
+                self.lbl_message.set_text("Unexpected Error: " + str(exception))
+        self.enable_all()
 
-    def set_msg(self, msg):
-        self.lbl_message.set_text(msg)
-        
     def disable_all(self):
         for widget in self.deactivate_on_search:
             widget.set_sensitive(False)
@@ -194,6 +176,7 @@ class ViziGrepWindow(Window):
             newlist.append(item)
 
         self.prefs.set('path-history', newlist)
+        self.reload_path_box()
         
     def add_search_history(self, string):
         searchlist = self.prefs.get('search-history')
@@ -206,6 +189,7 @@ class ViziGrepWindow(Window):
             newlist.append(item)
 
         self.prefs.set('search-history', newlist)
+        self.reload_search_box()
         
     def reload_search_box(self):
         self.cbox_search.get_model().clear()

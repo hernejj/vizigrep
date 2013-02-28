@@ -1,25 +1,22 @@
 import subprocess, re, os, traceback
-from gi.repository import Gtk, Gdk
+from threading import Thread
+from gi.repository import Gtk, Gdk, GObject
 from Window import Window
 from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException
 from PreferencesWindow import PreferencesWindow
 
 # TODO for v1
-# ignore list: check for dupes
-# ignore list: sort
-# ignore list: real error msgs
-# Add spinner and thread search
+# Add spinner
 # Allow copy/paste!
 # Icon
-# figure out status string
 # Quit on ctrl+q
-# Fix uri's
+# Deb generator
 
 # TODO extra
 # Red bg and/or focus on error
 # Searches in tabs
 # Middle click to open search in new tab?
-# x-buttons to close tabs, lke firefox? (ctrl+w to clode tab)
+# x-buttons to close tabs, lke firefox? (ctrl+w to close tab)
 # save last search results?? reload on re-open?
 
 class ViziGrepWindow(Window):
@@ -52,6 +49,9 @@ class ViziGrepWindow(Window):
         
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
+        
+        self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
+                                    self.cbox_search, self.cbox_path, self.txt_results]
 
     # GtkComboBoxes have an internal GtkToggleButton widget that accepts focus. This is 
     # quite annoying to a user trying to navigate via keyboard so we disable it's focus.
@@ -99,22 +99,60 @@ class ViziGrepWindow(Window):
         path = self.trunc_path(path)
         self.cbox_path.get_child().set_text(path)
         
+        new_thread = Thread(target=self.grep_thread, args=(string, path))
+        new_thread.start()
+        
+        #try:
+        #    results = self.ge.grep(string, path)
+        #    self.set_results(results, string)
+        #    self.add_path_history(path)
+        #    self.reload_path_box()
+        #    self.add_search_history(string)
+        #    self.reload_search_box()
+
+        #except Exception as e:
+        #    if isinstance(e, BadPathException):
+        #        self.lbl_message.set_text("The given folder does not exist: %s" % path)
+        #    elif isinstance(e, NoResultsException):
+        #        self.lbl_message.set_text("No results found")
+        #    else:
+        #        print traceback.format_exc()
+        #        self.lbl_message.set_text("Unexpected Error: " + str(e))
+        return True
+
+    def grep_thread(self, string, path):
+        GObject.idle_add(self.disable_all)
+        
         try:
             results = self.ge.grep(string, path)
-            self.set_results(results, string)
+            GObject.idle_add(self.set_results, results, string)
             self.add_path_history(path)
             self.add_search_history(string)
-
+            GObject.idle_add(self.reload_path_box)
+            GObject.idle_add(self.reload_search_box)
         except Exception as e:
             if isinstance(e, BadPathException):
-                self.lbl_message.set_text("The given folder does not exist: %s" % path)
+                GObject.idle_add(self.set_msg, "The given folder does not exist: %s" % path) 
             elif isinstance(e, NoResultsException):
-                self.lbl_message.set_text("No results found")
+                GObject.idle_add(self.set_msg, "No results found" % path) 
             else:
                 print traceback.format_exc()
-                self.lbl_message.set_text("Unexpected Error: " + str(e))
-            return True
+                GObject.idle_add(self.set_msg, "Unexpected Error: " + str(e))
+        
+        GObject.idle_add(self.enable_all)
+        return True
 
+    def set_msg(self, msg):
+        self.lbl_message.set_text(msg)
+        
+    def disable_all(self):
+        for widget in self.deactivate_on_search:
+            widget.set_sensitive(False)
+            
+    def enable_all(self):
+        for widget in self.deactivate_on_search:
+            widget.set_sensitive(True)
+            
     def set_results(self, results, string):
         txtbuf = self.txt_results.get_buffer()
         txtbuf.set_text('')
@@ -156,7 +194,6 @@ class ViziGrepWindow(Window):
             newlist.append(item)
 
         self.prefs.set('path-history', newlist)
-        self.reload_path_box()
         
     def add_search_history(self, string):
         searchlist = self.prefs.get('search-history')
@@ -169,7 +206,6 @@ class ViziGrepWindow(Window):
             newlist.append(item)
 
         self.prefs.set('search-history', newlist)
-        self.reload_search_box()
         
     def reload_search_box(self):
         self.cbox_search.get_model().clear()

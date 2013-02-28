@@ -94,6 +94,11 @@ class ViziGrepWindow(Window):
 
         if not string.strip():
             self.lbl_message.set_text("You forgot to provide a search string")
+            self.cbox_search.get_child().grab_focus()
+            return True
+        if not path.strip():
+            self.lbl_message.set_text("You forgot to provide a search folder")
+            self.cbox_path.get_child().grab_focus()
             return True
 
         path = self.trunc_path(path)

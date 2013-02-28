@@ -1,6 +1,7 @@
 import os
 from gi.repository import Gtk, Gdk
 from Window import Window
+from mbox import mbox
 
 class PreferencesWindow(Window):
     gtk_builder_file   = "prefs-window.glade"
@@ -9,7 +10,8 @@ class PreferencesWindow(Window):
     def __init__(self, prefs):
         Window.__init__(self, self.gtk_builder_file, self.window_name)
         self.prefs = prefs
-
+        self.mbox = mbox()
+        
         self.gtk_window.connect('delete_event', self.close)
         self.btn_close.connect('clicked', self.close)
         self.btn_file_add.connect('clicked', self.add_file)
@@ -72,11 +74,18 @@ class PreferencesWindow(Window):
         if len(text) == 0: return True
         
         if '"' in text or "'" in text:
-            print "ERROR: Filename cannot contain quotes"
+            self.mbox.error('ERROR: Filename cannot contain quotes')
+            self.txt_file.grab_focus()
+            return True
+        
+        if text in self.prefs.get('exclude-files'):
+            self.mbox.error('%s is already in the list.' % text)
+            self.txt_file.grab_focus()
             return True
         
         self.prefs.list_add('exclude-files', text)
         self.load_files_list()
+        self.txt_file.set_text('')
         return True
     
     def remove_file(self, btn):
@@ -91,6 +100,7 @@ class PreferencesWindow(Window):
     def load_files_list(self):
         model = Gtk.ListStore(str)
         self.tree_files.set_model(model)
+        self.prefs.list_sort('exclude-files')
         for fn in self.prefs.get('exclude-files'):
             model.append([fn])
 
@@ -109,11 +119,18 @@ class PreferencesWindow(Window):
         if len(text) == 0: return True
         
         if '"' in text or "'" in text:
-            print "ERROR: Folder name cannot contain quotes"
+            self.mbox.error('Folder name cannot contain quotes')
+            self.txt_dir.grab_focus()
+            return True
+            
+        if text in self.prefs.get('exclude-dirs'):
+            self.mbox.error('%s is already in the list.' % text)
+            self.txt_dir.grab_focus()
             return True
         
         self.prefs.list_add('exclude-dirs', text)
         self.load_dirs_list()
+        self.txt_dir.set_text('')
         return True
     
     def remove_dir(self, btn):
@@ -129,6 +146,7 @@ class PreferencesWindow(Window):
     def load_dirs_list(self):
         model = Gtk.ListStore(str)
         self.tree_dirs.set_model(model)
+        self.prefs.list_sort('exclude-dirs')
         for fn in self.prefs.get('exclude-dirs'):
             model.append([fn])
             

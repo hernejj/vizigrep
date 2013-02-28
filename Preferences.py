@@ -61,4 +61,7 @@ class Preferences:
     
     def list_remove(self, prefname, item):
         self.pdict[prefname].remove(item)
+    
+    def list_sort(self, prefname):
+        self.pdict[prefname].sort()
 

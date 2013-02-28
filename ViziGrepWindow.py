@@ -5,19 +5,6 @@ from Window import Window
 from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException
 from PreferencesWindow import PreferencesWindow
 
-# TODO for v1
-# Allow copy/paste!
-# Icon
-# Quit on ctrl+q
-# Deb generator
-
-# TODO extra
-# Red bg and/or focus on error
-# Searches in tabs
-# Middle click to open search in new tab?
-# x-buttons to close tabs, lke firefox? (ctrl+w to close tab)
-# save last search results?? reload on re-open?
-
 class ViziGrepWindow(Window):
     gtk_builder_file   = "vizigrep.glade"
     window_name        = "win_main"

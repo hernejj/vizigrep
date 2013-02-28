@@ -6,7 +6,6 @@ from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, 
 from PreferencesWindow import PreferencesWindow
 
 # TODO for v1
-# Add spinner
 # Allow copy/paste!
 # Icon
 # Quit on ctrl+q
@@ -105,6 +104,7 @@ class ViziGrepWindow(Window):
         self.cbox_path.get_child().set_text(path)
         
         self.disable_all()
+        self.spinner.start()
         new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done))
         new_thread.start()
 
@@ -130,6 +130,7 @@ class ViziGrepWindow(Window):
             else:
                 print traceback.format_exc()
                 self.lbl_message.set_text("Unexpected Error: " + str(exception))
+        self.spinner.stop()
         self.enable_all()
 
     def disable_all(self):

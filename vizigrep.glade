@@ -18,13 +18,11 @@
             <child>
               <object class="GtkButton" id="btn_search">
                 <property name="label" translatable="yes">_Search</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
               </object>
               <packing>
@@ -105,13 +103,11 @@
             <child>
               <object class="GtkLinkButton" id="lbl_path">
                 <property name="label" translatable="yes">Folder to Search:</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
                 <property name="has_tooltip">True</property>
                 <property name="halign">start</property>
-                <property name="use_action_appearance">False</property>
                 <property name="relief">none</property>
                 <property name="uri">none</property>
               </object>
@@ -125,12 +121,10 @@
             <child>
               <object class="GtkLinkButton" id="lbl_options">
                 <property name="label" translatable="yes">Options</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
                 <property name="has_tooltip">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="relief">none</property>
                 <property name="uri">none</property>
               </object>
@@ -142,21 +136,6 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -166,7 +145,6 @@
                     <property name="height_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="active">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -194,6 +172,12 @@
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>

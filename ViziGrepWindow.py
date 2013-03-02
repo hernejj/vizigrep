@@ -281,5 +281,4 @@ class ViziGrepWindow(Window):
         return (itr, itr_end)
         
     def options_clicked(self, lbl):
-        pw = PreferencesWindow(self.prefs)
-        pw.activate()
+        PreferencesWindow(self.prefs).activate()

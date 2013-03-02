@@ -85,4 +85,13 @@ class GrepResults(list):
             if len(result.linenum) > maxlen:
                 maxlen = len(result.linenum)
         return maxlen
+    
+    def unique_fns(self):
+        count = 0
+        fdict = {}
+        for r in self:
+            if not r.fn in fdict:
+                count += 1
+                fdict[r.fn] = True
+        return count
         

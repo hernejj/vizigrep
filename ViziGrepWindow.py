@@ -159,6 +159,14 @@ class ViziGrepWindow(Window):
 
         # Fixed width for everything
         txtbuf.apply_tag(self.tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
+        
+        self.lbl_matches.set_text(str(len(results)))
+        self.lbl_files.set_text(str(results.unique_fns()))
+        
+    def clear_results(self):
+        self.txt_results.get_buffer().set_text('')
+        self.lbl_matches.set_text('')
+        self.lbl_files.set_text(str(results.unique_fns()))
 
     def add_path_history(self, path):
         pathlist = self.prefs.get('path-history')

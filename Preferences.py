@@ -19,6 +19,7 @@ class Preferences:
         self.defaults['exclude-files'] = ['*~']
         self.defaults['show-line-numbers'] = True
         self.defaults['editor'] = 'gedit $1'
+        self.defaults['match-limit'] = 200
         
     def ensure_appdir_exists(self):
         if not os.path.exists(self.appdir):

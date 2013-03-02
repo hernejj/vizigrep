@@ -48,6 +48,7 @@ class ViziGrepWindow(Window):
     def activate(self):
         self.reload_search_box()
         self.reload_path_box()
+        self.clear_results()
         self.cbox_search.get_child().grab_focus()
         self.gtk_window.show_all()
     
@@ -74,8 +75,8 @@ class ViziGrepWindow(Window):
         return path
 
     def btn_search_clicked(self, data):
+        self.clear_results()
         txtbuf = self.txt_results.get_buffer()
-        txtbuf.set_text(" ")
         string = self.cbox_search.get_active_text()
         path = self.trunc_path(self.cbox_path.get_active_text())
 
@@ -98,7 +99,7 @@ class ViziGrepWindow(Window):
 
     def grep_thread(self, string, path, donefn):
         try:
-            results = self.ge.grep(string, path)
+            results = self.ge.grep(string, path, self.prefs.get('match-limit'))
             ex = None
         except Exception as e:
             results = None
@@ -166,7 +167,14 @@ class ViziGrepWindow(Window):
     def clear_results(self):
         self.txt_results.get_buffer().set_text('')
         self.lbl_matches.set_text('')
-        self.lbl_files.set_text(str(results.unique_fns()))
+        self.lbl_files.set_text('')
+        
+        mint = self.prefs.get('match-limit')
+        if (mint == 0):
+            self.lbl_max.set_text("No Limit")
+        else:
+            self.lbl_max.set_text(str(mint))
+        
 
     def add_path_history(self, path):
         pathlist = self.prefs.get('path-history')

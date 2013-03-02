@@ -11,7 +11,7 @@ class GrepEngine:
         self.exclude_dirs = []
         self.exclude_files = []
 	
-    def grep(self, string, path):
+    def grep(self, string, path, max_matches):
         try:
             args = '-Irn %s %s' % (self.arg_exclude_dirs(), self.arg_exclude_files())
             cmd = 'grep %s "%s" %s' % (args, string, path)
@@ -26,7 +26,10 @@ class GrepEngine:
                 
                 if (not filename) or (not text) or (not linenum):
                     continue
+                if (max_matches > 0) and len(results) == max_matches:
+                    break
                 results.append(GrepResult(self.trunc_path(filename),text, linenum))
+
             return results
             
         except subprocess.CalledProcessError as e:

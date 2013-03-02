@@ -27,6 +27,7 @@ class PreferencesWindow(Window):
         self.load_linenum()
         self.load_files_list()
         self.load_dirs_list()
+        self.load_match_limit()
         self.gtk_window.show_all()
     
     def close(self, win=None, event=None):
@@ -34,7 +35,7 @@ class PreferencesWindow(Window):
         self.save_linenum()
         self.save_files_list()
         self.save_dirs_list()
-        
+        self.save_match_limit()
         self.prefs.write_prefs()
         self.gtk_window.hide()
         return True
@@ -155,3 +156,26 @@ class PreferencesWindow(Window):
         for row in self.tree_dirs.get_model():
             lst.append(row[0])
         self.prefs.set('exclude-dirs', lst)
+        
+    def load_match_limit(self):
+        match_limit = self.prefs.get('match-limit')
+        
+        if match_limit == 0:
+            self.chk_matchlimit.set_active(False)
+            self.txt_matchlimit.set_text('')
+        else:    
+            self.chk_matchlimit.set_active(True)
+            self.txt_matchlimit.set_text(str(match_limit))
+    
+    def save_match_limit(self):
+        match_limit = self.txt_matchlimit.get_text()
+        if not match_limit.isdigit(): return
+        mint = int(match_limit)
+        
+        if self.chk_matchlimit.get_active():
+            if mint <= 0: mint = self.prefs.defaults['match-limit']
+            self.prefs.set('match-limit', mint)
+        else:
+            self.prefs.set('match-limit', 0)
+        
+        

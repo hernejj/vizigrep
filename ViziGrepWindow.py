@@ -74,16 +74,17 @@ class ViziGrepWindow(Window):
         return path
 
     def btn_search_clicked(self, data):
-        self.lbl_message.set_text(" ")  # clear error state
+        txtbuf = self.txt_results.get_buffer()
+        txtbuf.set_text(" ")
         string = self.cbox_search.get_active_text()
         path = self.trunc_path(self.cbox_path.get_active_text())
 
         if not string.strip():
-            self.lbl_message.set_text("You forgot to provide a search string")
+            txtbuf.set_text("You forgot to provide a search string")
             self.cbox_search.get_child().grab_focus()
             return True
         if not path.strip():
-            self.lbl_message.set_text("You forgot to provide a search folder")
+            txtbuf.set_text("You forgot to provide a search folder")
             self.cbox_path.get_child().grab_focus()
             return True
 
@@ -110,13 +111,14 @@ class ViziGrepWindow(Window):
             self.add_path_history(path)
             self.add_search_history(string)
         else:
+            txtbuf = self.txt_results.get_buffer()
             if isinstance(exception, BadPathException):
-                self.lbl_message.set_text("The given folder does not exist: %s" % path)
+                txtbuf.set_text("The given folder does not exist: %s" % path)
             elif isinstance(exception, NoResultsException):
-                self.lbl_message.set_text("No results found")
+                txtbuf.set_text("No results found")
             else:
                 print traceback.format_exc()
-                self.lbl_message.set_text("Unexpected Error: " + str(exception))
+                txtbuf.set_text("Unexpected Error: " + str(exception))
         self.spinner.stop()
         self.enable_all()
 

@@ -17,7 +17,8 @@ class GrepEngine:
             cmd = 'grep %s "%s" %s' % (args, string, path)
             print cmd
             o = subprocess.check_output(cmd, shell=True)
-            
+            o = o.decode('utf-8', 'replace').encode('utf-8') 
+
             results = GrepResults()
             for line in o.splitlines():
                 (filename, sep, rest) = line.partition(':')

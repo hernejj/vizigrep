@@ -20,7 +20,7 @@ class GrepEngine:
             cmd = 'grep %s "%s" %s' % (args, string, path)
             print case_sensitive, cmd
             o = subprocess.check_output(cmd, shell=True)
-            o = o.decode('utf-8', 'replace').encode('utf-8') 
+            o = o.decode('utf-8', 'replace')
 
             results = GrepResults()
             for line in o.splitlines():

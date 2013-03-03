@@ -31,7 +31,7 @@ class GrepEngine:
                     continue
                 if (max_matches > 0) and len(results) == max_matches:
                     break
-                results.append(GrepResult(self.trunc_path(filename),text, linenum))
+                results.append(GrepResult(self.trunc_path(filename, path), text, linenum))
 
             return results
             
@@ -57,11 +57,14 @@ class GrepEngine:
                 arg += ' --exclude="%s"' % d
         return arg
 
-    def trunc_path(self, path):
-        if (path.startswith(os.path.expanduser('~'))):
-            path = path.replace(os.path.expanduser('~'), '~')
-        return path
-
+    def trunc_path(self, fn, path):
+        if (fn.startswith(os.path.expanduser('~'))):
+            fn = fn.replace(os.path.expanduser('~'), '~')
+        
+        if fn.startswith(path + '/'):
+            fn = fn.replace(path + '/', '')
+        
+        return fn
 
 class GrepResult():
     def __init__(self, filename, result_string, linenum=None):

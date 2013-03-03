@@ -80,8 +80,11 @@ class ViziGrepWindow(Window):
         self.clear_results()
         txtbuf = self.txt_results.get_buffer()
         string = self.cbox_search.get_active_text()
+        
         path = self.trunc_path(self.cbox_path.get_active_text())
-
+        self.cbox_path.get_child().set_text(path)
+        self.last_search_path = path
+        
         if not string.strip():
             txtbuf.set_text("You forgot to provide a search string")
             self.cbox_search.get_child().grab_focus()
@@ -90,9 +93,6 @@ class ViziGrepWindow(Window):
             txtbuf.set_text("You forgot to provide a search folder")
             self.cbox_path.get_child().grab_focus()
             return True
-
-        path = self.trunc_path(path)
-        self.cbox_path.get_child().set_text(path)
         
         self.disable_all()
         self.spinner.start()
@@ -120,7 +120,6 @@ class ViziGrepWindow(Window):
             elif isinstance(exception, NoResultsException):
                 txtbuf.set_text("No results found")
             else:
-                print traceback.format_exc()
                 txtbuf.set_text("Unexpected Error: " + str(exception))
         self.spinner.stop()
         self.enable_all()
@@ -260,11 +259,12 @@ class ViziGrepWindow(Window):
             if tag == self.tag_link:
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = self.txt_results.get_buffer().get_text(itr, itr_end, False)
-
+                fullfn = os.path.join(self.last_search_path, filename)
+                
                 command = self.prefs.get('editor')
                 if '$1' in command:
-                    command = command.replace('$1', filename)
-                else: command = command + " " + filename
+                    command = command.replace('$1', fullfn)
+                else: command = command + " " + fullfn
 
                 subprocess.Popen(command, shell=True)
                 return True

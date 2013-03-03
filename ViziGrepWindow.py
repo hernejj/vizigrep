@@ -133,10 +133,10 @@ class ViziGrepWindow(Window):
             
     def set_results(self, results, string):
         txtbuf = self.txt_results.get_buffer()
-        taglist = []
-        rstr = ''
         max_fnlen = results.max_fnlen()
         max_lnlen = results.max_lnlen()
+        taglist = []
+        rstr = ''
         
         for r in results:
             taglist.append( (len(rstr), len(r.fn), self.tag_link) )
@@ -170,7 +170,6 @@ class ViziGrepWindow(Window):
 
     def apply_tags(self, txtbuf, rstr, taglist):
         txtbuf.apply_tag(self.tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
-        
         for tagtuple in taglist:
             (sidx, length, tag) = tagtuple
             sitr = txtbuf.get_iter_at_offset(sidx)
@@ -188,7 +187,6 @@ class ViziGrepWindow(Window):
         else:
             self.lbl_max.set_text(str(mint))
         
-
     def add_path_history(self, path):
         pathlist = self.prefs.get('path-history')
         pathlist.insert(0, path)

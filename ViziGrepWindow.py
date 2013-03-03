@@ -133,36 +133,49 @@ class ViziGrepWindow(Window):
             
     def set_results(self, results, string):
         txtbuf = self.txt_results.get_buffer()
-        txtbuf.set_text('')
-
+        taglist = []
+        rstr = ''
         max_fnlen = results.max_fnlen()
         max_lnlen = results.max_lnlen()
         
         for r in results:
-            txtbuf.insert_with_tags(txtbuf.get_end_iter(), r.fn, self.tag_link)
+            taglist.append( (len(rstr), len(r.fn), self.tag_link) )
+            rstr += r.fn
             if max_fnlen > len(r.fn):
-                txtbuf.insert(txtbuf.get_end_iter(), " "*(max_fnlen-len(r.fn)))
-            txtbuf.insert(txtbuf.get_end_iter(), ":")
-
+                rstr += ' '*(max_fnlen-len(r.fn))
+            rstr += ':'
+        
             if (self.prefs.get('show-line-numbers')):
-                txtbuf.insert_with_tags(txtbuf.get_end_iter(), r.linenum, self.tag_green)
+                taglist.append( (len(rstr), len(r.linenum), self.tag_green) )
+                rstr += r.linenum
                 if max_lnlen > len(r.linenum):
-                    txtbuf.insert(txtbuf.get_end_iter(), " "*(max_lnlen-len(r.linenum)))
-                txtbuf.insert(txtbuf.get_end_iter(), ":")
-            
+                    rstr += " "*(max_lnlen-len(r.linenum))
+                rstr += ':'
+                
             m = re.search(string, r.str)
             if(m):
                 matched_text = m.group()
                 (prematch, match, postmatch) = r.str.partition(matched_text)
-                txtbuf.insert(txtbuf.get_end_iter(), prematch)
-                txtbuf.insert_with_tags(txtbuf.get_end_iter(), matched_text, self.tag_red)
-                txtbuf.insert(txtbuf.get_end_iter(), postmatch + '\n')
-
-        # Fixed width for everything
-        txtbuf.apply_tag(self.tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
-        
+                rstr += prematch
+                taglist.append( (len(rstr), len(matched_text), self.tag_red) )
+                rstr += matched_text
+                rstr += postmatch + '\n'
+            else:
+                rstr += r.str + '\n'
+            
         self.lbl_matches.set_text(str(len(results)))
         self.lbl_files.set_text(str(results.unique_fns()))
+        txtbuf.set_text(rstr)
+        self.apply_tags(txtbuf, rstr, taglist)
+
+    def apply_tags(self, txtbuf, rstr, taglist):
+        txtbuf.apply_tag(self.tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
+        
+        for tagtuple in taglist:
+            (sidx, length, tag) = tagtuple
+            sitr = txtbuf.get_iter_at_offset(sidx)
+            eitr = txtbuf.get_iter_at_offset(sidx+length)
+            txtbuf.apply_tag(tag, sitr, eitr)
         
     def clear_results(self):
         self.txt_results.get_buffer().set_text('')

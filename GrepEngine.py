@@ -11,11 +11,14 @@ class GrepEngine:
         self.exclude_dirs = []
         self.exclude_files = []
 	
-    def grep(self, string, path, max_matches):
+    def grep(self, string, path, max_matches, case_sensitive):
         try:
-            args = '-Irn %s %s' % (self.arg_exclude_dirs(), self.arg_exclude_files())
+            if case_sensitive: case_arg = ''
+            else: case_arg = 'i'
+            
+            args = '-Irn%s %s %s' % (case_arg, self.arg_exclude_dirs(), self.arg_exclude_files())
             cmd = 'grep %s "%s" %s' % (args, string, path)
-            print cmd
+            print case_sensitive, cmd
             o = subprocess.check_output(cmd, shell=True)
             o = o.decode('utf-8', 'replace').encode('utf-8') 
 

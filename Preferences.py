@@ -20,6 +20,7 @@ class Preferences:
         self.defaults['show-line-numbers'] = True
         self.defaults['editor'] = 'gedit $1'
         self.defaults['match-limit'] = 200
+        self.defaults['case-sensitive'] = True
         
     def ensure_appdir_exists(self):
         if not os.path.exists(self.appdir):

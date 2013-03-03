@@ -49,11 +49,13 @@ class ViziGrepWindow(Window):
         self.reload_search_box()
         self.reload_path_box()
         self.clear_results()
+        self.chk_case.set_active(self.prefs.get('case-sensitive'))
         self.cbox_search.get_child().grab_focus()
         self.gtk_window.show_all()
     
     def close(self, win, event):
         self.prefs.set('window-size', self.win_main.get_size())
+        self.prefs.set('case-sensitive', self.chk_case.get_active())
         self.prefs.write_prefs()
         Gtk.main_quit()
     
@@ -99,7 +101,7 @@ class ViziGrepWindow(Window):
 
     def grep_thread(self, string, path, donefn):
         try:
-            results = self.ge.grep(string, path, self.prefs.get('match-limit'))
+            results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
             ex = None
         except Exception as e:
             results = None
@@ -152,7 +154,11 @@ class ViziGrepWindow(Window):
                     rstr += " "*(max_lnlen-len(r.linenum))
                 rstr += ':'
                 
-            m = re.search(string, r.str)
+            if self.chk_case.get_active():
+                m = re.search(string, r.str)
+            else:
+                m = re.search(string, r.str, re.IGNORECASE)
+            
             if(m):
                 matched_text = m.group()
                 (prematch, match, postmatch) = r.str.partition(matched_text)

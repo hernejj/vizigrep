@@ -1,0 +1,12 @@
+Package: vizigrep
+Version: 1.0
+Architecture: all
+Maintainer: Jason J. Herne <hernejj@gmail.com>
+Installed-Size: 130
+Depends: python2.7, python (>= 2.7.1-0ubuntu2), python (<< 2.8)
+Section: python
+Priority: extra
+Homepage: https://github.com/hernejj/vizigrep
+Description: Graphical file contents search tool using regular expressions.
+ Vizigrep is a graphical file contents search tool that searches your files
+ quickly and elegantly.

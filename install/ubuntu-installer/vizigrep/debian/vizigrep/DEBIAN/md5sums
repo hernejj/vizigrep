@@ -1,0 +1,16 @@
+a28e2cbb6f5c80e4db361ff9030a994a  usr/bin/vizigrep
+426f44da4aa11360bb03efc52a2ae1f1  usr/share/doc/vizigrep/README
+1fc75974098b04a7c0d5f44d55d0cb86  usr/share/doc/vizigrep/changelog.gz
+bb9ad378c07f9de49707576a536519dd  usr/share/doc/vizigrep/copyright
+a53866de83eee829d8e3b5f2550d1dd4  usr/share/man/man1/vizigrep.1.gz
+785de36749370e8da4e4da57f3e2716f  usr/share/pyshared/vizigrep/GrepEngine.py
+da17ac3cb94d53050186ea43e5a96837  usr/share/pyshared/vizigrep/Preferences.py
+702349772a1f0866224a879a3d64368c  usr/share/pyshared/vizigrep/PreferencesWindow.py
+426f44da4aa11360bb03efc52a2ae1f1  usr/share/pyshared/vizigrep/README
+a769420854375844db26d95865a4137c  usr/share/pyshared/vizigrep/SuperGtkBuilder.py
+53d70318804de5614bf81f7c7ed0b541  usr/share/pyshared/vizigrep/ViziGrepWindow.py
+4e3c062a959bd5cdfdc98ddc5cc6eac0  usr/share/pyshared/vizigrep/Window.py
+02a3e7bfabee5906eddf22d301306e94  usr/share/pyshared/vizigrep/mbox.py
+bfc82410d52ee8e729485dc140b4c46a  usr/share/pyshared/vizigrep/prefs-window.glade
+ae62fc4a062b968ef6f9ad8680b03bee  usr/share/pyshared/vizigrep/vizigrep
+b3c906ce1ac60ac0463f66b75346c9c4  usr/share/pyshared/vizigrep/vizigrep.glade

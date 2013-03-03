@@ -1,0 +1,14 @@
+Source: vizigrep
+Section: python
+Priority: extra
+Maintainer: Jason J. Herne <hernejj@gmail.com>
+Build-Depends: debhelper (>= 7), python-support (>= 0.90)
+Standards-Version: 3.9.3
+Homepage: https://github.com/hernejj/vizigrep
+
+Package: vizigrep
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python (>= 2.6)
+Description: Graphical file contents search tool using regular expressions.
+ Vizigrep is a graphical file contents search tool that searches your files 
+ quickly and elegantly.

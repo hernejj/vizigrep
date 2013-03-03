@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Sat, 02 Mar 2013 20:05:12 -0500
+Source: vizigrep
+Binary: vizigrep
+Architecture: source all
+Version: 1.0
+Distribution: unstable
+Urgency: low
+Maintainer: Jason J. Herne <hernejj@gmail.com>
+Changed-By: Jason J. Herne <hernejj@gmail.com>
+Description: 
+ vizigrep   - Graphical file contents search tool using regular expressions.
+Changes: 
+ vizigrep (1.0) unstable; urgency=low
+ .
+     * Initial version
+Checksums-Sha1: 
+ 2653583b4d7c68dae9617a534e97a120041083e7 559 vizigrep_1.0.dsc
+ 2020eb70a157cf701cfb20209b4b6850b41a1a82 22620 vizigrep_1.0.tar.gz
+ 044cb1580bf6a717ab1851678af48574baa7b955 13212 vizigrep_1.0_all.deb
+Checksums-Sha256: 
+ adc067fa2893394e3f246b660cc2cfc771416cdb3ceaec599c85c5424a282fc9 559 vizigrep_1.0.dsc
+ 75021e1b3cd154fed889f8a7ce59f622eaa1da7592033fa90d781dba53dc1170 22620 vizigrep_1.0.tar.gz
+ a0de53345d90438285354151474fbc34419b87fe3aff0793a8d04f940546a28e 13212 vizigrep_1.0_all.deb
+Files: 
+ fd32bb3be3a93f5da7394a6b9b29dc78 559 python extra vizigrep_1.0.dsc
+ 9976b9e0ee8c5aab21f41cd55365a40c 22620 python extra vizigrep_1.0.tar.gz
+ e0be65077fb038db509efc579ce34bd6 13212 python extra vizigrep_1.0_all.deb

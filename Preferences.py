@@ -59,11 +59,15 @@ class Preferences:
         self.set(prefname, self.defaults[prefname])
         
     def list_add(self, prefname, item):
+        self.pdict[prefname] = self.get(prefname)
         self.pdict[prefname].append(item)
     
     def list_remove(self, prefname, item):
+        self.pdict[prefname] = self.get(prefname)
         self.pdict[prefname].remove(item)
     
     def list_sort(self, prefname):
+        self.pdict[prefname] = self.get(prefname)
         self.pdict[prefname].sort()
+            
 

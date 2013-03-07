@@ -58,6 +58,8 @@ class GrepEngine:
         return arg
 
     def trunc_path(self, fn, path):
+        path = path.rstrip('/')
+        
         if (fn.startswith(os.path.expanduser('~'))):
             fn = fn.replace(os.path.expanduser('~'), '~')
         

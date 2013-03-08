@@ -22,4 +22,6 @@ cd $PKG_TREE_NAME/
 debuild && cd .. && rm -rf ./$PKG_TREE_NAME
 cd ..
 
+# Cleanup
 mv *.deb *.tar.gz *.dsc *.build *.changes deb/
+rm -rf $PKG_TREE_NAME

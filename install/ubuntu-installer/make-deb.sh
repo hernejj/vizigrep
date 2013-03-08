@@ -20,4 +20,6 @@ cp vizigrep.man $PKG_TREE_NAME/
 # Build!
 cd $PKG_TREE_NAME/
 debuild && cd .. && rm -rf ./$PKG_TREE_NAME
+cd ..
 
+mv *.deb *.tar.gz *.dsc *.build *.changes deb/

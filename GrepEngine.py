@@ -18,7 +18,6 @@ class GrepEngine:
             
             args = '-Irn%s %s %s' % (case_arg, self.arg_exclude_dirs(), self.arg_exclude_files())
             cmd = 'grep %s "%s" %s' % (args, string, path)
-            print case_sensitive, cmd
             o = subprocess.check_output(cmd, shell=True)
             o = o.decode('utf-8', 'replace')
 

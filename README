@@ -13,6 +13,15 @@ color coding is used to help you quickly lock your eyes on to what you are
 searching for. If simple search strings are not powerful enough Vizigrep also
 understands regular expressions.
 
+Starting Vizigrep
+-------------------
+If you installed Vizigrep you should be able to simply execute the 'vizigrep'
+command or start vizigrep from your desktop's application menu.
+
+If you have cloned the Git repository and would like to run vizigrep from the
+cloned copy simply run 'python vizigrep'.  The folder containing the code must
+be your current working directory for this to work.
+
 Navigation
 ------------
 Vizigrep is very intuitively navigated using only the mouse.  Simply choose a 

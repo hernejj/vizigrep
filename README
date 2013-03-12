@@ -2,6 +2,17 @@ Vizigrep
 ========
 Graphical file contents search tool using regular expressions.
 
+Copyright: Jason J. Herne (hernejj@gmail.com)
+
+Vizigrep is a graphical user interface for performing fast and powerful searches
+inside a group of files.  Simply tell Vizigrep which folder you want to search
+and what you want to search for and it will quickly find all occurrences of your
+search string within the files and folders you have selected.  The search
+results are annotated to show you the lines containing your search term and
+color coding is used to help you quickly lock your eyes on to what you are
+searching for. If simple search strings are not powerful enough Vizigrep also
+understands regular expressions.
+
 License
 -------------
 This application is released under the GNU General Public License v2. A full
@@ -9,14 +20,3 @@ copy of the license can be found here:
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Thank you for using free software!
 
-Important Note
----------------
-This program is under active development and is not ready for prime time yet :)
-Although if you are interested you can play with it.
-
-Starting Vizigrep
-------------------
-python vizigrep
-
-Your current working directory must be the directory containing all of the
-source code.

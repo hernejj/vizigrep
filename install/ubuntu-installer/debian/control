@@ -10,5 +10,11 @@ Package: vizigrep
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, python (>= 2.6)
 Description: Graphical file contents search tool using regular expressions.
- Vizigrep is a graphical file contents search tool that searches your files 
- quickly and elegantly.
+ Vizigrep is a graphical user interface for performing fast and powerful
+ searches inside a group of files.  Simply tell Vizigrep which folder you want
+ to search and what you want to search for and it will quickly find all
+ occurrences of your search string within the files and folders you have
+ selected.  The search results are annotated to show you the lines containing
+ your search term and color coding is used to help you quickly lock your eyes on
+ to what you are searching for. If simple search strings are not powerful enough
+ Vizigrep also understands regular expressions.

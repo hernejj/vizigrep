@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=vizigrep
+GenericName=Vizigrep
+Comment=Search text files
+Keywords=vizigrep;grep;search
+Exec=vizigrep
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=/usr/share/vizigrep/vizigrep.svg
+Categories=GNOME;GTK;Utility;
+X-GNOME-FullName=Vizigrep
+

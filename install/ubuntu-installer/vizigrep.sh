@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-cd /usr/share/pyshared/vizigrep
+cd /usr/share/vizigrep
 python vizigrep

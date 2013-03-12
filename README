@@ -13,6 +13,23 @@ color coding is used to help you quickly lock your eyes on to what you are
 searching for. If simple search strings are not powerful enough Vizigrep also
 understands regular expressions.
 
+Navigation
+------------
+Vizigrep is very intuitively navigated using only the mouse.  Simply choose a 
+folder to search, type your search string and then click the Search button. Once
+the results are displayed you can click on the name of a file to open it in your
+chosen text editor.
+
+At your option you may also carry out searches using the keyboard.  Simply use
+the tab key to move the input focus (the keyboard cursor) between the three main
+controls: "folder entry", "search string entry", and the "search results".
+
+If you've used the tab key to focus the search results you will see a keyboard
+cursor appear within the results.  Hitting enter while the cursor is over one of
+the filenames will open that file in your chosen text editor.  You may also hold
+down the Shift key and use the arrow keys to select and copy a portion of the
+results.
+
 License
 -------------
 This application is released under the GNU General Public License v2. A full

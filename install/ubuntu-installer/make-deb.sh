@@ -21,7 +21,7 @@ cp vizigrep.desktop $PKG_TREE_NAME/
 
 # Build!
 cd $PKG_TREE_NAME/
-debuild && cd .. && rm -rf ./$PKG_TREE_NAME
+debuild
 cd ..
 
 # Cleanup

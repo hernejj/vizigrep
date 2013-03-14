@@ -1,5 +1,6 @@
 #!/usr/bin/python
-# Author: Jason J. Herne
+# Copyright: Jason J. Herne (hernejj@gmail.com)
+# License: GPL-v2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt)
 from gi.repository import Gtk, GObject
 from ViziGrepWindow import ViziGrepWindow
 from Preferences import Preferences

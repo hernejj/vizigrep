@@ -29,4 +29,7 @@ cd ..
 # Cleanup
 mkdir -p  deb
 mv *.deb *.tar.gz *.dsc *.build *.changes deb/
-#rm -rf $PKG_TREE_NAME
+rm -rf $PKG_TREE_NAME
+
+#Construct '.orig' original source package to satisfy debian convention
+cp $TGZ_DIR/$PROGRAM_NAME-$VERSION.tgz deb/$PROGRAM_NAME-$VERSION.orig.tgz

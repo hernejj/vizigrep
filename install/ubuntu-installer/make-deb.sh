@@ -10,11 +10,14 @@ PKG_TREE_NAME=$PROGRAM_NAME-$VERSION
 rm -rf $PKG_TREE_NAME
 rm -rf ./deb
 
-# Generate and Unpack source
+#Construct '.orig' original source package to satisfy debian convention
 cd $TGZ_DIR
 ./make-generic-release.sh
 cd -
-tar -zxf $TGZ_DIR/$PROGRAM_NAME-$VERSION.tgz
+cp $TGZ_DIR/$PROGRAM_NAME'_'$VERSION.tar.gz ./$PROGRAM_NAME'_'$VERSION.orig.tar.gz
+pwd
+ls
+tar -zxf $PROGRAM_NAME'_'$VERSION.orig.tar.gz
 
 # Inject debian build specific files
 cp Makefile $PKG_TREE_NAME/
@@ -31,5 +34,3 @@ mkdir -p  deb
 mv *.deb *.tar.gz *.dsc *.build *.changes deb/
 rm -rf $PKG_TREE_NAME
 
-#Construct '.orig' original source package to satisfy debian convention
-cp $TGZ_DIR/$PROGRAM_NAME-$VERSION.tgz deb/$PROGRAM_NAME-$VERSION.orig.tgz

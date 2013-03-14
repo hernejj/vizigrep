@@ -20,3 +20,6 @@ cat $SRC_DIR/vizigrep.man | sed s/vizigrep-[0-9]*[.][0-9]*/vizigrep-$VERSION/ > 
 
 # Create tgz package
 tar -zcf $PKG_TREE_NAME-$VERSION.tgz $PKG_TREE_NAME/
+
+# Remove temp junk
+rm -rf $PKG_TREE_NAME

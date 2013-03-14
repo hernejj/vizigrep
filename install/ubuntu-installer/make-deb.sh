@@ -15,9 +15,6 @@ cp $SRC_DIR/* $PKG_TREE_NAME/
 cp Makefile $PKG_TREE_NAME/
 cp vizigrep.sh $PKG_TREE_NAME/
 cp -a debian $PKG_TREE_NAME/
-cp vizigrep.man $PKG_TREE_NAME/
-cp vizigrep.svg $PKG_TREE_NAME/
-cp vizigrep.desktop $PKG_TREE_NAME/
 
 # Build!
 cd $PKG_TREE_NAME/

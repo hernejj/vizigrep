@@ -31,6 +31,6 @@ cd ..
 
 # Cleanup
 mkdir -p  deb
-mv *.deb *.tar.gz *.dsc *.build *.changes deb/
+mv *.deb *.tar.gz *.dsc *.build *.changes *.diff.gz deb/
 rm -rf $PKG_TREE_NAME
 

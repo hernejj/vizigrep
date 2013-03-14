@@ -13,8 +13,10 @@ mkdir $PKG_TREE_NAME
 # Copy source
 cp $SRC_DIR/*.py $PKG_TREE_NAME/
 cp $SRC_DIR/*.glade $PKG_TREE_NAME/
+cp $SRC_DIR/vizigrep $PKG_TREE_NAME/
 cp $SRC_DIR/README $PKG_TREE_NAME/
 cp $SRC_DIR/vizigrep.svg $PKG_TREE_NAME/
+cp $SRC_DIR/vizigrep.desktop $PKG_TREE_NAME/
 
 # Copy manpage & update version number
 cat $SRC_DIR/vizigrep.man | sed s/vizigrep-[0-9]*[.][0-9]*/vizigrep-$VERSION/ > $PKG_TREE_NAME/vizigrep.man

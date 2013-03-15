@@ -19,5 +19,4 @@ install:
 uninstall:
 	rm -rf $(SHAREDIR)
 	rm -f $(BINDIR)/vizigrep
-
-
+.PHONY: install

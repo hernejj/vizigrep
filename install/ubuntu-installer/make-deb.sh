@@ -20,8 +20,6 @@ ls
 tar -zxf $PROGRAM_NAME'_'$VERSION.orig.tar.gz
 
 # Inject debian build specific files
-cp Makefile $PKG_TREE_NAME/
-cp vizigrep.sh $PKG_TREE_NAME/
 cp -a debian $PKG_TREE_NAME/
 
 # Build!
@@ -31,6 +29,6 @@ cd ..
 
 # Cleanup
 mkdir -p  deb
-mv *.deb *.tar.gz *.dsc *.build *.changes *.diff.gz deb/
+mv *.deb *.tar.gz *.dsc *.build *.changes  deb/
 rm -rf $PKG_TREE_NAME
 

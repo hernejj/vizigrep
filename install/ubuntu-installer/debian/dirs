@@ -1,2 +1,4 @@
 usr/bin/
-usr/share/pyshared/vizigrep
+usr/share/man/man1
+usr/share/vizigrep
+usr/share/applications

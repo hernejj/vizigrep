@@ -18,7 +18,7 @@ class Preferences:
         self.defaults['exclude-dirs'] = ['.git', '.svn']
         self.defaults['exclude-files'] = ['*~']
         self.defaults['show-line-numbers'] = True
-        self.defaults['editor'] = 'gedit $1'
+        self.defaults['editor'] = 'gedit $1 +$n'
         self.defaults['match-limit'] = 200
         self.defaults['case-sensitive'] = True
         

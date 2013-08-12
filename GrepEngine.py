@@ -51,6 +51,10 @@ class GrepEngine:
             regex = '\-\-' + regex[2:]  # Escape double dashes
         if regex.startswith('-'):
             regex = '\-' + regex[1:]  # Escape single dash
+        if '"' in regex: 
+            print 'replacing quote'
+            regex = regex.replace('"', '\\"')  # Escape quotes
+            print regex
         if regex == '':
             raise BadRegexException("Search string is empty")
         if regex.startswith('*'):

@@ -10,6 +10,7 @@ class ViziGrepWindow(Window):
     window_name        = "win_main"
 
     def __init__(self, prefs):
+        self.results = []
         Window.__init__(self, self.gtk_builder_file, self.window_name)
         self.prefs = prefs
         self.ge = GrepEngine()
@@ -139,6 +140,7 @@ class ViziGrepWindow(Window):
             widget.set_sensitive(True)
             
     def set_results(self, results, string):
+        self.results = results
         txtbuf = self.txt_results.get_buffer()
         max_fnlen = results.max_fnlen()
         max_lnlen = results.max_lnlen()
@@ -261,6 +263,7 @@ class ViziGrepWindow(Window):
             return True
 
     def activate_result(self, itr):
+        result = self.results[itr.get_line()]
         for tag in itr.get_tags():
             if tag == self.tag_link:
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
@@ -271,6 +274,8 @@ class ViziGrepWindow(Window):
                 if '$1' in command:
                     command = command.replace('$1', fullfn)
                 else: command = command + " " + fullfn
+                if '$n' in command:
+                    command = command.replace('$n', result.linenum)
 
                 subprocess.Popen(command, shell=True)
                 return True

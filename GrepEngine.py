@@ -15,6 +15,7 @@ class GrepEngine:
         self.exclude_files = []
 	
     def grep(self, string, path, max_matches, case_sensitive):
+        string = self.check_regex(string)
         try:
             if case_sensitive: case_arg = ''
             else: case_arg = 'i'
@@ -52,9 +53,7 @@ class GrepEngine:
         if regex.startswith('-'):
             regex = '\-' + regex[1:]  # Escape single dash
         if '"' in regex: 
-            print 'replacing quote'
             regex = regex.replace('"', '\\"')  # Escape quotes
-            print regex
         if regex == '':
             raise BadRegexException("Search string is empty")
         if regex.startswith('*'):

@@ -102,7 +102,6 @@ class ViziGrepWindow(Window):
 
     def grep_thread(self, string, path, donefn):
         try:
-            string = self.ge.check_regex(string)
             results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
             ex = None
         except Exception as e:

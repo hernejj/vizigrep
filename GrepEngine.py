@@ -47,12 +47,16 @@ class GrepEngine:
                 raise e
                 
     def check_regex(self, regex):
-        if '**' in regex:
-            regex = regex.replace('**', '*')
+        if regex.startswith('--'):
+            regex = '\-\-' + regex[2:]  # Escape double dashes
+        if regex.startswith('-'):
+            regex = '\-' + regex[1:]  # Escape single dash
         if regex == '':
             raise BadRegexException("Search string is empty")
-        if regex.strip()  == '*':
-            raise BadRegexException("Search string is way too vague")
+        if regex.startswith('*'):
+            raise BadRegexException("Search string cannot start with *")
+        if '**' in regex:
+            raise BadRegexException("Search string cannot contain **")
         if regex.strip().replace('.','') == '':
             raise BadRegexException("Search string is way too vague")
         if regex.strip() == '.*':

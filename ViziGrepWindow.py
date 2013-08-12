@@ -102,7 +102,7 @@ class ViziGrepWindow(Window):
 
     def grep_thread(self, string, path, donefn):
         try:
-            #string = self.ge.check_regex(string)
+            string = self.ge.check_regex(string)
             results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
             ex = None
         except Exception as e:
@@ -115,7 +115,8 @@ class ViziGrepWindow(Window):
             try:
                 self.set_results(results, string)
             except Exception as e:
-                print type(e )
+                print type(e)
+                print traceback.format_exc()
             self.add_path_history(path)
             self.add_search_history(string)
         else:
@@ -166,7 +167,7 @@ class ViziGrepWindow(Window):
             else:
                 m = re.search(string, r.str, re.IGNORECASE)
             
-            if(m):
+            if(m and len(m.group()) > 0):
                 matched_text = m.group()
                 (prematch, match, postmatch) = r.str.partition(matched_text)
                 rstr += prematch

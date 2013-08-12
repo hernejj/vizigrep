@@ -125,10 +125,12 @@ class ViziGrepWindow(Window):
                 txtbuf.set_text("The given folder does not exist: %s" % path)
             elif isinstance(exception, NoResultsException):
                 txtbuf.set_text("No results found")
-            if isinstance(exception, BadRegexException):
+            elif isinstance(exception, BadRegexException):
                 txtbuf.set_text("Search string error: %s" % str(exception))
             else:
                 txtbuf.set_text("Unexpected Error: " + str(exception))
+                print type(exception)
+                print traceback.format_exc()
         self.spinner.stop()
         self.enable_all()
 

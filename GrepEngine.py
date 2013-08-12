@@ -1,9 +1,12 @@
 import subprocess, os
-
+import sys
 class NoResultsException(Exception):
     pass
 
 class BadPathException(Exception):
+    pass
+
+class BadRegexException(Exception):
     pass
 
 class GrepEngine:
@@ -18,6 +21,7 @@ class GrepEngine:
             
             args = '-Irn%s %s %s' % (case_arg, self.arg_exclude_dirs(), self.arg_exclude_files())
             cmd = 'grep %s "%s" %s' % (args, string, path)
+            
             o = subprocess.check_output(cmd, shell=True)
             o = o.decode('utf-8', 'replace')
 
@@ -42,6 +46,20 @@ class GrepEngine:
             else:
                 raise e
                 
+    def check_regex(self, regex):
+        if '**' in regex:
+            regex = regex.replace('**', '*')
+        if regex == '':
+            raise BadRegexException("Search string is empty")
+        if regex.strip()  == '*':
+            raise BadRegexException("Search string is way too vague")
+        if regex.strip().replace('.','') == '':
+            raise BadRegexException("Search string is way too vague")
+        if regex.strip() == '.*':
+            raise BadRegexException("Search string is way too vague")
+            
+        return regex
+    
     def arg_exclude_dirs(self):
         arg = ''
         if len(self.exclude_dirs) > 0:

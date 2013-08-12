@@ -2,7 +2,7 @@ import subprocess, re, os, traceback
 from threading import Thread
 from gi.repository import Gtk, Gdk, GObject
 from Window import Window
-from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException
+from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException, BadRegexException
 from PreferencesWindow import PreferencesWindow
 
 class ViziGrepWindow(Window):
@@ -101,6 +101,7 @@ class ViziGrepWindow(Window):
 
     def grep_thread(self, string, path, donefn):
         try:
+            #string = self.ge.check_regex(string)
             results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
             ex = None
         except Exception as e:
@@ -110,7 +111,10 @@ class ViziGrepWindow(Window):
         
     def grep_thread_done(self, string, path, results, exception):
         if results:
-            self.set_results(results, string)
+            try:
+                self.set_results(results, string)
+            except Exception as e:
+                print type(e )
             self.add_path_history(path)
             self.add_search_history(string)
         else:
@@ -119,6 +123,8 @@ class ViziGrepWindow(Window):
                 txtbuf.set_text("The given folder does not exist: %s" % path)
             elif isinstance(exception, NoResultsException):
                 txtbuf.set_text("No results found")
+            if isinstance(exception, BadRegexException):
+                txtbuf.set_text("Search string error: %s" % str(exception))
             else:
                 txtbuf.set_text("Unexpected Error: " + str(exception))
         self.spinner.stop()

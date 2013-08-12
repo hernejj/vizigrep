@@ -21,7 +21,7 @@ class GrepEngine:
             else: case_arg = 'i'
             
             args = '-Irn%s %s %s' % (case_arg, self.arg_exclude_dirs(), self.arg_exclude_files())
-            cmd = 'grep %s "%s" %s' % (args, string, path)
+            cmd = "grep %s '%s' %s" % (args, string, path)
             
             o = subprocess.check_output(cmd, shell=True)
             o = o.decode('utf-8', 'replace')
@@ -41,6 +41,8 @@ class GrepEngine:
             
         except subprocess.CalledProcessError as e:
             if (e.returncode == 2):
+                print e.cmd
+                print e.output
                 raise BadPathException()
             elif (e.returncode == 1):
                 raise NoResultsException()
@@ -50,6 +52,8 @@ class GrepEngine:
     def check_regex(self, regex):
         
         # Escape funky chars
+        if '\\' in regex: 
+            regex = regex.replace('\\', '\\\\')  # Escape \
         if regex.startswith('--'):
             regex = '\-\-' + regex[2:]  # Escape double dashes
         if regex.startswith('-'):

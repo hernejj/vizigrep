@@ -37,6 +37,11 @@ class testCases(unittest.TestCase):
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'FolderA/File2', '#include "stdio.h"', '1')
 
+    def testBackslash(self):
+        results = self.ge.grep('fi\le', self.path, 0, True)
+        self.assertTrue(len(results) == 1)
+        self.checkResult(results[0], 'FolderA/File1', 'fi\le', '4')
+    
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)
         self.assertTrue(result.str == line)

@@ -6,8 +6,8 @@ from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, 
 from PreferencesWindow import PreferencesWindow
 
 class ViziGrepWindow(Window):
-    gtk_builder_file   = "vizigrep.glade"
-    window_name        = "win_main"
+    gtk_builder_file   = 'vizigrep.glade'
+    window_name        = 'win_main'
 
     def __init__(self, prefs):
         self.results = []
@@ -18,10 +18,10 @@ class ViziGrepWindow(Window):
         self.ge.exclude_files = self.prefs.get('exclude-files')
 
         txtbuf = self.txt_results.get_buffer()
-        self.tag_fixed = txtbuf.create_tag("fixed", family="Monospace")
-        self.tag_link = txtbuf.create_tag("link", foreground="Blue")
-        self.tag_red = txtbuf.create_tag("color", foreground="Red")
-        self.tag_green = txtbuf.create_tag("green", foreground="Dark Green")
+        self.tag_fixed = txtbuf.create_tag('fixed', family='Monospace')
+        self.tag_link = txtbuf.create_tag('link', foreground='Blue')
+        self.tag_red = txtbuf.create_tag('color', foreground='Red')
+        self.tag_green = txtbuf.create_tag('green', foreground='Dark Green')
         
         self.gtk_window.connect('delete_event', self.close)
         self.btn_search.connect('clicked', self.btn_search_clicked)

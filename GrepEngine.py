@@ -48,12 +48,18 @@ class GrepEngine:
                 raise e
                 
     def check_regex(self, regex):
+        
+        # Escape funky chars
         if regex.startswith('--'):
             regex = '\-\-' + regex[2:]  # Escape double dashes
         if regex.startswith('-'):
             regex = '\-' + regex[1:]  # Escape single dash
         if '"' in regex: 
             regex = regex.replace('"', '\\"')  # Escape quotes
+        if '#' in regex: 
+            regex = regex.replace('#', '\#')  # Escape hash
+        
+        # Check for invalid regex
         if regex == '':
             raise BadRegexException("Search string is empty")
         if regex.startswith('*'):

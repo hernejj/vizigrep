@@ -22,6 +22,21 @@ class testCases(unittest.TestCase):
         with self.assertRaises(NoResultsException):
             results = self.ge.grep('idonotexistidonotexistidonotexist', self.path, 0, True)
 
+    def testDoubleQuote(self):
+        results = self.ge.grep('"stdio.h', self.path, 0, True)
+        self.assertTrue(len(results) == 1)
+        self.checkResult(results[0], 'FolderA/File2', '#include "stdio.h"', '1')
+    
+    def testDoubleQuotes(self):
+        results = self.ge.grep('"stdio.h"', self.path, 0, True)
+        self.assertTrue(len(results) == 1)
+        self.checkResult(results[0], 'FolderA/File2', '#include "stdio.h"', '1')
+    
+    def testStringStartingWithHash(self):
+        results = self.ge.grep('#include', self.path, 0, True)
+        self.assertTrue(len(results) == 1)
+        self.checkResult(results[0], 'FolderA/File2', '#include "stdio.h"', '1')
+
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)
         self.assertTrue(result.str == line)

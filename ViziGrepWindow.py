@@ -149,6 +149,7 @@ class ViziGrepWindow(Window):
         taglist = []
         rstr = ''
         
+        string = self.escape_regex_str(string)
         for r in results:
             taglist.append( (len(rstr), len(r.fn), self.tag_link) )
             rstr += r.fn
@@ -183,6 +184,11 @@ class ViziGrepWindow(Window):
         txtbuf.set_text(rstr)
         self.apply_tags(txtbuf, rstr, taglist)
 
+    def escape_regex_str(self, regex):
+        if '\\' in regex: 
+            regex = regex.replace('\\', '\\\\')  # Escape \
+        return regex
+    
     def apply_tags(self, txtbuf, rstr, taglist):
         txtbuf.apply_tag(self.tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
         for tagtuple in taglist:

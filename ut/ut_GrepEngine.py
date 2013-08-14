@@ -37,6 +37,11 @@ class testCases(unittest.TestCase):
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'FolderA/File2', '#include "stdio.h"', '1')
 
+    def testAngleBrackets(self):
+        results = self.ge.grep('<stdio.h>', self.path, 0, True)
+        self.assertTrue(len(results) == 1)
+        self.checkResult(results[0], 'FolderA/File2', '@fnclude <stdio.h>', '2')
+    
     def testBackslash(self):
         results = self.ge.grep('fi\le', self.path, 0, True)
         self.assertTrue(len(results) == 1)
@@ -45,7 +50,7 @@ class testCases(unittest.TestCase):
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)
         self.assertTrue(result.str == line)
-        self.assertTrue(result.linenum == linenum)
+        self.assertTrue(int(result.linenum) == int(linenum))
 
 ##########
 # Create and return a test suite for this set of tests.

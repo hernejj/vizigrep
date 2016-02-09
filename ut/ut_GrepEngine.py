@@ -8,7 +8,7 @@ class testCases(unittest.TestCase):
 
     def setUp(self):
         self.ge = GrepEngine()
-        self.path = './test-data'
+        self.path = 'test-data'
         
     def tearDown(self):
         pass
@@ -46,6 +46,13 @@ class testCases(unittest.TestCase):
         results = self.ge.grep('fi\le', self.path, 0, True)
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'FolderA/File1', 'fi\le', '4')
+        
+    def testPathWithSpaces(self):
+        path = 'test-data/Space A'
+        results = self.ge.grep('space_marker', path, 0, True)
+        print results[0].fn, results[0].linenum, results[0].str
+        self.assertTrue(len(results) == 1)
+        self.checkResult(results[0], 'Space File', 'space_marker', '1')
     
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)

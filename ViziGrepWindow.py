@@ -4,6 +4,7 @@ from gi.repository import Gtk, Gdk, GObject
 from Window import Window
 from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException, BadRegexException
 from PreferencesWindow import PreferencesWindow
+from Path import Path
 
 class ViziGrepWindow(Window):
     gtk_builder_file   = "vizigrep.glade"
@@ -66,8 +67,8 @@ class ViziGrepWindow(Window):
         response = dialog.run()
         
         if response == Gtk.ResponseType.OK:
-            path = self.trunc_path(dialog.get_filename())
-            self.cbox_path.get_child().set_text(path)
+            pathStr = self.trunc_path(dialog.get_filename())
+            self.cbox_path.get_child().set_text(Path(pathStr).pretty())
         
         dialog.destroy()
         return True

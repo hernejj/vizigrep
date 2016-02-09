@@ -1,5 +1,7 @@
 import subprocess, os
 import sys
+from Path import Path
+
 class NoResultsException(Exception):
     pass
 
@@ -15,15 +17,19 @@ class GrepEngine:
         self.exclude_files = []
 	
     def grep(self, string, path, max_matches, case_sensitive):
+        p = Path(path)
+        realPath = p.fullpath
         string = self.check_regex(string)
+        
         try:
-            if case_sensitive: case_arg = ''
-            else: case_arg = 'i'
+            argList = ['grep', '-I', '-r', '-n']
+            if case_sensitive:
+                argList.append('-i')
+            argList = argList + self.arg_exclude_list()
+            argList.append(string)
+            argList.append(realPath)
             
-            args = '-Irn%s %s %s' % (case_arg, self.arg_exclude_dirs(), self.arg_exclude_files())
-            cmd = "grep %s '%s' %s" % (args, string, path)
-            
-            o = subprocess.check_output(cmd, shell=True)
+            o = subprocess.check_output(argList)
             o = o.decode('utf-8', 'replace')
 
             results = GrepResults()
@@ -35,14 +41,14 @@ class GrepEngine:
                     continue
                 if (max_matches > 0) and len(results) == max_matches:
                     break
-                results.append(GrepResult(self.trunc_path(filename, path), text, linenum))
+                results.append(GrepResult(self.trunc_path(filename, realPath), text, linenum))
 
             return results
             
         except subprocess.CalledProcessError as e:
             if (e.returncode == 2):
-                print e.cmd
-                print e.output
+                print "CMD=", e.cmd
+                print "OUTPUT=", e.output
                 raise BadPathException()
             elif (e.returncode == 1):
                 raise NoResultsException()
@@ -77,25 +83,23 @@ class GrepEngine:
             
         return regex
     
-    def arg_exclude_dirs(self):
-        arg = ''
+    def arg_exclude_list(self):
+        argList = []
         if len(self.exclude_dirs) > 0:
             for d in self.exclude_dirs:
-                arg += ' --exclude-dir="%s"' % d
-        return arg
+                argList.append('--exclude-dir="%s"' % d)
         
-    def arg_exclude_files(self):
-        arg = ''
         if len(self.exclude_files) > 0:
             for d in self.exclude_files:
-                arg += ' --exclude="%s"' % d
-        return arg
+                argList.append('--exclude="%s"' % d)
+        
+        return argList
 
     def trunc_path(self, fn, path):
         path = path.rstrip('/')
         
-        if (fn.startswith(os.path.expanduser('~'))):
-            fn = fn.replace(os.path.expanduser('~'), '~')
+        #if (fn.startswith(os.path.expanduser('~'))):
+        #    fn = fn.replace(os.path.expanduser('~'), '~')
         
         if fn.startswith(path + '/'):
             fn = fn.replace(path + '/', '')

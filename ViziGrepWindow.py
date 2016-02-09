@@ -278,6 +278,18 @@ class ViziGrepWindow(Window):
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = self.txt_results.get_buffer().get_text(itr, itr_end, False)
                 fullfn = os.path.join(self.last_search_path, filename)
+                p = Path(fullfn)
+                fullfn = p.fullpath
+                
+                cmdList = []
+                for itm in self.prefs.get('editor').split(' '):
+                    if '$1' in itm:
+                        itm = itm.replace('$1', fullfn)
+                    if '$n' in itm:
+                        itm = itm.replace('$n', result.linenum)
+
+                    cmdList.append(itm)
+                    print itm
                 
                 command = self.prefs.get('editor')
                 if '$1' in command:
@@ -286,7 +298,7 @@ class ViziGrepWindow(Window):
                 if '$n' in command:
                     command = command.replace('$n', result.linenum)
 
-                subprocess.Popen(command, shell=True)
+                subprocess.Popen(cmdList)
                 return True
         return False
         

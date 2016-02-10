@@ -1,16 +1,16 @@
 import os
 from gi.repository import Gtk, Gdk
-from Window import Window
-from mbox import mbox
+
+from guiapp.Window import Window
 
 class PreferencesWindow(Window):
     gtk_builder_file   = "prefs-window.glade"
     window_name        = "win_prefs"
 
-    def __init__(self, prefs):
-        Window.__init__(self, self.gtk_builder_file, self.window_name)
-        self.prefs = prefs
-        self.mbox = mbox()
+    def __init__(self, app):
+        Window.__init__(self, app, self.gtk_builder_file, self.window_name)
+        self.prefs = app.prefs
+        self.mbox = app.mbox
         
         self.gtk_window.connect('delete_event', self.close)
         self.btn_close.connect('clicked', self.close)

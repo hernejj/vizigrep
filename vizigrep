@@ -2,10 +2,16 @@
 # Copyright: Jason J. Herne (hernejj@gmail.com)
 # License: GPL-v2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt)
 from gi.repository import Gtk, GObject
+from guiapp.guiapp import GuiApp
 from ViziGrepWindow import ViziGrepWindow
-from Preferences import Preferences
+
+app = GuiApp('vizigrep')
+app.initPrefs()
+app.initLogging()
+app.log.stdout = True
+app.mbox.log = app.log # FIXME: Silly to have this here
 
 GObject.threads_init() 
-vgw = ViziGrepWindow(Preferences('vizigrep'))
+vgw = ViziGrepWindow(app)
 vgw.activate()
 Gtk.main()

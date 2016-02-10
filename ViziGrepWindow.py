@@ -1,7 +1,9 @@
 import subprocess, re, os, traceback
 from threading import Thread
 from gi.repository import Gtk, Gdk, GObject
-from Window import Window
+
+from guiapp.Window import Window
+
 from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException, BadRegexException
 from PreferencesWindow import PreferencesWindow
 import Path
@@ -10,10 +12,11 @@ class ViziGrepWindow(Window):
     gtk_builder_file   = "vizigrep.glade"
     window_name        = "win_main"
 
-    def __init__(self, prefs):
+    def __init__(self, app):
+        Window.__init__(self, app, self.gtk_builder_file, self.window_name) # FIXME: Switch to using guiapp function fo remembering window size/position
+        self.app = app
+        self.prefs = app.prefs
         self.results = []
-        Window.__init__(self, self.gtk_builder_file, self.window_name)
-        self.prefs = prefs
         self.ge = GrepEngine()
         self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         self.ge.exclude_files = self.prefs.get('exclude-files')
@@ -320,4 +323,4 @@ class ViziGrepWindow(Window):
         return (itr, itr_end)
         
     def options_clicked(self, lbl):
-        PreferencesWindow(self.prefs).activate()
+        PreferencesWindow(self.app).activate()

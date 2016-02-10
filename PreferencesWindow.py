@@ -10,7 +10,6 @@ class PreferencesWindow(Window):
     def __init__(self, app):
         Window.__init__(self, app, self.gtk_builder_file, self.window_name)
         self.prefs = app.prefs
-        self.mbox = app.mbox
         
         self.gtk_window.connect('delete_event', self.close)
         self.btn_close.connect('clicked', self.close)
@@ -75,12 +74,12 @@ class PreferencesWindow(Window):
         if len(text) == 0: return True
         
         if '"' in text or "'" in text:
-            self.mbox.error('ERROR: Filename cannot contain quotes')
+            self.app.mbox.error('ERROR: Filename cannot contain quotes')
             self.txt_file.grab_focus()
             return True
         
         if text in self.prefs.get('exclude-files'):
-            self.mbox.error('%s is already in the list.' % text)
+            self.app.mbox.error('%s is already in the list.' % text)
             self.txt_file.grab_focus()
             return True
         
@@ -120,12 +119,12 @@ class PreferencesWindow(Window):
         if len(text) == 0: return True
         
         if '"' in text or "'" in text:
-            self.mbox.error('Folder name cannot contain quotes')
+            self.app.mbox.error('Folder name cannot contain quotes')
             self.txt_dir.grab_focus()
             return True
             
         if text in self.prefs.get('exclude-dirs'):
-            self.mbox.error('%s is already in the list.' % text)
+            self.app.mbox.error('%s is already in the list.' % text)
             self.txt_dir.grab_focus()
             return True
         

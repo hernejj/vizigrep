@@ -19,3 +19,11 @@ def full(path):
         if (not path.startswith('/')):
             path = os.path.join(os.getcwd(), path)
         return path
+
+# If fn start with base, remove base and return a path relative to base.
+def relativeTo(fn, base):
+        base = base.rstrip('/')
+        
+        if fn.startswith(base + '/'):
+            fn = fn.replace(base + '/', '')
+        return fn

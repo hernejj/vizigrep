@@ -67,23 +67,18 @@ class ViziGrepWindow(Window):
         response = dialog.run()
         
         if response == Gtk.ResponseType.OK:
-            pathStr = self.trunc_path(dialog.get_filename())
+            pathStr = dialog.get_filename()
             self.cbox_path.get_child().set_text(Path.pretty(pathStr))
         
         dialog.destroy()
         return True
-         
-    def trunc_path(self, path):
-        if (path.startswith(os.path.expanduser('~'))):
-            path = path.replace(os.path.expanduser('~'), '~')
-        return path
 
     def btn_search_clicked(self, data):
         self.clear_results()
         txtbuf = self.txt_results.get_buffer()
         string = self.cbox_search.get_active_text()
         
-        path = self.trunc_path(self.cbox_path.get_active_text())
+        path = Path.pretty(self.cbox_path.get_active_text())
         self.cbox_path.get_child().set_text(path)
         self.last_search_path = path
         

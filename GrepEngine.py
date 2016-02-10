@@ -40,7 +40,7 @@ class GrepEngine:
                     continue
                 if (max_matches > 0) and len(results) == max_matches:
                     break
-                results.append(GrepResult(self.trunc_path(filename, realPath), text, linenum))
+                results.append(GrepResult(Path.relativeTo(filename, realPath), text, linenum))
 
             return results
             
@@ -93,14 +93,6 @@ class GrepEngine:
                 argList.append('--exclude="%s"' % d)
         
         return argList
-
-    def trunc_path(self, fn, path):
-        path = path.rstrip('/')
-        
-        if fn.startswith(path + '/'):
-            fn = fn.replace(path + '/', '')
-        
-        return fn
 
 class GrepResult():
     def __init__(self, filename, result_string, linenum=None):

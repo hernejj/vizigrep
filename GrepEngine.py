@@ -86,11 +86,11 @@ class GrepEngine:
         argList = []
         if len(self.exclude_dirs) > 0:
             for d in self.exclude_dirs:
-                argList.append('--exclude-dir="%s"' % d)
+                argList.append('--exclude-dir=%s' % d)
         
         if len(self.exclude_files) > 0:
             for d in self.exclude_files:
-                argList.append('--exclude="%s"' % d)
+                argList.append('--exclude=%s' % d)
         
         return argList
 

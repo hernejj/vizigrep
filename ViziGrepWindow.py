@@ -64,10 +64,13 @@ class ViziGrepWindow(Window):
     def lbl_path_clicked(self, lbl):
         btns = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         dialog = Gtk.FileChooserDialog('Choose a folder', self.win_main, Gtk.FileChooserAction.SELECT_FOLDER, btns)
+        startingPath = Path.full(self.prefs.get('last-opened-folder'))
+        dialog.set_current_folder(startingPath)
         response = dialog.run()
         
         if response == Gtk.ResponseType.OK:
             pathStr = dialog.get_filename()
+            self.prefs.set('last-opened-folder', pathStr)
             self.cbox_path.get_child().set_text(Path.pretty(pathStr))
         
         dialog.destroy()

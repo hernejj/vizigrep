@@ -53,6 +53,21 @@ class testCases(unittest.TestCase):
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'Space File', 'space_marker', '1')
     
+    def testIgnoreDirSimple(self):
+        self.ge.exclude_dirs.append('FolderA')
+        results = self.ge.grep('file', self.path, 0, True)
+        self.ge.exclude_dirs = []
+        self.assertTrue(len(results) == 2)
+        self.checkResult(results[0], "File1", "This is a test file", "1")
+        self.checkResult(results[1], "File2", "Another file!", "1")
+    
+    def testIgnoreDirWithSpaceInPath(self):
+        self.ge.exclude_dirs.append('Space A')
+        with self.assertRaises(NoResultsException):
+            results = self.ge.grep('space_marker', self.path, 0, True)
+        self.ge.exclude_dirs = []
+        
+    
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)
         self.assertTrue(result.str == line)

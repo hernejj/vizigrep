@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk, GObject
 from Window import Window
 from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException, BadRegexException
 from PreferencesWindow import PreferencesWindow
-from Path import Path
+import Path
 
 class ViziGrepWindow(Window):
     gtk_builder_file   = "vizigrep.glade"
@@ -68,7 +68,7 @@ class ViziGrepWindow(Window):
         
         if response == Gtk.ResponseType.OK:
             pathStr = self.trunc_path(dialog.get_filename())
-            self.cbox_path.get_child().set_text(Path(pathStr).pretty())
+            self.cbox_path.get_child().set_text(Path.pretty(pathStr))
         
         dialog.destroy()
         return True
@@ -277,26 +277,18 @@ class ViziGrepWindow(Window):
             if tag == self.tag_link:
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = self.txt_results.get_buffer().get_text(itr, itr_end, False)
-                fullfn = os.path.join(self.last_search_path, filename)
-                p = Path(fullfn)
-                fullfn = p.fullpath
+                filename = os.path.join(self.last_search_path, filename)
+                filename= Path.full(filename)
                 
                 cmdList = []
                 for itm in self.prefs.get('editor').split(' '):
                     if '$1' in itm:
-                        itm = itm.replace('$1', fullfn)
+                        itm = itm.replace('$1', filename)
                     if '$n' in itm:
                         itm = itm.replace('$n', result.linenum)
 
                     cmdList.append(itm)
                     print itm
-                
-                command = self.prefs.get('editor')
-                if '$1' in command:
-                    command = command.replace('$1', fullfn)
-                else: command = command + " " + fullfn
-                if '$n' in command:
-                    command = command.replace('$n', result.linenum)
 
                 subprocess.Popen(cmdList)
                 return True

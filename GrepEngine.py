@@ -1,6 +1,6 @@
 import subprocess, os
 import sys
-from Path import Path
+import Path
 
 class NoResultsException(Exception):
     pass
@@ -17,8 +17,7 @@ class GrepEngine:
         self.exclude_files = []
 	
     def grep(self, string, path, max_matches, case_sensitive):
-        p = Path(path)
-        realPath = p.fullpath
+        realPath = Path.full(path)
         string = self.check_regex(string)
         
         try:
@@ -97,9 +96,6 @@ class GrepEngine:
 
     def trunc_path(self, fn, path):
         path = path.rstrip('/')
-        
-        #if (fn.startswith(os.path.expanduser('~'))):
-        #    fn = fn.replace(os.path.expanduser('~'), '~')
         
         if fn.startswith(path + '/'):
             fn = fn.replace(path + '/', '')

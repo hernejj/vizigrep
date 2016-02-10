@@ -50,7 +50,6 @@ class testCases(unittest.TestCase):
     def testPathWithSpaces(self):
         path = 'test-data/Space A'
         results = self.ge.grep('space_marker', path, 0, True)
-        print results[0].fn, results[0].linenum, results[0].str
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'Space File', 'space_marker', '1')
     

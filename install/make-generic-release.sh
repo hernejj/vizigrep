@@ -13,6 +13,7 @@ mkdir $PKG_TREE_NAME
 # Copy source
 cp $SRC_DIR/*.py $PKG_TREE_NAME/
 cp $SRC_DIR/*.glade $PKG_TREE_NAME/
+cp -r $SRC_DIR/guiapp $PKG_TREE_NAME/
 cp $SRC_DIR/vizigrep $PKG_TREE_NAME/
 cp $SRC_DIR/README $PKG_TREE_NAME/
 cp $SRC_DIR/vizigrep.svg $PKG_TREE_NAME/

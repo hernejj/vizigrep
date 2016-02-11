@@ -27,6 +27,7 @@ class PreferencesWindow(Window):
         self.load_files_list()
         self.load_dirs_list()
         self.load_match_limit()
+        self.load_alternate_row_color()
         self.gtk_window.show_all()
     
     def close(self, win=None, event=None):
@@ -35,6 +36,7 @@ class PreferencesWindow(Window):
         self.save_files_list()
         self.save_dirs_list()
         self.save_match_limit()
+        self.save_alternate_row_color()
         self.prefs.write_prefs()
         self.gtk_window.hide()
         return True
@@ -64,6 +66,12 @@ class PreferencesWindow(Window):
 
     def save_linenum(self):
         self.prefs.set('show-line-numbers', self.chk_linenum.get_active())
+    
+    def load_alternate_row_color(self):
+        self.chk_alternate_row_color.set_active(self.prefs.get('alternate-row-color'))
+
+    def save_alternate_row_color(self):
+        self.prefs.set('alternate-row-color', self.chk_alternate_row_color.get_active())
         
     def init_files_list(self):
         column = Gtk.TreeViewColumn("File Name",  Gtk.CellRendererText(), text=0)

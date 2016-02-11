@@ -20,8 +20,8 @@ class Preferences:
         self.defaults['show-line-numbers'] = True
         self.defaults['editor'] = 'gedit $1 +$n'
         self.defaults['match-limit'] = 200
+        self.defaults['alternate-row-color'] = True
         self.defaults['case-sensitive'] = True
-
         
     def read_prefs(self):
         self.pdict = {}

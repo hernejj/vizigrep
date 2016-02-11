@@ -8,6 +8,12 @@ from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, 
 from PreferencesWindow import PreferencesWindow
 import Path
 
+class TextTag:
+    def __init_(self, startIdx, length, gtkTag):
+        self.startIdx = startIdx
+        self.length = length
+        self.gtkTag = gtkTag
+
 class ViziGrepWindow(Window):
     gtk_builder_file   = "vizigrep.glade"
     window_name        = "win_main"
@@ -26,6 +32,7 @@ class ViziGrepWindow(Window):
         self.tag_link = txtbuf.create_tag("link", foreground="Blue")
         self.tag_red = txtbuf.create_tag("color", foreground="Red")
         self.tag_green = txtbuf.create_tag("green", foreground="Dark Green")
+        self.tag_bg1 = txtbuf.create_tag("bg1", background="#DDDDDD")
         
         self.gtk_window.connect('delete_event', self.close)
         self.btn_search.connect('clicked', self.btn_search_clicked)
@@ -152,13 +159,22 @@ class ViziGrepWindow(Window):
         rstr = ''
         
         string = self.escape_regex_str(string)
+        lineNum = 1
         for r in results:
+            lineStartIdx = len(rstr)
+            
+            # File name
             taglist.append( (len(rstr), len(r.fn), self.tag_link) )
             rstr += r.fn
+            
+            # Spaces to pad out filename
             if max_fnlen > len(r.fn):
                 rstr += ' '*(max_fnlen-len(r.fn))
+            
+            # : after filename
             rstr += ':'
         
+            # Line number and : 
             if (self.prefs.get('show-line-numbers')):
                 taglist.append( (len(rstr), len(r.linenum), self.tag_green) )
                 rstr += r.linenum
@@ -171,6 +187,7 @@ class ViziGrepWindow(Window):
             else:
                 m = re.search(string, r.str, re.IGNORECASE)
             
+            # Line contents
             if(m and len(m.group()) > 0):
                 matched_text = m.group()
                 (prematch, match, postmatch) = r.str.partition(matched_text)
@@ -180,6 +197,13 @@ class ViziGrepWindow(Window):
                 rstr += postmatch + '\n'
             else:
                 rstr += r.str + '\n'
+            
+            # Add text background tag every other line
+            lineLength = len(rstr) - lineStartIdx - 1
+            if (self.prefs.get('alternate-row-color')):
+                if (lineNum % 2 == 1):
+                    taglist.append( (lineStartIdx, lineLength, self.tag_bg1) )
+            lineNum+=1
             
         self.lbl_matches.set_text(str(len(results)))
         self.lbl_files.set_text(str(results.unique_fns()))

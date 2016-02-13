@@ -155,8 +155,14 @@ class ViziGrepWindow(Window):
         txtbuf = self.txt_results.get_buffer()
         max_fnlen = results.max_fnlen()
         max_lnlen = results.max_lnlen()
+        max_txtlen = results.max_txtlen()
         taglist = []
         rstr = ''
+        
+        # Figure out max line length
+        max_linelen = max_fnlen + 1 + max_txtlen
+        if (self.prefs.get('show-line-numbers')):
+            max_linelen += max_lnlen + 1
         
         string = self.escape_regex_str(string)
         lineNum = 1
@@ -194,9 +200,15 @@ class ViziGrepWindow(Window):
                 rstr += prematch
                 taglist.append( (len(rstr), len(matched_text), self.tag_red) )
                 rstr += matched_text
-                rstr += postmatch + '\n'
+                rstr += postmatch
             else:
-                rstr += r.str + '\n'
+                rstr += r.str
+            
+            # Spaces to pad out line contents
+            if max_txtlen > len(r.str):
+                rstr += ' '*(max_txtlen-len(r.str))
+            
+            rstr += '\n'
             
             # Add text background tag every other line
             lineLength = len(rstr) - lineStartIdx - 1

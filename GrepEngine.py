@@ -123,6 +123,13 @@ class GrepResults(list):
                 maxlen = len(result.linenum)
         return maxlen
     
+    def max_txtlen(self):
+        maxlen = 0
+        for result in self:
+            if len(result.str) > maxlen:
+                maxlen = len(result.str)
+        return maxlen
+    
     def unique_fns(self):
         count = 0
         fdict = {}

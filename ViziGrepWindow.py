@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk, GObject
 
 from guiapp.Window import Window
 
-from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException, BadRegexException
+from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, GrepException, BadRegexException
 from PreferencesWindow import PreferencesWindow
 import Path
 
@@ -129,8 +129,8 @@ class ViziGrepWindow(Window):
             self.add_search_history(string)
         else:
             txtbuf = self.txt_results.get_buffer()
-            if isinstance(exception, BadPathException):
-                txtbuf.set_text("The given folder does not exist: %s" % path)
+            if isinstance(exception, GrepException):
+                txtbuf.set_text("Grep error: %s" % exception.output)
             elif isinstance(exception, NoResultsException):
                 txtbuf.set_text("No results found")
             elif isinstance(exception, BadRegexException):

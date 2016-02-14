@@ -1,11 +1,11 @@
-import subprocess, os
+import subprocess, os, tempfile
 import sys
 import Path
 
 class NoResultsException(Exception):
     pass
 
-class BadPathException(Exception):
+class GrepException(Exception):
     pass
 
 class BadRegexException(Exception):
@@ -28,7 +28,8 @@ class GrepEngine:
             argList.append(string)
             argList.append(realPath)
             
-            o = subprocess.check_output(argList)
+            stdErrFile = tempfile.TemporaryFile()
+            o = subprocess.check_output(argList, stderr=stdErrFile)
             o = o.decode('utf-8', 'replace')
 
             results = GrepResults()
@@ -46,9 +47,16 @@ class GrepEngine:
             
         except subprocess.CalledProcessError as e:
             if (e.returncode == 2):
+                stdErrFile.seek(0)
+                sdterrStr = stdErrFile.read()
+                
                 print "CMD=", e.cmd
                 print "OUTPUT=", e.output
-                raise BadPathException()
+                print "STDERR=", sdterrStr
+                
+                newE = GrepException()
+                newE.output = sdterrStr
+                raise newE
             elif (e.returncode == 1):
                 raise NoResultsException()
             else:

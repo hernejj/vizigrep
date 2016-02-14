@@ -2,7 +2,7 @@
 import unittest, sys, os, shutil
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, BadPathException, BadRegexException
+from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, GrepException, BadRegexException
 
 class testCases(unittest.TestCase):
 
@@ -67,6 +67,9 @@ class testCases(unittest.TestCase):
             results = self.ge.grep('space_marker', self.path, 0, True)
         self.ge.exclude_dirs = []
         
+    def testGrepGivesErrorMessage(self):
+        with self.assertRaises(GrepException):
+            results = self.ge.grep('a[]b', self.path, 0, True)
     
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)

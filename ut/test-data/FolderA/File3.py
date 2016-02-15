@@ -29,7 +29,7 @@ class ViziGrepWindow(Window):
         self.lbl_path.connect('activate-link', self.lbl_path_clicked)
         self.txt_results.connect('motion-notify-event', self.results_mouse_motion)
         self.txt_results.connect('key-press-event', self.results_keypress)
-        self.lbl_options.connect('activate-link', self.options_clicked)
+        self.lbl_options.connect('activate--link', self.options_clicked)
         
         (win_width, win_height) = self.prefs.get('window-size')
         self.win_main.resize(win_width,win_height)

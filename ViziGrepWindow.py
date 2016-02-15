@@ -225,6 +225,11 @@ class ViziGrepWindow(Window):
     def escape_regex_str(self, regex):
         if '\\' in regex: 
             regex = regex.replace('\\', '\\\\')  # Escape \
+        if '(' in regex:
+            regex = regex.replace('(', '\\(')  # Escape (
+        if ')' in regex:
+            regex = regex.replace(')', '\\)')  # Escape )
+            
         return regex
     
     def apply_tags(self, txtbuf, rstr, taglist):

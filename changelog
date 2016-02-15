@@ -1,2 +1,8 @@
+* V1.1
+ - Colorize background for alternating output rows
+ - Improved handling of special chars in regex and search path strings
+ - Folder dialog remembers last chosen path & defaults to user's home
+ - Bugfix: Display error messages directly from grep stderr
+ - Better unit test coverage
 * V1.0
   - Initial Release

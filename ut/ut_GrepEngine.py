@@ -51,6 +51,28 @@ class testCases(unittest.TestCase):
         self.checkResult(results[0], 'Space File', 'space_marker', '1')
         
     
+    ### Broken Regex ###
+    
+    def testStartsWithStar(self):
+        with self.assertRaises(BadRegexException):
+            results = self.ge.grep('*foo', self.path, 0, True)
+
+    def testDoubleStar(self):
+        with self.assertRaises(BadRegexException):
+            results = self.ge.grep('foo**', self.path, 0, True)
+        
+    def testEmptyString(self):
+        with self.assertRaises(BadRegexException):
+            results = self.ge.grep('', self.path, 0, True)
+    
+    def testAllDots(self):
+        with self.assertRaises(BadRegexException):
+            results = self.ge.grep('...', self.path, 0, True)
+            
+    def testDotStar(self):
+        with self.assertRaises(BadRegexException):
+            results = self.ge.grep('.*', self.path, 0, True)
+            
     ### Test Special Chars & Shell Escaping ###
     
     def testDoubleQuote(self):

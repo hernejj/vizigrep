@@ -11,8 +11,8 @@ install:
 	mkdir -p $(SHAREDIR)
 	mkdir -p $(APPSDIR)
 	cp  *.py $(SHAREDIR)/
-	cp  *.glade $(SHAREDIR)/
 	cp -r guiapp $(SHAREDIR)/
+	cp -r ui $(SHAREDIR)/
 	cp vizigrep $(SHAREDIR)/
 	cp vizigrep.sh $(BINDIR)/vizigrep
 	cp vizigrep.man $(MANDIR)/vizigrep.1

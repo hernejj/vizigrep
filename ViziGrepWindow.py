@@ -15,7 +15,7 @@ class TextTag:
         self.gtkTag = gtkTag
 
 class ViziGrepWindow(Window):
-    gtk_builder_file   = "vizigrep.glade"
+    gtk_builder_file   = "ui/vizigrep.glade"
     window_name        = "win_main"
 
     def __init__(self, app):

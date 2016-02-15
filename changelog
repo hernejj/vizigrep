@@ -1,8 +1,15 @@
-* V1.1
- - Colorize background for alternating output rows
- - Improved handling of special chars in regex and search path strings
- - Folder dialog remembers last chosen path & defaults to user's home
- - Bugfix: Display error messages directly from grep stderr
- - Better unit test coverage
-* V1.0
-  - Initial Release
+vizigrep (1.2-1) unstable; urgency=low
+    * bugfix: Properly handle parenthesis when matching and displaying
+ -- Jason J. Herne <hernejj@gmail.com>  Mon, 15 Feb 2016 15:04:00 -0500
+ 
+vizigrep (1.1-1) unstable; urgency=low
+    * Colorize background for alternating output rows
+    * Improved handling of special chars in regex and search path strings
+    * Folder dialog remembers last chosen path & defaults to user's home
+    * Bugfix: Display error messages directly from grep stderr
+    * Better unit test coverage
+ -- Jason J. Herne <hernejj@gmail.com>  Mon, 15 Feb 2016 09:24:33 -0500
+
+vizigrep (1.0-1) unstable; urgency=low
+    * Initial release (Closes: #702990)
+ -- Jason J. Herne <hernejj@gmail.com>  Sat, 02 Mar 2013 20:05:12 -0500

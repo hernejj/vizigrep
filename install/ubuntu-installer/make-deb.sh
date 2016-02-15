@@ -22,6 +22,9 @@ tar -zxf $PROGRAM_NAME'_'$VERSION.orig.tar.gz
 # Inject debian build specific files
 cp -a debian $PKG_TREE_NAME/
 
+# Inject debian compatable changelog
+cp -a $SRC_DIR/changelog $PKG_TREE_NAME/debian/
+
 # Build!
 cd $PKG_TREE_NAME/
 debuild

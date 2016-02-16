@@ -235,6 +235,10 @@ class ViziGrepWindow(Window):
         self.lbl_files.set_text(str(results.unique_fns()))
         txtbuf.set_text(rstr)
         self.apply_tags(txtbuf, rstr, taglist)
+        
+        # Tab text
+        tabText = self.cbox_search.get_active_text() + " : " + Path.pretty(self.cbox_path.get_active_text())
+        self.setTabText(tabText)
 
     def escape_regex_str(self, regex):
         if '\\' in regex: 
@@ -408,6 +412,7 @@ class ViziGrepWindow(Window):
         scrollWin = Gtk.ScrolledWindow()
         scrollWin.add(newTextView)
         self.notebook.append_page(scrollWin)
+        self.setTabText("[New tab]", scrollWin)
     
         # Signal handlers
         newTextView.connect('button-press-event', self.results_clicked)
@@ -420,7 +425,12 @@ class ViziGrepWindow(Window):
             del self.resultsDict[key]
         self.notebook.remove_page(self.notebook.get_current_page())
 
-
+    def setTabText(self, text, child=None):
+        if not child:
+            tabIdx = self.notebook.get_current_page()
+            child = self.notebook.get_nth_page(tabIdx)
+        self.notebook.set_tab_label_text(child, text)
+        
     def getActiveTextView(self):
         tabIdx = self.notebook.get_current_page()
         scrollWin = self.notebook.get_nth_page(tabIdx)

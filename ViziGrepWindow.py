@@ -29,6 +29,7 @@ class ViziGrepWindow(Window):
 
         self.gtk_window.connect('delete_event', self.close)
         self.gtk_window.connect('key-press-event', self.win_keypress)
+        self.notebook.connect('switch-page', self.switched_tab)
         self.btn_search.connect('clicked', self.btn_search_clicked)
         self.lbl_path.connect('activate-link', self.lbl_path_clicked)
         self.lbl_options.connect('activate-link', self.options_clicked)
@@ -265,14 +266,21 @@ class ViziGrepWindow(Window):
                     taglist.append( (lineStartIdx, lineLength, tag_bg1) )
             lineNum+=1
             
-        self.lbl_matches.set_text(str(len(results)))
-        self.lbl_files.set_text(str(results.unique_fns()))
+        self.set_result_status(results)
         txtbuf.set_text(rstr)
         self.apply_tags(txtbuf, rstr, taglist)
         
         # Tab text
         tabText = self.cbox_search.get_active_text() + " : " + Path.pretty(self.cbox_path.get_active_text())
         self.setTabText(tabText)
+
+    def set_result_status(self, results):
+        if results:
+            self.lbl_matches.set_text(str(len(results)))
+            self.lbl_files.set_text(str(results.unique_fns()))
+        else:
+            self.lbl_matches.set_text('')
+            self.lbl_files.set_text('')
 
     def escape_regex_str(self, regex):
         if '\\' in regex: 
@@ -434,6 +442,15 @@ class ViziGrepWindow(Window):
     def close_tab_clicked(self, lbl):
         self.deleteActiveTab()
         return True #Prevents attempted activation of link button's URI
+    
+    def switched_tab(self, notebook, junkPagePtr, pageIdx):
+        key = notebook.get_nth_page(pageIdx).get_child().get_buffer()
+
+        if key in self.resultsDict:
+            results = self.resultsDict[key]
+        else:
+            results = None
+        self.set_result_status(results)
     
     ### Tabs ###
     

@@ -422,6 +422,7 @@ class ViziGrepWindow(Window):
         
     def options_clicked(self, lbl):
         PreferencesWindow(self.app).activate()
+        return True #Prevents attempted activation of link button's URI
     
     def new_tab_clicked(self, lbl):
         self.initNewTab()

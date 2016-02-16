@@ -458,7 +458,11 @@ class ViziGrepWindow(Window):
         key = self.getActiveTextBuffer()
         if key in self.resultsDict:
             del self.resultsDict[key]
-        self.notebook.remove_page(self.notebook.get_current_page())
+                
+        if self.notebook.get_n_pages() == 1:
+            self.clear_results()
+        else:
+            self.notebook.remove_page(self.notebook.get_current_page())
 
     def setTabText(self, text, child=None):
         if not child:

@@ -1,4 +1,5 @@
 vizigrep (1.2-1) unstable; urgency=low
+    * Add tabbed interface for displaying multiple search results
     * bugfix: Properly handle parenthesis when matching and displaying
  -- Jason J. Herne <hernejj@gmail.com>  Mon, 15 Feb 2016 15:04:00 -0500
  

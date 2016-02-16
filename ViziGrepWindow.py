@@ -22,7 +22,7 @@ class ViziGrepWindow(Window):
         Window.__init__(self, app, self.gtk_builder_file, self.window_name) # FIXME: Switch to using guiapp function fo remembering window size/position
         self.app = app
         self.prefs = app.prefs
-        self.results = []
+        self.resultsDict = {}
         self.ge = GrepEngine()
         self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         self.ge.exclude_files = self.prefs.get('exclude-files')
@@ -156,7 +156,8 @@ class ViziGrepWindow(Window):
         self.notebook.set_sensitive(True)
             
     def set_results(self, results, string):
-        self.results = results
+        key = self.getActiveTextBuffer()
+        self.resultsDict[key] = results
         
         txtbuf = self.getActiveTextBuffer()
         tag_link = txtbuf.get_tag_table().lookup('link')
@@ -327,7 +328,10 @@ class ViziGrepWindow(Window):
             return True
 
     def activate_result(self, txtview, itr):
-        result = self.results[itr.get_line()]
+        key = self.getActiveTextBuffer()
+        results = self.resultsDict[key]
+        result = results[itr.get_line()]
+        
         for tag in itr.get_tags():
             if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)

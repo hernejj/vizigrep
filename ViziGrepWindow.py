@@ -46,6 +46,8 @@ class ViziGrepWindow(Window):
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
                                     self.cbox_search, self.cbox_path, self.txt_results]
 
+        self.initNotebook()
+
     # GtkComboBoxes have an internal GtkToggleButton widget that accepts focus. This is 
     # quite annoying to a user trying to navigate via keyboard so we disable it's focus.
     def cbox_disable_togglebutton_focus(self, widget, data):
@@ -375,3 +377,10 @@ class ViziGrepWindow(Window):
         
     def options_clicked(self, lbl):
         PreferencesWindow(self.app).activate()
+
+    ### Tabs ###
+    
+    def initNotebook(self):
+        # Notebooks contain 3 built-in tabs by default. Remove all but 1st one.
+        while self.notebook.get_n_pages() > 1:
+            self.notebook.remove_page(-1)

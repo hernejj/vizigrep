@@ -27,11 +27,6 @@ class ViziGrepWindow(Window):
         self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         self.ge.exclude_files = self.prefs.get('exclude-files')
 
-        self.createTags(self.getActiveTextBuffer())
-        self.getActiveTextView().connect('button-press-event', self.results_clicked)
-        self.getActiveTextView().connect('motion-notify-event', self.results_mouse_motion)
-        self.getActiveTextView().connect('key-press-event', self.results_keypress)
-
         self.gtk_window.connect('delete_event', self.close)
         self.btn_search.connect('clicked', self.btn_search_clicked)
         self.lbl_path.connect('activate-link', self.lbl_path_clicked)
@@ -47,6 +42,7 @@ class ViziGrepWindow(Window):
                                     self.cbox_search, self.cbox_path, self.getActiveTextView()]
 
         self.initNotebook()
+        self.initNewTab()
 
     # GtkComboBoxes have an internal GtkToggleButton widget that accepts focus. This is 
     # quite annoying to a user trying to navigate via keyboard so we disable it's focus.
@@ -381,9 +377,22 @@ class ViziGrepWindow(Window):
     ### Tabs ###
     
     def initNotebook(self):
-        # Notebooks contain 3 built-in tabs by default. Remove all but 1st one.
-        while self.notebook.get_n_pages() > 1:
+        # Notebooks contain 3 built-in tabs by default. Remove all of them.
+        while self.notebook.get_n_pages() > 0:
             self.notebook.remove_page(-1)
+        
+    def initNewTab(self):
+        newTextView = Gtk.TextView()
+        self.createTags( newTextView.get_buffer() )
+        
+        scrollWin = Gtk.ScrolledWindow()
+        scrollWin.add(newTextView)
+        self.notebook.append_page(scrollWin)
+    
+        # Signal handlers
+        newTextView.connect('button-press-event', self.results_clicked)
+        newTextView.connect('motion-notify-event', self.results_mouse_motion)
+        newTextView.connect('key-press-event', self.results_keypress)
 
     def getActiveTextView(self):
         tabIdx = self.notebook.get_current_page()

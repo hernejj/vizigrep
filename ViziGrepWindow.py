@@ -57,7 +57,6 @@ class ViziGrepWindow(Window):
     def activate(self):
         self.reload_search_box()
         self.reload_path_box()
-        self.clear_results()
         self.chk_case.set_active(self.prefs.get('case-sensitive'))
         self.cbox_search.get_child().grab_focus()
         self.gtk_window.show_all()

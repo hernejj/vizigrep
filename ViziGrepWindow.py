@@ -27,14 +27,14 @@ class ViziGrepWindow(Window):
         self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         self.ge.exclude_files = self.prefs.get('exclude-files')
 
-        self.createTags(self.txt_results.get_buffer())
+        self.createTags(self.getActiveTextBuffer())
+        self.getActiveTextView().connect('button-press-event', self.results_clicked)
+        self.getActiveTextView().connect('motion-notify-event', self.results_mouse_motion)
+        self.getActiveTextView().connect('key-press-event', self.results_keypress)
 
         self.gtk_window.connect('delete_event', self.close)
         self.btn_search.connect('clicked', self.btn_search_clicked)
-        self.txt_results.connect('button-press-event', self.results_clicked)
         self.lbl_path.connect('activate-link', self.lbl_path_clicked)
-        self.txt_results.connect('motion-notify-event', self.results_mouse_motion)
-        self.txt_results.connect('key-press-event', self.results_keypress)
         self.lbl_options.connect('activate-link', self.options_clicked)
         
         (win_width, win_height) = self.prefs.get('window-size')
@@ -44,7 +44,7 @@ class ViziGrepWindow(Window):
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
-                                    self.cbox_search, self.cbox_path, self.txt_results]
+                                    self.cbox_search, self.cbox_path, self.getActiveTextView()]
 
         self.initNotebook()
 
@@ -92,7 +92,7 @@ class ViziGrepWindow(Window):
 
     def btn_search_clicked(self, data):
         self.clear_results()
-        txtbuf = self.txt_results.get_buffer()
+        txtbuf = self.getActiveTextBuffer()
         string = self.cbox_search.get_active_text()
         
         path = Path.pretty(self.cbox_path.get_active_text())
@@ -132,7 +132,7 @@ class ViziGrepWindow(Window):
             self.add_path_history(path)
             self.add_search_history(string)
         else:
-            txtbuf = self.txt_results.get_buffer()
+            txtbuf = self.getActiveTextBuffer()
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)
             elif isinstance(exception, NoResultsException):
@@ -157,7 +157,7 @@ class ViziGrepWindow(Window):
     def set_results(self, results, string):
         self.results = results
         
-        txtbuf = self.txt_results.get_buffer()
+        txtbuf = self.getActiveTextBuffer()
         tag_link = txtbuf.get_tag_table().lookup('link')
         tag_red = txtbuf.get_tag_table().lookup('red')
         tag_green = txtbuf.get_tag_table().lookup('green')
@@ -253,7 +253,7 @@ class ViziGrepWindow(Window):
             txtbuf.apply_tag(tag, sitr, eitr)
         
     def clear_results(self):
-        self.txt_results.get_buffer().set_text('')
+        self.getActiveTextBuffer().set_text('')
         self.lbl_matches.set_text('')
         self.lbl_files.set_text('')
         
@@ -311,26 +311,26 @@ class ViziGrepWindow(Window):
         if (event_button.button != 1): return False
         (cx, cy) = txtview.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, event_button.x, event_button.y)
         itr = txtview.get_iter_at_location(cx, cy)
-        link_activated = self.activate_result(itr)
+        link_activated = self.activate_result(txtview, itr)
        
         if not link_activated:
-            self.txt_results.grab_focus()
+            txtview.grab_focus()
         return True
 
     def results_keypress(self, txtview, event_key):
         if Gdk.keyval_name(event_key.keyval) in ["Return", "KP_Enter"]:
-            txtbuf = self.txt_results.get_buffer()
+            txtbuf = txtview.get_buffer()
             txt = txtbuf.get_text(txtbuf.get_start_iter(), txtbuf.get_end_iter(), False)
             itr = txtbuf.get_iter_at_mark( txtbuf.get_insert() )
-            self.activate_result(itr)
+            self.activate_result(txtview, itr)
             return True
 
-    def activate_result(self, itr):
+    def activate_result(self, txtview, itr):
         result = self.results[itr.get_line()]
         for tag in itr.get_tags():
             if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
-                filename = self.txt_results.get_buffer().get_text(itr, itr_end, False)
+                filename = txtview.get_buffer().get_text(itr, itr_end, False)
                 filename = os.path.join(self.last_search_path, filename)
                 filename= Path.full(filename)
                 
@@ -358,7 +358,7 @@ class ViziGrepWindow(Window):
                 cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
                 break
 
-        self.txt_results.get_window(Gtk.TextWindowType.TEXT).set_cursor(cursor)
+        txtview.get_window(Gtk.TextWindowType.TEXT).set_cursor(cursor)
         return False
 
     # Locate start/end of tag at given iterator
@@ -384,3 +384,11 @@ class ViziGrepWindow(Window):
         # Notebooks contain 3 built-in tabs by default. Remove all but 1st one.
         while self.notebook.get_n_pages() > 1:
             self.notebook.remove_page(-1)
+
+    def getActiveTextView(self):
+        tabIdx = self.notebook.get_current_page()
+        scrollWin = self.notebook.get_nth_page(tabIdx)
+        return scrollWin.get_child()
+        
+    def getActiveTextBuffer(self):
+        return self.getActiveTextView().get_buffer()

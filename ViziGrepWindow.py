@@ -27,13 +27,8 @@ class ViziGrepWindow(Window):
         self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         self.ge.exclude_files = self.prefs.get('exclude-files')
 
-        txtbuf = self.txt_results.get_buffer()
-        self.tag_fixed = txtbuf.create_tag("fixed", family="Monospace")
-        self.tag_link = txtbuf.create_tag("link", foreground="Blue")
-        self.tag_red = txtbuf.create_tag("color", foreground="Red")
-        self.tag_green = txtbuf.create_tag("green", foreground="Dark Green")
-        self.tag_bg1 = txtbuf.create_tag("bg1", background="#DDDDDD")
-        
+        self.createTags(self.txt_results.get_buffer())
+
         self.gtk_window.connect('delete_event', self.close)
         self.btn_search.connect('clicked', self.btn_search_clicked)
         self.txt_results.connect('button-press-event', self.results_clicked)
@@ -70,7 +65,14 @@ class ViziGrepWindow(Window):
         self.prefs.set('case-sensitive', self.chk_case.get_active())
         self.prefs.write_prefs()
         Gtk.main_quit()
-    
+
+    def createTags(self, txtbuf):
+        txtbuf.create_tag("fixed", family="Monospace")
+        txtbuf.create_tag("link", foreground="Blue")
+        txtbuf.create_tag("red", foreground="Red")
+        txtbuf.create_tag("green", foreground="Dark Green")
+        txtbuf.create_tag("bg1", background="#DDDDDD")
+
     def lbl_path_clicked(self, lbl):
         btns = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         dialog = Gtk.FileChooserDialog('Choose a folder', self.win_main, Gtk.FileChooserAction.SELECT_FOLDER, btns)
@@ -152,7 +154,13 @@ class ViziGrepWindow(Window):
             
     def set_results(self, results, string):
         self.results = results
+        
         txtbuf = self.txt_results.get_buffer()
+        tag_link = txtbuf.get_tag_table().lookup('link')
+        tag_red = txtbuf.get_tag_table().lookup('red')
+        tag_green = txtbuf.get_tag_table().lookup('green')
+        tag_bg1 = txtbuf.get_tag_table().lookup('bg1')
+
         max_fnlen = results.max_fnlen()
         max_lnlen = results.max_lnlen()
         max_txtlen = results.max_txtlen()
@@ -170,7 +178,7 @@ class ViziGrepWindow(Window):
             lineStartIdx = len(rstr)
             
             # File name
-            taglist.append( (len(rstr), len(r.fn), self.tag_link) )
+            taglist.append( (len(rstr), len(r.fn), tag_link) )
             rstr += r.fn
             
             # Spaces to pad out filename
@@ -182,7 +190,7 @@ class ViziGrepWindow(Window):
         
             # Line number and : 
             if (self.prefs.get('show-line-numbers')):
-                taglist.append( (len(rstr), len(r.linenum), self.tag_green) )
+                taglist.append( (len(rstr), len(r.linenum), tag_green) )
                 rstr += r.linenum
                 if max_lnlen > len(r.linenum):
                     rstr += " "*(max_lnlen-len(r.linenum))
@@ -198,7 +206,7 @@ class ViziGrepWindow(Window):
                 matched_text = m.group()
                 (prematch, match, postmatch) = r.str.partition(matched_text)
                 rstr += prematch
-                taglist.append( (len(rstr), len(matched_text), self.tag_red) )
+                taglist.append( (len(rstr), len(matched_text), tag_red) )
                 rstr += matched_text
                 rstr += postmatch
             else:
@@ -214,7 +222,7 @@ class ViziGrepWindow(Window):
             lineLength = len(rstr) - lineStartIdx - 1
             if (self.prefs.get('alternate-row-color')):
                 if (lineNum % 2 == 1):
-                    taglist.append( (lineStartIdx, lineLength, self.tag_bg1) )
+                    taglist.append( (lineStartIdx, lineLength, tag_bg1) )
             lineNum+=1
             
         self.lbl_matches.set_text(str(len(results)))
@@ -233,7 +241,9 @@ class ViziGrepWindow(Window):
         return regex
     
     def apply_tags(self, txtbuf, rstr, taglist):
-        txtbuf.apply_tag(self.tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
+        tag_fixed = txtbuf.get_tag_table().lookup('fixed')
+        
+        txtbuf.apply_tag(tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
         for tagtuple in taglist:
             (sidx, length, tag) = tagtuple
             sitr = txtbuf.get_iter_at_offset(sidx)
@@ -316,7 +326,7 @@ class ViziGrepWindow(Window):
     def activate_result(self, itr):
         result = self.results[itr.get_line()]
         for tag in itr.get_tags():
-            if tag == self.tag_link:
+            if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = self.txt_results.get_buffer().get_text(itr, itr_end, False)
                 filename = os.path.join(self.last_search_path, filename)
@@ -342,7 +352,7 @@ class ViziGrepWindow(Window):
 
         cursor = Gdk.Cursor(Gdk.CursorType.XTERM)
         for tag in itr.get_tags():
-            if tag == self.tag_link:
+            if tag.get_property('name') == 'link':
                 cursor = Gdk.Cursor(Gdk.CursorType.HAND2)
                 break
 

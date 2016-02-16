@@ -28,6 +28,7 @@ class ViziGrepWindow(Window):
         self.ge.exclude_files = self.prefs.get('exclude-files')
 
         self.gtk_window.connect('delete_event', self.close)
+        self.gtk_window.connect('key-press-event', self.win_keypress)
         self.btn_search.connect('clicked', self.btn_search_clicked)
         self.lbl_path.connect('activate-link', self.lbl_path_clicked)
         self.lbl_options.connect('activate-link', self.options_clicked)
@@ -42,6 +43,7 @@ class ViziGrepWindow(Window):
         
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
                                     self.cbox_search, self.cbox_path, self.lbl_new_tab, self.lbl_close_tab]
+        self.enabled = True
         
         self.initNotebook()
         self.initNewTab()
@@ -72,7 +74,38 @@ class ViziGrepWindow(Window):
         txtbuf.create_tag("red", foreground="Red")
         txtbuf.create_tag("green", foreground="Dark Green")
         txtbuf.create_tag("bg1", background="#DDDDDD")
-
+    
+    # Returns 1 if the 1-key constant is given as input (Gdk.KEY_1, Gdk.KEY_2, etc).
+    # Returns 10 for Gdk.KEY_0.
+    # Returns None if constant given is not recognized as being a Gdk number key constant
+    def __GdkNumKey2Int(self, gdkKeyConst):
+        rv = gdkKeyConst - 48
+        if (rv < 1) or (rv > 10):
+            return None
+        return rv
+    
+    def win_keypress(self, win, kb_event):
+        # If we're disabled because we're searching, ignore keypress events
+        if (not self.enabled): return True
+        
+        # Control is held
+        if kb_event.state & Gdk.ModifierType.CONTROL_MASK:
+            if kb_event.keyval == Gdk.KEY_t:
+                self.initNewTab()
+                self.notebook.show_all()
+                return True
+            if kb_event.keyval == Gdk.KEY_w:
+                self.deleteActiveTab()
+                return True
+        # Alt is held
+        if kb_event.state & Gdk.ModifierType.MOD1_MASK:
+            # If a number key was pressed, switch to corresponding tab
+            numberPressed = self.__GdkNumKey2Int(kb_event.keyval)
+            if numberPressed:
+                self.notebook.set_current_page(numberPressed-1)
+                return True
+        return False
+    
     def lbl_path_clicked(self, lbl):
         btns = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         dialog = Gtk.FileChooserDialog('Choose a folder', self.win_main, Gtk.FileChooserAction.SELECT_FOLDER, btns)
@@ -145,6 +178,7 @@ class ViziGrepWindow(Window):
         self.enable_all()
 
     def disable_all(self):
+        self.enabled = False
         for widget in self.deactivate_on_search:
             widget.set_sensitive(False)
         self.getActiveTextView().set_sensitive(False)
@@ -152,6 +186,7 @@ class ViziGrepWindow(Window):
         
             
     def enable_all(self):
+        self.enabled = True
         for widget in self.deactivate_on_search:
             widget.set_sensitive(True)
         self.getActiveTextView().set_sensitive(True)

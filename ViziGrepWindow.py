@@ -31,7 +31,9 @@ class ViziGrepWindow(Window):
         self.btn_search.connect('clicked', self.btn_search_clicked)
         self.lbl_path.connect('activate-link', self.lbl_path_clicked)
         self.lbl_options.connect('activate-link', self.options_clicked)
-        
+        self.lbl_new_tab.connect('activate-link', self.new_tab_clicked)
+        self.lbl_close_tab.connect('activate-link', self.close_tab_clicked)
+         
         (win_width, win_height) = self.prefs.get('window-size')
         self.win_main.resize(win_width,win_height)
         
@@ -39,8 +41,8 @@ class ViziGrepWindow(Window):
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
-                                    self.cbox_search, self.cbox_path]
-
+                                    self.cbox_search, self.cbox_path, self.lbl_new_tab, self.lbl_close_tab]
+        
         self.initNotebook()
         self.initNewTab()
 
@@ -382,7 +384,16 @@ class ViziGrepWindow(Window):
         
     def options_clicked(self, lbl):
         PreferencesWindow(self.app).activate()
-
+    
+    def new_tab_clicked(self, lbl):
+        self.initNewTab()
+        self.notebook.show_all()
+        return True #Prevents attempted activation of link button's URI
+    
+    def close_tab_clicked(self, lbl):
+        self.deleteActiveTab()
+        return True #Prevents attempted activation of link button's URI
+    
     ### Tabs ###
     
     def initNotebook(self):
@@ -402,6 +413,13 @@ class ViziGrepWindow(Window):
         newTextView.connect('button-press-event', self.results_clicked)
         newTextView.connect('motion-notify-event', self.results_mouse_motion)
         newTextView.connect('key-press-event', self.results_keypress)
+
+    def deleteActiveTab(self):
+        key = self.getActiveTextBuffer()
+        if key in self.resultsDict:
+            del self.resultsDict[key]
+        self.notebook.remove_page(self.notebook.get_current_page())
+
 
     def getActiveTextView(self):
         tabIdx = self.notebook.get_current_page()

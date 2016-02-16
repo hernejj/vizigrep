@@ -39,7 +39,7 @@ class ViziGrepWindow(Window):
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
-                                    self.cbox_search, self.cbox_path, self.getActiveTextView()]
+                                    self.cbox_search, self.cbox_path]
 
         self.initNotebook()
         self.initNewTab()
@@ -145,10 +145,15 @@ class ViziGrepWindow(Window):
     def disable_all(self):
         for widget in self.deactivate_on_search:
             widget.set_sensitive(False)
+        self.getActiveTextView().set_sensitive(False)
+        self.notebook.set_sensitive(False)
+        
             
     def enable_all(self):
         for widget in self.deactivate_on_search:
             widget.set_sensitive(True)
+        self.getActiveTextView().set_sensitive(True)
+        self.notebook.set_sensitive(True)
             
     def set_results(self, results, string):
         self.results = results

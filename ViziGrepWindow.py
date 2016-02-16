@@ -369,6 +369,8 @@ class ViziGrepWindow(Window):
 
     def activate_result(self, txtview, itr):
         key = self.getActiveTextBuffer()
+        if not key in self.resultsDict:
+            return False
         results = self.resultsDict[key]
         result = results[itr.get_line()]
         

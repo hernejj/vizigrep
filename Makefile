@@ -10,6 +10,7 @@ install:
 	mkdir -p $(MANDIR)
 	mkdir -p $(SHAREDIR)
 	mkdir -p $(APPSDIR)
+	mkdir -p $(DOCDIR)
 	cp  *.py $(SHAREDIR)/
 	cp -r guiapp $(SHAREDIR)/
 	cp -r ui $(SHAREDIR)/

@@ -15,7 +15,6 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_installdirs
 	$(MAKE) DESTDIR=$(CURDIR)/debian/vizigrep install
 binary-arch:
 binary-indep: build install

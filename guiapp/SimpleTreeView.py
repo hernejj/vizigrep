@@ -1,5 +1,3 @@
-from gi.repository import Gtk, Gdk, GObject
-
 class SimpleTreeView:
 
     def __init__(self, gtkTreeView):

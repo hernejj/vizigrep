@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import time
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, GObject
 
 # This class provides a clean and easy to use interface for displaying simple
 # message boxes to the user and getting a button-clicked type response. It can be

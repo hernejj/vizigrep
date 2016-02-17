@@ -31,3 +31,13 @@ Things to do to make a release
    cd install/ubuntu-installer/
    rm v1.2.tar.gz
    ./make-deb.sh
+   
+
+Update a release tag
+-----------------------
+If you messed up and need to delete and update a release tag:
+
+git tag -d v1.2
+git push origin :refs/tags/v1.2
+
+Now just re-add the tag when you are ready.

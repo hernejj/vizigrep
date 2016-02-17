@@ -1,20 +1,15 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
 build: build-arch build-indep
-build-arch: build-stamp
+build-arch:
 build-indep: build-stamp
-build-stamp: configure-stamp
+build-stamp:
 	dh_testdir
 	$(MAKE)
 	touch $@
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp configure-stamp
 	dh_clean
 install: build
 	dh_testdir
@@ -22,8 +17,7 @@ install: build
 	dh_prep
 	dh_installdirs
 	$(MAKE) DESTDIR=$(CURDIR)/debian/vizigrep install
-binary-arch: build install
-	# emptyness
+binary-arch:
 binary-indep: build install
 	dh_testdir
 	dh_testroot

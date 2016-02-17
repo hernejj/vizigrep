@@ -19,6 +19,7 @@ install:
 	cp vizigrep.svg $(SHAREDIR)/
 	cp vizigrep.desktop $(APPSDIR)/
 	cp changelog $(DOCDIR)/
+	cp copyright.txt $(DOCDIR)/
 uninstall:
 	rm -rf $(SHAREDIR)
 	rm -f $(BINDIR)/vizigrep

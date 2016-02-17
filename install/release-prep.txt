@@ -1,0 +1,31 @@
+Things to do to make a release
+--------------------------------
+1. Update man page (line 1) with current month, year and version number
+
+2. Update .version with correction version number
+
+3. Test release:
+
+    3a. Create fake vx.y source tar.gz file.
+        tar -zcf /tmp/v1.2.tar.gz ./vizigrep
+        cp /tmp/v1.2.tar.gz ./vizigrep/install/ubuntu-installer/
+    
+    3b. Create test deb.
+        cd install/ubuntu-installer/
+        ./make-deb.sh
+    
+    3c. Install and test install/ubuntu-installer/deb/vizigrep_____.deb
+
+4. Ensure install/ubuntu-installer/debian/changelog is up to date and contains
+   a section for the new release
+   
+5. Commit the above changes, tag release and push to Github.
+   git commit -a -m'Release v1.2'
+   git tag v1.2
+   git push
+   git push origin --tags
+
+6. Make deb install data
+   cd install/ubuntu-installer/
+   rm v1.2.tar.gz
+   ./make-deb.sh

@@ -52,7 +52,6 @@ class PreferencesWindow(Window):
             self.txt_editor_custom.set_text(editor)
     
     def save_editor(self):
-        use_default_editor = self.rad_editor_default.get_active()
         custom_editor_cmd  = self.txt_editor_custom.get_text().strip()
         
         if self.rad_editor_default.get_active() or len(custom_editor_cmd) == 0:

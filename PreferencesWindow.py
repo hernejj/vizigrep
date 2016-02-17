@@ -1,5 +1,4 @@
-import os
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from guiapp.Window import Window
 

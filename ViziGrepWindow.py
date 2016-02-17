@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk, GObject
 
 from guiapp.Window import Window
 
-from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, GrepException, BadRegexException
+from GrepEngine import GrepEngine, NoResultsException, GrepException, BadRegexException
 from PreferencesWindow import PreferencesWindow
 import Path
 

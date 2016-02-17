@@ -1,5 +1,4 @@
 import subprocess, os, tempfile
-import sys
 import Path
 
 class NoResultsException(Exception):

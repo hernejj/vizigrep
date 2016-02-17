@@ -32,6 +32,7 @@ cp -a $PKG_TREE_NAME/install/ubuntu-installer/debian $PKG_TREE_NAME/
 
 # Build!
 cd $PKG_TREE_NAME/
+pwd
 debuild
 cd ..
 

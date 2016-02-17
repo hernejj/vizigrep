@@ -108,10 +108,10 @@ class GrepResult():
         self.linenum = linenum
         
     def rel_fn(self, base_path):
-        abs_base_path = os.path.expanduser(search_dir) + '/'
+        abs_base_path = os.path.expanduser(base_path) + '/'
         
         if self.fm.startswith(abs_base_path):
-            return filename.replace(abs_base_path, '')
+            return self.fn.replace(abs_base_path, '')
         else:
             return self.fn
             

@@ -1,5 +1,5 @@
 *.py[cod]
 *~
-install/*.gz
 install/ubuntu-installer/debian/changelog
 install/ubuntu-installer/deb
+install/ubuntu-installer/*.gz

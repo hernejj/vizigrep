@@ -21,7 +21,11 @@ install:
 	cp vizigrep.desktop $(APPSDIR)/
 	cp changelog $(DOCDIR)/
 	cp copyright.txt $(DOCDIR)/
+	cp README $(DOCDIR)/
 uninstall:
 	rm -rf $(SHAREDIR)
+	rm -rf $(DOCDIR)
 	rm -f $(BINDIR)/vizigrep
+	rm -f $(MANDIR)/vizigrep.1
+	rm -f $(APPSDIR)/vizigrep.desktop
 .PHONY: install

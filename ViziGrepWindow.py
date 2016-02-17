@@ -370,7 +370,6 @@ class ViziGrepWindow(Window):
     def results_keypress(self, txtview, event_key):
         if Gdk.keyval_name(event_key.keyval) in ["Return", "KP_Enter"]:
             txtbuf = txtview.get_buffer()
-            txt = txtbuf.get_text(txtbuf.get_start_iter(), txtbuf.get_end_iter(), False)
             itr = txtbuf.get_iter_at_mark( txtbuf.get_insert() )
             self.activate_result(txtview, itr)
             return True

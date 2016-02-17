@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Jason J. Herne <hernejj@gmail.com>
 Build-Depends: debhelper (>= 7), python, dh-python
 X-Python-Version: >= 2.6
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: https://github.com/hernejj/vizigrep
 
 Package: vizigrep

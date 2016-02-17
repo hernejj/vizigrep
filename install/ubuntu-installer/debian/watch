@@ -1,2 +1,2 @@
 version=3
-https://github.com/hernejj/vizigrep/tags .*/v?(\d[\d\.]+)\.tar\.gz
+https://github.com/hernejj/vizigrep/archive .*/v?(\d[\d\.]+)\.tar\.gz

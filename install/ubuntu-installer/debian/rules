@@ -24,7 +24,6 @@ binary-indep: build install
 	dh_installdocs
 	dh_installexamples
 	dh_compress
-	#dh_pysupport
 	dh_python2
 	dh_link
 	dh_fixperms

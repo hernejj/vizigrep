@@ -21,7 +21,7 @@ class GrepEngine:
         
         try:
             argList = ['grep', '-I', '-r', '-n']
-            if case_sensitive:
+            if not case_sensitive:
                 argList.append('-i')
             argList = argList + self.arg_exclude_list()
             argList.append(string)

@@ -1,5 +1,7 @@
 1.3
     * Auto-navigate to new tab upon creation
+    * Bugfix: Improve handling of some special chars
+    * Bugfix: Unreverse case sensitivty matching
 1.2
     * Add tabbed interface for displaying multiple search results
     * bugfix: Properly handle parenthesis when matching and displaying

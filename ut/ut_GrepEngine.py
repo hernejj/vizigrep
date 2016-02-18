@@ -97,7 +97,7 @@ class testCases(unittest.TestCase):
         self.checkResult(results[0], 'FolderA/File2', '@fnclude <stdio.h>', '2')
     
     def testBackslash(self):
-        results = self.ge.grep('fi\le', self.path, 0, True)
+        results = self.ge.grep('fi\\\\le', self.path, 0, True)
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'FolderA/File1', 'fi\le', '4')
         

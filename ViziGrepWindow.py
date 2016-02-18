@@ -91,8 +91,7 @@ class ViziGrepWindow(Window):
         # Control is held
         if kb_event.state & Gdk.ModifierType.CONTROL_MASK:
             if kb_event.keyval == Gdk.KEY_t:
-                self.initNewTab()
-                self.notebook.show_all()
+                self.new_tab_clicked()
                 return True
             if kb_event.keyval == Gdk.KEY_w:
                 self.deleteActiveTab()
@@ -433,9 +432,10 @@ class ViziGrepWindow(Window):
         PreferencesWindow(self.app).activate()
         return True #Prevents attempted activation of link button's URI
     
-    def new_tab_clicked(self, lbl):
-        self.initNewTab()
+    def new_tab_clicked(self, lbl=None):
+        tabIdx = self.initNewTab()
         self.notebook.show_all()
+        self.notebook.set_current_page(tabIdx)
         return True #Prevents attempted activation of link button's URI
     
     def close_tab_clicked(self, lbl):
@@ -464,14 +464,15 @@ class ViziGrepWindow(Window):
         
         scrollWin = Gtk.ScrolledWindow()
         scrollWin.add(newTextView)
-        self.notebook.append_page(scrollWin)
+        tabIdx = self.notebook.append_page(scrollWin)
         self.setTabText("[New tab]", scrollWin)
     
         # Signal handlers
         newTextView.connect('button-press-event', self.results_clicked)
         newTextView.connect('motion-notify-event', self.results_mouse_motion)
         newTextView.connect('key-press-event', self.results_keypress)
-
+        return tabIdx
+        
     def deleteActiveTab(self):
         key = self.getActiveTextBuffer()
         if key in self.resultsDict:

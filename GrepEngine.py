@@ -111,15 +111,7 @@ class GrepResult():
         self.fn = filename
         self.str = result_string
         self.linenum = linenum
-        
-    def rel_fn(self, base_path):
-        abs_base_path = os.path.expanduser(base_path) + '/'
-        
-        if self.fm.startswith(abs_base_path):
-            return self.fn.replace(abs_base_path, '')
-        else:
-            return self.fn
-            
+
 class GrepResults(list):
     def max_fnlen(self):
         maxlen = 0

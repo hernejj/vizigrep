@@ -64,10 +64,6 @@ class GrepEngine:
                 stdErrFile.seek(0)
                 sdterrStr = stdErrFile.read()
                 
-                print "CMD=", e.cmd
-                print "OUTPUT=", e.output
-                print "STDERR=", sdterrStr
-                
                 newE = GrepException()
                 newE.output = sdterrStr
                 raise newE

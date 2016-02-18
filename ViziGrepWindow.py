@@ -19,7 +19,7 @@ class ViziGrepWindow(Window):
     window_name        = "win_main"
 
     def __init__(self, app):
-        Window.__init__(self, app, self.gtk_builder_file, self.window_name) # FIXME: Switch to using guiapp function fo remembering window size/position
+        Window.__init__(self, app, self.gtk_builder_file, self.window_name, True)
         self.app = app
         self.prefs = app.prefs
         self.resultsDict = {}
@@ -36,9 +36,6 @@ class ViziGrepWindow(Window):
         self.lbl_new_tab.connect('activate-link', self.new_tab_clicked)
         self.lbl_close_tab.connect('activate-link', self.close_tab_clicked)
          
-        (win_width, win_height) = self.prefs.get('window-size')
-        self.win_main.resize(win_width,win_height)
-        
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
@@ -63,7 +60,7 @@ class ViziGrepWindow(Window):
         self.gtk_window.show_all()
     
     def close(self, win, event):
-        self.prefs.set('window-size', self.win_main.get_size())
+        self.deactivate()
         self.prefs.set('case-sensitive', self.chk_case.get_active())
         self.prefs.write_prefs()
         Gtk.main_quit()

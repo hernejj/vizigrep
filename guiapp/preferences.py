@@ -14,7 +14,6 @@ class Preferences:
         self.defaults['path-history'] = []
         self.defaults['search-history'] = []
         self.defaults['last-opened-folder'] = '~'
-        self.defaults['window-size'] = (800,600)
         self.defaults['exclude-dirs'] = ['.git', '.svn']
         self.defaults['exclude-files'] = ['*~']
         self.defaults['show-line-numbers'] = True

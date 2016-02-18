@@ -7,7 +7,8 @@ class NoResultsException(Exception):
     pass
 
 class GrepException(Exception):
-    pass
+    def __init__(self, errMsg):
+        self.output = errMsg
 
 class BadRegexException(Exception):
     pass
@@ -21,59 +22,56 @@ class GrepEngine:
         realPath = Path.full(path)
         string = self.check_regex(string)
         
+        # Basic Args
+        argList = ['grep', '-I', '-r', '-n']
+        if not case_sensitive:
+            argList.append('-i')
+        argList = argList + self.arg_exclude_list()
+        
+        # Search string
+        if PATTERN_IN_FILE:
+            (fd, patternFilePath) = tempfile.mkstemp()
+            print patternFilePath
+            patternFile = open(patternFilePath, 'w')
+            patternFile.write(string)
+            patternFile.close()
+            argList.append('--file=%s' % (patternFilePath,))
+        else:
+            argList.append(string)
+        
+        # Path
+        argList.append(realPath)
+            
         try:
-            # Basic Args
-            argList = ['grep', '-I', '-r', '-n']
-            if not case_sensitive:
-                argList.append('-i')
-            argList = argList + self.arg_exclude_list()
-            
-            # Search string
-            if PATTERN_IN_FILE:
-                (fd, patternFilePath) = tempfile.mkstemp()
-                print patternFilePath
-                patternFile = open(patternFilePath, 'w')
-                patternFile.write(string)
-                patternFile.close()
-                argList.append('--file=%s' % (patternFilePath,))
-            else:
-                argList.append(string)
-            
-            # Path
-            argList.append(realPath)
-            
             stdErrFile = tempfile.TemporaryFile()
             o = subprocess.check_output(argList, stderr=stdErrFile)
             o = o.decode('utf-8', 'replace')
-
-            results = GrepResults()
-            for line in o.splitlines():
-                (filename, sep, rest) = line.partition(':')
-                (linenum, sep, text) = rest.partition(':')
-                
-                if (not filename) or (not text) or (not linenum):
-                    continue
-                if (max_matches > 0) and len(results) == max_matches:
-                    break
-                results.append(GrepResult(Path.relativeTo(filename, realPath), text, linenum))
-
-            return results
+            return self.parse_output(o, max_matches, realPath)
             
         except subprocess.CalledProcessError as e:
-            if (e.returncode == 2):
-                stdErrFile.seek(0)
-                sdterrStr = stdErrFile.read()
-                
-                newE = GrepException()
-                newE.output = sdterrStr
-                raise newE
-            elif (e.returncode == 1):
+            if (e.returncode == 1):
                 raise NoResultsException()
+            elif (e.returncode == 2):
+                stdErrFile.seek(0)
+                raise GrepException(stdErrFile.read())
             else:
                 raise e
                 
-    def check_regex(self, regex):
+    def parse_output(self, output, max_matches, searchPath):
+        results = GrepResults()
         
+        for line in output.splitlines():
+            (filename, sep, rest) = line.partition(':')
+            (linenum, sep, text) = rest.partition(':')
+            
+            if (not filename) or (not text) or (not linenum):
+                continue
+            if (max_matches > 0) and len(results) == max_matches:
+                break
+            results.append(GrepResult(Path.relativeTo(filename, searchPath), text, linenum))
+        return results
+    
+    def check_regex(self, regex):
         # Escape funky chars
         if regex.startswith('--'):
             regex = '\-\-' + regex[2:]  # Escape double dashes

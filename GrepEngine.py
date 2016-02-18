@@ -18,35 +18,16 @@ class GrepEngine:
         self.exclude_dirs = []
         self.exclude_files = []
 	
-    def grep(self, string, path, max_matches, case_sensitive):
-        realPath = Path.full(path)
+    def grep(self, string, searchPath, max_matches, case_sensitive):
+        searchPath = Path.full(searchPath)
         string = self.check_regex(string)
+        argList = self.construct_args_list(string, searchPath, case_sensitive)
+        stdErrFile = tempfile.TemporaryFile()
         
-        # Basic Args
-        argList = ['grep', '-I', '-r', '-n']
-        if not case_sensitive:
-            argList.append('-i')
-        argList = argList + self.arg_exclude_list()
-        
-        # Search string
-        if PATTERN_IN_FILE:
-            (fd, patternFilePath) = tempfile.mkstemp()
-            print patternFilePath
-            patternFile = open(patternFilePath, 'w')
-            patternFile.write(string)
-            patternFile.close()
-            argList.append('--file=%s' % (patternFilePath,))
-        else:
-            argList.append(string)
-        
-        # Path
-        argList.append(realPath)
-            
         try:
-            stdErrFile = tempfile.TemporaryFile()
             o = subprocess.check_output(argList, stderr=stdErrFile)
             o = o.decode('utf-8', 'replace')
-            return self.parse_output(o, max_matches, realPath)
+            return self.parse_output(o, max_matches, searchPath)
             
         except subprocess.CalledProcessError as e:
             if (e.returncode == 1):
@@ -56,7 +37,27 @@ class GrepEngine:
                 raise GrepException(stdErrFile.read())
             else:
                 raise e
-                
+    
+    def construct_args_list(self, string, realPath, case_sensitive):
+        argList = ['grep', '-Irn']
+        if not case_sensitive:
+            argList.append('-i')
+        argList = argList + self.arg_exclude_list()
+        
+        # Search string
+        if PATTERN_IN_FILE:
+            (fd, patternFilePath) = tempfile.mkstemp()
+            patternFile = open(patternFilePath, 'w')
+            patternFile.write(string)
+            patternFile.close()
+            argList.append('--file=%s' % (patternFilePath,))
+        else:
+            argList.append(string)
+        
+        # Path
+        argList.append(realPath)
+        return argList
+    
     def parse_output(self, output, max_matches, searchPath):
         results = GrepResults()
         

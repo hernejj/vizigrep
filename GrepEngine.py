@@ -21,28 +21,28 @@ class GrepEngine:
         searchPath = Path.full(searchPath)
         argList = self.construct_args_list(string, searchPath, case_sensitive)
         stdErrFile = tempfile.TemporaryFile()
+        stdOutFile = tempfile.TemporaryFile()
         
-        try:
-            o = subprocess.check_output(argList, stderr=stdErrFile)
-            o = o.decode('utf-8', 'replace')
-            stdErrFile.close()
-            return self.parse_output(o, max_matches, searchPath)
-            
-        except subprocess.CalledProcessError as e:
-            if (e.returncode == 1):
-                stdErrFile.close()
-                raise NoResultsException()
-            elif (e.returncode == 2):
-                stdErrFile.seek(0)
-                errMsg = stdErrFile.read()
-                stdErrFile.close()
-                raise GrepException(errMsg)
-            else:
-                stdErrFile.close()
-                raise e
+        grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
+        grepProc.wait()
+        
+        # Read data from stdout/stderror
+        stdOutFile.seek(0)
+        output = stdOutFile.read().decode('utf-8', 'replace')
+        stdOutFile.close()
+        stdErrFile.seek(0)
+        errMsg = stdErrFile.read()
+        stdErrFile.close()
+        
+        if grepProc.returncode == 1:
+            raise NoResultsException()
+        if grepProc.returncode == 2:
+            raise GrepException(errMsg)
+
+        return self.parse_output(output, max_matches, searchPath)
     
     def construct_args_list(self, string, realPath, case_sensitive):
-        argList = ['grep', '-Irn']
+        argList = ['/bin/grep', '-Irn']
         if not case_sensitive:
             argList.append('-i')
         argList = argList + self.arg_exclude_list()

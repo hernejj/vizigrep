@@ -54,6 +54,7 @@ class GrepEngine:
     
     def parse_output(self, output, max_matches, searchPath):
         results = GrepResults()
+        results.search_path = searchPath
         
         for line in output.splitlines():
             (filename, sep, rest) = line.partition(':')

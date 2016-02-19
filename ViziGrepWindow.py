@@ -124,7 +124,6 @@ class ViziGrepWindow(Window):
         
         path = Path.pretty(self.cbox_path.get_active_text())
         self.cbox_path.get_child().set_text(path)
-        self.last_search_path = path
         
         if not string.strip():
             txtbuf.set_text("You forgot to provide a search string")
@@ -379,7 +378,7 @@ class ViziGrepWindow(Window):
             if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = txtview.get_buffer().get_text(itr, itr_end, False)
-                filename = os.path.join(self.last_search_path, filename)
+                filename = os.path.join(results.search_path, filename)
                 filename= Path.full(filename)
                 
                 cmdList = []

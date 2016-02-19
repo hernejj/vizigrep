@@ -27,15 +27,20 @@ class GrepEngine:
         try:
             o = subprocess.check_output(argList, stderr=stdErrFile)
             o = o.decode('utf-8', 'replace')
+            stdErrFile.close()
             return self.parse_output(o, max_matches, searchPath)
             
         except subprocess.CalledProcessError as e:
             if (e.returncode == 1):
+                stdErrFile.close()
                 raise NoResultsException()
             elif (e.returncode == 2):
                 stdErrFile.seek(0)
-                raise GrepException(stdErrFile.read())
+                errMsg = stdErrFile.read()
+                stdErrFile.close()
+                raise GrepException(errMsg)
             else:
+                stdErrFile.close()
                 raise e
     
     def construct_args_list(self, string, realPath, case_sensitive):

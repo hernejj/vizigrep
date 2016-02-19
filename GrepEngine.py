@@ -39,7 +39,7 @@ class GrepEngine:
         if grepProc.returncode == 2:
             raise GrepException(errMsg)
 
-        return self.parse_output(output, max_matches, searchPath)
+        return self.parse_output(output, max_matches, searchPath, string)
     
     def construct_args_list(self, string, realPath, case_sensitive):
         argList = ['/bin/grep', '-Irn']
@@ -52,9 +52,10 @@ class GrepEngine:
         argList.append(realPath)
         return argList
     
-    def parse_output(self, output, max_matches, searchPath):
+    def parse_output(self, output, max_matches, searchPath, searchString):
         results = GrepResults()
         results.search_path = searchPath
+        results.search_string = searchString
         
         for line in output.splitlines():
             (filename, sep, rest) = line.partition(':')

@@ -146,17 +146,17 @@ class ViziGrepWindow(Window):
         except Exception as e:
             results = None
             ex = e
-        GObject.idle_add(donefn, string, path, results, ex)
+        GObject.idle_add(donefn, results, ex)
         
-    def grep_thread_done(self, string, path, results, exception):
+    def grep_thread_done(self, results, exception):
         if results:
             try:
-                self.set_results(results, string)
+                self.set_results(results)
             except Exception as e:
                 print type(e)
                 print traceback.format_exc()
-            self.add_path_history(path)
-            self.add_search_history(string)
+            self.add_path_history(results.search_path)
+            self.add_search_history(results.search_string)
         else:
             txtbuf = self.getActiveTextBuffer()
             if isinstance(exception, GrepException):
@@ -187,7 +187,7 @@ class ViziGrepWindow(Window):
         self.getActiveTextView().set_sensitive(True)
         self.notebook.set_sensitive(True)
             
-    def set_results(self, results, string):
+    def set_results(self, results):
         key = self.getActiveTextBuffer()
         self.resultsDict[key] = results
         
@@ -208,7 +208,7 @@ class ViziGrepWindow(Window):
         if (self.prefs.get('show-line-numbers')):
             max_linelen += max_lnlen + 1
         
-        string = self.escape_regex_str(string)
+        string = self.escape_regex_str(results.search_string)
         lineNum = 1
         for r in results:
             lineStartIdx = len(rstr)
@@ -266,7 +266,7 @@ class ViziGrepWindow(Window):
         self.apply_tags(txtbuf, rstr, taglist)
         
         # Tab text
-        tabText = self.cbox_search.get_active_text() + " : " + Path.pretty(self.cbox_path.get_active_text())
+        tabText = self.cbox_search.get_active_text() + " : " + Path.pretty(results.search_path)
         self.setTabText(tabText)
 
     def set_result_status(self, results):

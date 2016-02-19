@@ -19,8 +19,8 @@ class GrepEngine:
         self.exclude_files = []
 	
     def grep(self, string, searchPath, max_matches, case_sensitive):
+        self.check_regex(string)
         searchPath = Path.full(searchPath)
-        string = self.check_regex(string)
         argList = self.construct_args_list(string, searchPath, case_sensitive)
         stdErrFile = tempfile.TemporaryFile()
         
@@ -56,7 +56,9 @@ class GrepEngine:
             patternFile.write(string)
             patternFile.close()
             argList.append('--file=%s' % (patternFilePath,))
+            argList.append('--') # End of - or -- style command options
         else:
+            argList.append('--') # End of - or -- style command options
             argList.append(string)
         
         # Path
@@ -78,12 +80,6 @@ class GrepEngine:
         return results
     
     def check_regex(self, regex):
-        # Escape funky chars
-        if regex.startswith('--'):
-            regex = '\-\-' + regex[2:]  # Escape double dashes
-        if regex.startswith('-'):
-            regex = '\-' + regex[1:]  # Escape single dash
-        
         # Check for invalid regex
         if regex == '':
             raise BadRegexException("Search string is empty")
@@ -95,8 +91,6 @@ class GrepEngine:
             raise BadRegexException("Search string is way too vague")
         if regex.strip() == '.*':
             raise BadRegexException("Search string is way too vague")
-            
-        return regex
     
     def arg_exclude_list(self):
         argList = []

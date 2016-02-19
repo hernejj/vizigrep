@@ -1,8 +1,6 @@
 import subprocess, os, tempfile
 import Path
 
-PATTERN_IN_FILE = False
-
 class NoResultsException(Exception):
     pass
 
@@ -48,20 +46,9 @@ class GrepEngine:
         if not case_sensitive:
             argList.append('-i')
         argList = argList + self.arg_exclude_list()
-        
-        # Search string
-        if PATTERN_IN_FILE:
-            (fd, patternFilePath) = tempfile.mkstemp()
-            patternFile = open(patternFilePath, 'w')
-            patternFile.write(string)
-            patternFile.close()
-            argList.append('--file=%s' % (patternFilePath,))
-            argList.append('--') # End of - or -- style command options
-        else:
-            argList.append('--') # End of - or -- style command options
-            argList.append(string)
-        
-        # Path
+
+        argList.append('--') # End of - or -- style command options
+        argList.append(string)
         argList.append(realPath)
         return argList
     

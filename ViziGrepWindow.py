@@ -385,7 +385,7 @@ class ViziGrepWindow(Window):
         if (event_button.button != 1): return False
         (cx, cy) = txtview.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, event_button.x, event_button.y)
         itr = txtview.get_iter_at_location(cx, cy)
-        link_activated = self.activate_result(txtview, itr)
+        link_activated = self.activate_result(itr)
        
         if not link_activated:
             txtview.grab_focus()
@@ -395,18 +395,17 @@ class ViziGrepWindow(Window):
         if Gdk.keyval_name(event_key.keyval) in ["Return", "KP_Enter"]:
             txtbuf = txtview.get_buffer()
             itr = txtbuf.get_iter_at_mark( txtbuf.get_insert() )
-            self.activate_result(txtview, itr)
+            self.activate_result(itr)
             return True
     
-    # FIXME: Won't need to pass in txtview
-    def activate_result(self, txtview, itr):
+    def activate_result(self, itr):
         tab = self.getActiveTab()
         result = tab.results[itr.get_line()]
         
         for tag in itr.get_tags():
             if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
-                filename = txtview.get_buffer().get_text(itr, itr_end, False)
+                filename = tab.getTextBuffer().get_text(itr, itr_end, False)
                 filename = os.path.join(tab.results.search_path, filename)
                 filename= Path.full(filename)
                 

@@ -405,6 +405,10 @@ class ViziGrepWindow(Window):
     
     def activate_result(self, itr):
         tab = self.getActiveTab()
+        if not tab.results: return True
+
+        if len(tab.results) <= itr.get_line():
+            return True
         result = tab.results[itr.get_line()]
         
         for tag in itr.get_tags():

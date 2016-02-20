@@ -198,7 +198,7 @@ class ViziGrepWindow(Window):
     def grep_thread_done(self, tab, exception):
         if tab.results:
             try:
-                self.set_results(tab.results)
+                self.set_results(tab)
             except Exception as e:
                 print type(e)
                 print traceback.format_exc()
@@ -234,9 +234,8 @@ class ViziGrepWindow(Window):
         self.getActiveTab().getTextView().set_sensitive(True)
         self.notebook.set_sensitive(True)
             
-    def set_results(self, results):
-        tab = self.getActiveTab() # FIXME: Don't assume active! Pass something in here! 
-        tab.results = results
+    def set_results(self, tab):
+        results = tab.results
         
         txtbuf = tab.getTextBuffer()
         tag_link = txtbuf.get_tag_table().lookup('link')

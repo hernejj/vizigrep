@@ -71,6 +71,13 @@ class GrepEngine:
                 continue
             if (max_matches > 0) and len(results) == max_matches:
                 break
+            
+            # Ignore case where we have malformed data in output
+            try:
+                lnstr = int(linenum)
+            except Exception as e:
+                continue
+            
             results.append(GrepResult(Path.relativeTo(filename, searchPath), text, linenum))
         return results
     

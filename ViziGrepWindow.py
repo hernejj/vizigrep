@@ -88,7 +88,6 @@ class ViziGrepWindow(Window):
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
-        self.deactivate_on_search = []
         self.initNotebook()
         self.initNewTab()
 
@@ -178,8 +177,6 @@ class ViziGrepWindow(Window):
         self.add_path_history(path)
         self.add_search_history(string)
         
-        self.disable_all()
-        
         # Pass excludes to tab's grep engine
         tab.ge.exclude_dirs = self.app.prefs.get('exclude-dirs')
         tab.ge.exclude_files = self.app.prefs.get('exclude-files')
@@ -225,16 +222,7 @@ class ViziGrepWindow(Window):
                 print traceback.format_exc()
         tab.setSpinner(False)
         tab.isSearching = False
-        self.enable_all()
 
-    def disable_all(self):
-        for widget in self.deactivate_on_search:
-            widget.set_sensitive(False)
-            
-    def enable_all(self):
-        for widget in self.deactivate_on_search:
-            widget.set_sensitive(True)
-            
     def set_results(self, tab):
         results = tab.results
         

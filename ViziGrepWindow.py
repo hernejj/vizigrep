@@ -21,6 +21,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
         Gtk.ScrolledWindow.__init__(self)
         self.notebook = notebook
         self.results = None
+        self.isSearching = False
         
         newTextView = Gtk.TextView()
         self.createTags(newTextView.get_buffer())
@@ -90,9 +91,7 @@ class ViziGrepWindow(Window):
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
-                                    self.cbox_search, self.cbox_path, self.lbl_close_tab]
-        self.enabled = True
-        
+                                    self.cbox_search, self.cbox_path]
         self.initNotebook()
         self.initNewTab()
 
@@ -127,14 +126,11 @@ class ViziGrepWindow(Window):
     def win_keypress(self, win, kb_event):
         # Control is held
         if kb_event.state & Gdk.ModifierType.CONTROL_MASK:
-            # If we're disabled because we're searching, ignore keypress events
-            if (not self.enabled): return True
-            
             if kb_event.keyval == Gdk.KEY_t:
                 self.new_tab_clicked()
                 return True
             if kb_event.keyval == Gdk.KEY_w:
-                self.deleteActiveTab()
+                self.close_tab_clicked()
                 return True
         # Alt is held
         if kb_event.state & Gdk.ModifierType.MOD1_MASK:
@@ -182,7 +178,8 @@ class ViziGrepWindow(Window):
         # Update Tab label widgets
         tab.setTitleText(string + " : " + path)
         tab.setSpinner(True)
-        
+
+        tab.isSearching = True
         new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done, tab))
         new_thread.start()
 
@@ -217,15 +214,14 @@ class ViziGrepWindow(Window):
                 print type(exception)
                 print traceback.format_exc()
         tab.setSpinner(False)
+        tab.isSearching = False
         self.enable_all()
 
     def disable_all(self):
-        self.enabled = False
         for widget in self.deactivate_on_search:
             widget.set_sensitive(False)
             
     def enable_all(self):
-        self.enabled = True
         for widget in self.deactivate_on_search:
             widget.set_sensitive(True)
             
@@ -466,7 +462,11 @@ class ViziGrepWindow(Window):
         self.notebook.set_current_page(tabIdx)
         return True #Prevents attempted activation of link button's URI
     
-    def close_tab_clicked(self, lbl):
+    def close_tab_clicked(self, lbl=None):
+        tab = self.getActiveTab()
+        if tab.isSearching:
+            self.app.mbox.error("Can't yet delete a tab that is actively searching.")
+            return True
         self.deleteActiveTab()
         return True #Prevents attempted activation of link button's URI
     

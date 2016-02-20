@@ -1,4 +1,4 @@
-import subprocess, os, tempfile
+import subprocess, os, tempfile, time
 import Path
 
 class NoResultsException(Exception):
@@ -25,7 +25,7 @@ class GrepEngine:
         
         grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
         grepProc.wait()
-        
+        time.sleep(5) # FOR TESTING ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # Read data from stdout/stderror
         stdOutFile.seek(0)
         output = stdOutFile.read().decode('utf-8', 'replace')

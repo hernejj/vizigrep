@@ -88,8 +88,7 @@ class ViziGrepWindow(Window):
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
-        self.deactivate_on_search = [self.btn_search, self.lbl_path,
-                                    self.cbox_search, self.cbox_path]
+        self.deactivate_on_search = [self.btn_search, self.lbl_path, self.cbox_path]
         self.initNotebook()
         self.initNewTab()
 
@@ -171,6 +170,9 @@ class ViziGrepWindow(Window):
             self.cbox_path.get_child().grab_focus()
             return True
         
+        self.add_path_history(path)
+        self.add_search_history(string)
+        
         self.disable_all()
         
         # Pass excludes to tab's grep engine
@@ -205,8 +207,6 @@ class ViziGrepWindow(Window):
             except Exception as e:
                 print type(e)
                 print traceback.format_exc()
-            self.add_path_history(tab.results.search_path)
-            self.add_search_history(tab.results.search_string)
         elif exception:
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)

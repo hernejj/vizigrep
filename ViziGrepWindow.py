@@ -8,12 +8,6 @@ from GrepEngine import GrepEngine, NoResultsException, GrepException, BadRegexEx
 from PreferencesWindow import PreferencesWindow
 import Path
 
-class TextTag:
-    def __init_(self, startIdx, length, gtkTag):
-        self.startIdx = startIdx
-        self.length = length
-        self.gtkTag = gtkTag
-
 # This is a scrolledWindow subclass. We add it directly to the notebook in the
 # main window. We subclass it to add helper/convenience functions.
 class VizigrepTab(Gtk.ScrolledWindow):

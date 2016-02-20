@@ -45,6 +45,19 @@ class VizigrepTab(Gtk.ScrolledWindow):
     def getTextBuffer(self):
         return self.get_child().get_buffer()
         
+    def setTitleText(self, text):
+        label = self.notebook.get_tab_label(self).get_children()[0]
+        label.set_text(text)
+        
+    def setSpinner(self, active):
+        spinner = self.notebook.get_tab_label(self).get_children()[1]
+        if active:
+            spinner.show()
+            spinner.start()
+        else:
+            spinner.stop()
+            spinner.hide()
+
     def createTags(self, txtbuf):
         txtbuf.create_tag("fixed", family="Monospace")
         txtbuf.create_tag("link", foreground="Blue")
@@ -149,7 +162,8 @@ class ViziGrepWindow(Window):
 
     def btn_search_clicked(self, data):
         self.clear_results()
-        txtbuf = self.getActiveTab().getTextBuffer()
+        tab = self.getActiveTab()
+        txtbuf = tab.getTextBuffer()
         string = self.cbox_search.get_active_text()
         
         path = Path.pretty(self.cbox_path.get_active_text())
@@ -167,8 +181,8 @@ class ViziGrepWindow(Window):
         self.disable_all()
         
         # Update Tab label widgets
-        self.setTabText(string + " : " + path)
-        self.setTabSpinner(True)
+        tab.setTitleText(string + " : " + path)
+        tab.setSpinner(True)
         
         new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done))
         new_thread.start()
@@ -183,6 +197,7 @@ class ViziGrepWindow(Window):
         GObject.idle_add(donefn, results, ex)
         
     def grep_thread_done(self, results, exception):
+        tab = self.getActiveTab() # FIXME: Don't assume active is what we want! Need to pass the appropriate "something" 
         if results:
             try:
                 self.set_results(results)
@@ -192,7 +207,7 @@ class ViziGrepWindow(Window):
             self.add_path_history(results.search_path)
             self.add_search_history(results.search_string)
         else:
-            txtbuf = self.getActiveTab().getTextBuffer() # FIXME: Don't assume active is what we want! Need to pass the appropriate "something" 
+            txtbuf = tab.getTextBuffer()
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)
             elif isinstance(exception, NoResultsException):
@@ -203,7 +218,7 @@ class ViziGrepWindow(Window):
                 txtbuf.set_text("Unexpected Error: " + str(exception))
                 print type(exception)
                 print traceback.format_exc()
-        self.setTabSpinner(False)
+        tab.setSpinner(False)
         self.enable_all()
 
     def disable_all(self):
@@ -490,27 +505,6 @@ class ViziGrepWindow(Window):
             self.clear_results()
         else:
             self.notebook.remove_page(self.notebook.get_current_page())
-
-    def setTabText(self, text, child=None):
-        if not child:
-            tabIdx = self.notebook.get_current_page()
-            child = self.notebook.get_nth_page(tabIdx)
-        
-        label = self.notebook.get_tab_label(child).get_children()[0]
-        label.set_text(text)
-        
-    def setTabSpinner(self, active, child=None):
-        if not child:
-            tabIdx = self.notebook.get_current_page()
-            child = self.notebook.get_nth_page(tabIdx)
-        
-        spinner = self.notebook.get_tab_label(child).get_children()[1]
-        if active:
-            spinner.show()
-            spinner.start()
-        else:
-            spinner.stop()
-            spinner.hide()
         
     def getActiveTab(self):
         tabIdx = self.notebook.get_current_page()

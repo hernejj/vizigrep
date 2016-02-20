@@ -14,6 +14,43 @@ class TextTag:
         self.length = length
         self.gtkTag = gtkTag
 
+# This is a scrolledWindow subclass. We add it directly to the notebook in the
+# main window. We subclass it to add helper/convenience functions.
+class VizigrepTab(Gtk.ScrolledWindow):
+    def __init__(self, notebook):
+        Gtk.ScrolledWindow.__init__(self)
+        self.notebook = notebook
+        
+        newTextView = Gtk.TextView()
+        self.createTags(newTextView.get_buffer())
+        self.add(newTextView)
+        self.notebook.append_page(self)
+        
+        # Construct tab label and hidden spinner
+        box = Gtk.Box(Gtk.Orientation.HORIZONTAL, spacing=6)
+        label = Gtk.Label('[New tab]')
+        spinner = Gtk.Spinner()
+        self.notebook.set_tab_label(self, box)
+        box.pack_start(label, True, True, 0)
+        box.pack_start(spinner, True, True, 0)
+        box.get_children()[0].show() # Always show label
+    
+    def getIndex(self):
+        return self.notebook.page_num(self)
+    
+    def getTextView(self):
+        return self.get_child()
+    
+    def getTextBuffer(self):
+        return self.get_child().get_buffer()
+        
+    def createTags(self, txtbuf):
+        txtbuf.create_tag("fixed", family="Monospace")
+        txtbuf.create_tag("link", foreground="Blue")
+        txtbuf.create_tag("red", foreground="Red")
+        txtbuf.create_tag("green", foreground="Dark Green")
+        txtbuf.create_tag("bg1", background="#DDDDDD")
+
 class ViziGrepWindow(Window):
     gtk_builder_file   = "ui/vizigrep.glade"
     window_name        = "win_main"
@@ -64,13 +101,6 @@ class ViziGrepWindow(Window):
         self.prefs.set('case-sensitive', self.chk_case.get_active())
         self.prefs.write_prefs()
         Gtk.main_quit()
-
-    def createTags(self, txtbuf):
-        txtbuf.create_tag("fixed", family="Monospace")
-        txtbuf.create_tag("link", foreground="Blue")
-        txtbuf.create_tag("red", foreground="Red")
-        txtbuf.create_tag("green", foreground="Dark Green")
-        txtbuf.create_tag("bg1", background="#DDDDDD")
     
     # Returns 1 if the 1-key constant is given as input (Gdk.KEY_1, Gdk.KEY_2, etc).
     # Returns 10 for Gdk.KEY_0.
@@ -162,7 +192,7 @@ class ViziGrepWindow(Window):
             self.add_path_history(results.search_path)
             self.add_search_history(results.search_string)
         else:
-            txtbuf = self.getActiveTextBuffer()
+            txtbuf = self.getActiveTextBuffer() # FIXME: Don't assume active is what we want! Need to pass the appropriate "something" 
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)
             elif isinstance(exception, NoResultsException):
@@ -192,10 +222,10 @@ class ViziGrepWindow(Window):
         self.notebook.set_sensitive(True)
             
     def set_results(self, results):
-        key = self.getActiveTextBuffer()
+        key = self.getActiveTextBuffer() #Don't assume active! Pass something in here! 
         self.resultsDict[key] = results
         
-        txtbuf = self.getActiveTextBuffer()
+        txtbuf = self.getActiveTextBuffer() # FIXME: Dupe?
         tag_link = txtbuf.get_tag_table().lookup('link')
         tag_red = txtbuf.get_tag_table().lookup('red')
         tag_green = txtbuf.get_tag_table().lookup('green')
@@ -294,7 +324,8 @@ class ViziGrepWindow(Window):
             sitr = txtbuf.get_iter_at_offset(sidx)
             eitr = txtbuf.get_iter_at_offset(sidx+length)
             txtbuf.apply_tag(tag, sitr, eitr)
-        
+    
+    # FIXME: Can pass something in here...
     def clear_results(self):
         self.getActiveTextBuffer().set_text('')
         self.lbl_matches.set_text('')
@@ -453,27 +484,14 @@ class ViziGrepWindow(Window):
             self.notebook.remove_page(-1)
         
     def initNewTab(self):
-        newTextView = Gtk.TextView()
-        self.createTags( newTextView.get_buffer() )
+        newTab = VizigrepTab(self.notebook)
         
-        scrollWin = Gtk.ScrolledWindow()
-        scrollWin.add(newTextView)
-        tabIdx = self.notebook.append_page(scrollWin)
-        
-        # Construct tab label and hidden spinner
-        box = Gtk.Box(Gtk.Orientation.HORIZONTAL, spacing=6)
-        label = Gtk.Label('[New tab]')
-        spinner = Gtk.Spinner()
-        self.notebook.set_tab_label(scrollWin, box)
-        box.pack_start(label, True, True, 0)
-        box.pack_start(spinner, True, True, 0)
-        box.get_children()[0].show() # Always show label
-        
-        # Signal handlers
-        newTextView.connect('button-press-event', self.results_clicked)
-        newTextView.connect('motion-notify-event', self.results_mouse_motion)
-        newTextView.connect('key-press-event', self.results_keypress)
-        return tabIdx
+        # Connect Signal handlers
+        txtview = newTab.getTextView()
+        txtview.connect('button-press-event', self.results_clicked)
+        txtview.connect('motion-notify-event', self.results_mouse_motion)
+        txtview.connect('key-press-event', self.results_keypress)
+        return newTab.getIndex()
         
     def deleteActiveTab(self):
         key = self.getActiveTextBuffer()
@@ -508,8 +526,8 @@ class ViziGrepWindow(Window):
         
     def getActiveTextView(self):
         tabIdx = self.notebook.get_current_page()
-        scrollWin = self.notebook.get_nth_page(tabIdx)
-        return scrollWin.get_child()
+        tab = self.notebook.get_nth_page(tabIdx)
+        return tab.get_child()
         
     def getActiveTextBuffer(self):
         return self.getActiveTextView().get_buffer()

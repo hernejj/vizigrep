@@ -88,7 +88,7 @@ class ViziGrepWindow(Window):
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
-        self.deactivate_on_search = [self.btn_search]
+        self.deactivate_on_search = []
         self.initNotebook()
         self.initNewTab()
 
@@ -154,8 +154,13 @@ class ViziGrepWindow(Window):
         return True
 
     def btn_search_clicked(self, data):
-        self.clear_results()
         tab = self.getActiveTab()
+        if tab.isSearching:
+            self.app.mbox.error('This is already a search happening in this tab.')
+            return
+
+        self.clear_results()
+   
         string = self.cbox_search.get_active_text()
         
         path = Path.pretty(self.cbox_path.get_active_text())

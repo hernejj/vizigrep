@@ -125,11 +125,11 @@ class ViziGrepWindow(Window):
         return rv
     
     def win_keypress(self, win, kb_event):
-        # If we're disabled because we're searching, ignore keypress events
-        if (not self.enabled): return True
-        
         # Control is held
         if kb_event.state & Gdk.ModifierType.CONTROL_MASK:
+            # If we're disabled because we're searching, ignore keypress events
+            if (not self.enabled): return True
+            
             if kb_event.keyval == Gdk.KEY_t:
                 self.new_tab_clicked()
                 return True
@@ -223,16 +223,11 @@ class ViziGrepWindow(Window):
         self.enabled = False
         for widget in self.deactivate_on_search:
             widget.set_sensitive(False)
-        self.getActiveTab().getTextView().set_sensitive(False)
-        self.notebook.set_sensitive(False)
-        
             
     def enable_all(self):
         self.enabled = True
         for widget in self.deactivate_on_search:
             widget.set_sensitive(True)
-        self.getActiveTab().getTextView().set_sensitive(True)
-        self.notebook.set_sensitive(True)
             
     def set_results(self, tab):
         results = tab.results
@@ -337,7 +332,6 @@ class ViziGrepWindow(Window):
             eitr = txtbuf.get_iter_at_offset(sidx+length)
             txtbuf.apply_tag(tag, sitr, eitr)
     
-    # FIXME: Can pass something in here...
     def clear_results(self):
         self.getActiveTab().getTextBuffer().set_text('')
         self.lbl_matches.set_text('')

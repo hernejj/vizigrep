@@ -303,11 +303,12 @@ class ViziGrepWindow(Window):
                     taglist.append( (lineStartIdx, lineLength, tag_bg1) )
             lineNum+=1
             
-        self.set_result_status(results)
+        self.set_result_status(self.getActiveTab())
         txtbuf.set_text(rstr)
         self.apply_tags(txtbuf, rstr, taglist)
 
-    def set_result_status(self, results):
+    def set_result_status(self, tab):
+        results = tab.results
         if results:
             self.lbl_matches.set_text(str(len(results)))
             self.lbl_files.set_text(str(results.unique_fns()))
@@ -480,7 +481,7 @@ class ViziGrepWindow(Window):
     
     def switched_tab(self, notebook, junkPagePtr, pageIdx):
         tab = notebook.get_nth_page(pageIdx)
-        self.set_result_status(tab.results)
+        self.set_result_status(tab)
     
     def initNotebook(self):
         # Notebooks contain 3 built-in tabs by default. Remove all of them.

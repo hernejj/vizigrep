@@ -88,7 +88,7 @@ class ViziGrepWindow(Window):
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
-        self.deactivate_on_search = [self.btn_search, self.lbl_path, self.cbox_path]
+        self.deactivate_on_search = [self.btn_search]
         self.initNotebook()
         self.initNewTab()
 

@@ -136,6 +136,7 @@ class ViziGrepWindow(Window):
 
     def clear_results(self):
         self.getActiveTab().getTextBuffer().set_text('')
+        self.getActiveTab().setTitleText('[New tab]')
         self.lbl_matches.set_text('')
         self.lbl_files.set_text('')
         

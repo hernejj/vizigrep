@@ -15,8 +15,10 @@ class GrepEngine:
     def __init__(self):
         self.exclude_dirs = []
         self.exclude_files = []
+        self.cancelled = False
 	
     def grep(self, string, searchPath, max_matches, case_sensitive):
+        self.cancelled = False
         self.check_regex(string)
         searchPath = Path.full(searchPath)
         argList = self.construct_args_list(string, searchPath, case_sensitive)
@@ -24,7 +26,6 @@ class GrepEngine:
         stdOutFile = tempfile.TemporaryFile()
         
         self.grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
-        time.sleep(10) # FOR TESTING ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.grepProc.wait()
         
         # Handle case where operation was cancelled
@@ -100,6 +101,7 @@ class GrepEngine:
     
     def cancel(self):
         self.grepProc.terminate()
+        self.cancelled = True
 
 class GrepResult():
     def __init__(self, filename, result_string, linenum=None):

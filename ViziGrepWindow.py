@@ -31,11 +31,11 @@ class VizigrepTab(Gtk.ScrolledWindow):
         
         # Construct tab label and hidden spinner
         box = Gtk.Box(Gtk.Orientation.HORIZONTAL, spacing=6)
-        label = Gtk.Label('[New tab]')
-        spinner = Gtk.Spinner()
+        self.label = Gtk.Label('[New tab]')
+        self.spinner = Gtk.Spinner()
         self.notebook.set_tab_label(self, box)
-        box.pack_start(label, True, True, 0)
-        box.pack_start(spinner, True, True, 0)
+        box.pack_start(self.label, True, True, 0)
+        box.pack_start(self.spinner, True, True, 0)
         box.get_children()[0].show() # Always show label
         
         self.ge = GrepEngine()
@@ -52,17 +52,15 @@ class VizigrepTab(Gtk.ScrolledWindow):
         return self.get_child().get_buffer()
         
     def setTitleText(self, text):
-        label = self.notebook.get_tab_label(self).get_children()[0]
-        label.set_text(text)
+        self.label.set_text(text)
         
     def setSpinner(self, active):
-        spinner = self.notebook.get_tab_label(self).get_children()[1]
         if active:
-            spinner.show()
-            spinner.start()
+            self.spinner.show()
+            self.spinner.start()
         else:
-            spinner.stop()
-            spinner.hide()
+            self.spinner.stop()
+            self.spinner.hide()
 
     def createTags(self, txtbuf):
         txtbuf.create_tag("fixed", family="Monospace")
@@ -195,7 +193,11 @@ class ViziGrepWindow(Window):
         GObject.idle_add(donefn, tab, ex)
         
     def grep_thread_done(self, tab, exception):
-        if tab.results:
+        txtbuf = tab.getTextBuffer()
+        
+        if tab.ge.cancelled:
+            txtbuf.set_text("The search was cancelled")
+        elif tab.results:
             try:
                 self.set_results(tab)
             except Exception as e:
@@ -203,8 +205,7 @@ class ViziGrepWindow(Window):
                 print traceback.format_exc()
             self.add_path_history(tab.results.search_path)
             self.add_search_history(tab.results.search_string)
-        else:
-            txtbuf = tab.getTextBuffer()
+        elif exception:
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)
             elif isinstance(exception, NoResultsException):
@@ -467,8 +468,7 @@ class ViziGrepWindow(Window):
     def close_tab_clicked(self, lbl=None):
         tab = self.getActiveTab()
         if tab.isSearching:
-            self.app.mbox.error("Can't yet delete a tab that is actively searching.")
-            return True
+            tab.ge.cancel()
         self.deleteActiveTab()
         return True #Prevents attempted activation of link button's URI
     

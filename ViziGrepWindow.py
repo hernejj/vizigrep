@@ -66,6 +66,140 @@ class VizigrepTab(Gtk.ScrolledWindow):
         txtbuf.create_tag("red", foreground="Red")
         txtbuf.create_tag("green", foreground="Dark Green")
         txtbuf.create_tag("bg1", background="#DDDDDD")
+    
+    def startSearch(self, searchString, path, caseSensitive, doneCallback):
+        self.isSearching = True
+        new_thread = Thread(target=self.grep_thread, args=(searchString, path, caseSensitive, doneCallback))
+        new_thread.start()
+    
+    def grep_thread(self, searchString, path, caseSensitive, doneCallback):
+        self.results = None
+        ex = None
+        try:
+            self.results = self.ge.grep(searchString, path, self.app.prefs.get('match-limit'), caseSensitive)
+        except Exception as e:
+            ex = e
+        
+        GObject.idle_add(self.grep_thread_done, ex, caseSensitive)
+        GObject.idle_add(doneCallback, self) # Call main window's callback
+    
+    def grep_thread_done(self, exception, caseSensitive):
+        txtbuf = self.getTextBuffer()
+        
+        if self.ge.cancelled:
+            txtbuf.set_text("The search was cancelled")
+        elif self.results:
+            try:
+                self.set_results(caseSensitive)
+            except Exception as e:
+                print type(e)
+                print traceback.format_exc()
+        elif exception:
+            if isinstance(exception, GrepException):
+                txtbuf.set_text("Grep error: %s" % exception.output)
+            elif isinstance(exception, NoResultsException):
+                txtbuf.set_text("No results found")
+            elif isinstance(exception, BadRegexException):
+                txtbuf.set_text("Search string error: %s" % str(exception))
+            else:
+                txtbuf.set_text("Unexpected Error: " + str(exception))
+                print type(exception)
+                print traceback.format_exc()
+        self.setSpinner(False)
+        self.isSearching = False
+    
+    def set_results(self, caseSensitive):
+        results = self.results
+        
+        txtbuf = self.getTextBuffer()
+        tag_link = txtbuf.get_tag_table().lookup('link')
+        tag_red = txtbuf.get_tag_table().lookup('red')
+        tag_green = txtbuf.get_tag_table().lookup('green')
+        tag_bg1 = txtbuf.get_tag_table().lookup('bg1')
+
+        max_fnlen = results.max_fnlen()
+        max_lnlen = results.max_lnlen()
+        max_txtlen = results.max_txtlen()
+        taglist = []
+        rstr = ''
+        
+        # Figure out max line length
+        max_linelen = max_fnlen + 1 + max_txtlen
+        if (self.app.prefs.get('show-line-numbers')):
+            max_linelen += max_lnlen + 1
+        
+        string = self.escape_regex_str(results.search_string)
+        lineNum = 1
+        for r in results:
+            lineStartIdx = len(rstr)
+            
+            # File name
+            taglist.append( (len(rstr), len(r.fn), tag_link) )
+            rstr += r.fn
+            
+            # Spaces to pad out filename
+            if max_fnlen > len(r.fn):
+                rstr += ' '*(max_fnlen-len(r.fn))
+            
+            # : after filename
+            rstr += ':'
+        
+            # Line number and : 
+            if (self.app.prefs.get('show-line-numbers')):
+                taglist.append( (len(rstr), len(r.linenum), tag_green) )
+                rstr += r.linenum
+                if max_lnlen > len(r.linenum):
+                    rstr += " "*(max_lnlen-len(r.linenum))
+                rstr += ':'
+                
+            if caseSensitive:
+                m = re.search(string, r.str)
+            else:
+                m = re.search(string, r.str, re.IGNORECASE)
+            
+            # Line contents
+            if(m and len(m.group()) > 0):
+                matched_text = m.group()
+                (prematch, match, postmatch) = r.str.partition(matched_text)
+                rstr += prematch
+                taglist.append( (len(rstr), len(matched_text), tag_red) )
+                rstr += matched_text
+                rstr += postmatch
+            else:
+                rstr += r.str
+            
+            # Spaces to pad out line contents
+            if max_txtlen > len(r.str):
+                rstr += ' '*(max_txtlen-len(r.str))
+            
+            rstr += '\n'
+            
+            # Add text background tag every other line
+            lineLength = len(rstr) - lineStartIdx - 1
+            if (self.app.prefs.get('alternate-row-color')):
+                if (lineNum % 2 == 1):
+                    taglist.append( (lineStartIdx, lineLength, tag_bg1) )
+            lineNum+=1
+            
+        txtbuf.set_text(rstr)
+        self.apply_tags(txtbuf, rstr, taglist)
+    
+    def escape_regex_str(self, regex):
+        if '(' in regex:
+            regex = regex.replace('(', '\\(')  # Escape (
+        if ')' in regex:
+            regex = regex.replace(')', '\\)')  # Escape )
+        return regex
+    
+    def apply_tags(self, txtbuf, rstr, taglist):
+        tag_fixed = txtbuf.get_tag_table().lookup('fixed')
+        
+        txtbuf.apply_tag(tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
+        for tagtuple in taglist:
+            (sidx, length, tag) = tagtuple
+            sitr = txtbuf.get_iter_at_offset(sidx)
+            eitr = txtbuf.get_iter_at_offset(sidx+length)
+            txtbuf.apply_tag(tag, sitr, eitr)
 
 class ViziGrepWindow(Window):
     gtk_builder_file   = "ui/vizigrep.glade"
@@ -155,7 +289,7 @@ class ViziGrepWindow(Window):
     def btn_search_clicked(self, data):
         tab = self.getActiveTab()
         if tab.isSearching:
-            self.app.mbox.error('This is already a search happening in this tab.')
+            self.app.mbox.error('There is already a search happening in this tab.')
             return
 
         self.clear_results()
@@ -177,7 +311,7 @@ class ViziGrepWindow(Window):
         self.add_path_history(path)
         self.add_search_history(string)
         
-        # Pass excludes to tab's grep engine
+        # Pass excludes to tab's grep engine # FIXME: handle case sensitivity this way as well.
         tab.ge.exclude_dirs = self.app.prefs.get('exclude-dirs')
         tab.ge.exclude_files = self.app.prefs.get('exclude-files')
         
@@ -185,120 +319,7 @@ class ViziGrepWindow(Window):
         tab.setTitleText(string + " : " + path)
         tab.setSpinner(True)
 
-        tab.isSearching = True
-        new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done, tab))
-        new_thread.start()
-
-    def grep_thread(self, string, path, donefn, tab):
-        try:
-            tab.results = tab.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
-            ex = None
-        except Exception as e:
-            tab.results = None
-            ex = e
-        GObject.idle_add(donefn, tab, ex)
-        
-    def grep_thread_done(self, tab, exception):
-        txtbuf = tab.getTextBuffer()
-        
-        if tab.ge.cancelled:
-            txtbuf.set_text("The search was cancelled")
-        elif tab.results:
-            try:
-                self.set_results(tab)
-            except Exception as e:
-                print type(e)
-                print traceback.format_exc()
-        elif exception:
-            if isinstance(exception, GrepException):
-                txtbuf.set_text("Grep error: %s" % exception.output)
-            elif isinstance(exception, NoResultsException):
-                txtbuf.set_text("No results found")
-            elif isinstance(exception, BadRegexException):
-                txtbuf.set_text("Search string error: %s" % str(exception))
-            else:
-                txtbuf.set_text("Unexpected Error: " + str(exception))
-                print type(exception)
-                print traceback.format_exc()
-        tab.setSpinner(False)
-        tab.isSearching = False
-
-    def set_results(self, tab):
-        results = tab.results
-        
-        txtbuf = tab.getTextBuffer()
-        tag_link = txtbuf.get_tag_table().lookup('link')
-        tag_red = txtbuf.get_tag_table().lookup('red')
-        tag_green = txtbuf.get_tag_table().lookup('green')
-        tag_bg1 = txtbuf.get_tag_table().lookup('bg1')
-
-        max_fnlen = results.max_fnlen()
-        max_lnlen = results.max_lnlen()
-        max_txtlen = results.max_txtlen()
-        taglist = []
-        rstr = ''
-        
-        # Figure out max line length
-        max_linelen = max_fnlen + 1 + max_txtlen
-        if (self.prefs.get('show-line-numbers')):
-            max_linelen += max_lnlen + 1
-        
-        string = self.escape_regex_str(results.search_string)
-        lineNum = 1
-        for r in results:
-            lineStartIdx = len(rstr)
-            
-            # File name
-            taglist.append( (len(rstr), len(r.fn), tag_link) )
-            rstr += r.fn
-            
-            # Spaces to pad out filename
-            if max_fnlen > len(r.fn):
-                rstr += ' '*(max_fnlen-len(r.fn))
-            
-            # : after filename
-            rstr += ':'
-        
-            # Line number and : 
-            if (self.prefs.get('show-line-numbers')):
-                taglist.append( (len(rstr), len(r.linenum), tag_green) )
-                rstr += r.linenum
-                if max_lnlen > len(r.linenum):
-                    rstr += " "*(max_lnlen-len(r.linenum))
-                rstr += ':'
-                
-            if self.chk_case.get_active():
-                m = re.search(string, r.str)
-            else:
-                m = re.search(string, r.str, re.IGNORECASE)
-            
-            # Line contents
-            if(m and len(m.group()) > 0):
-                matched_text = m.group()
-                (prematch, match, postmatch) = r.str.partition(matched_text)
-                rstr += prematch
-                taglist.append( (len(rstr), len(matched_text), tag_red) )
-                rstr += matched_text
-                rstr += postmatch
-            else:
-                rstr += r.str
-            
-            # Spaces to pad out line contents
-            if max_txtlen > len(r.str):
-                rstr += ' '*(max_txtlen-len(r.str))
-            
-            rstr += '\n'
-            
-            # Add text background tag every other line
-            lineLength = len(rstr) - lineStartIdx - 1
-            if (self.prefs.get('alternate-row-color')):
-                if (lineNum % 2 == 1):
-                    taglist.append( (lineStartIdx, lineLength, tag_bg1) )
-            lineNum+=1
-            
-        self.set_result_status(self.getActiveTab())
-        txtbuf.set_text(rstr)
-        self.apply_tags(txtbuf, rstr, taglist)
+        tab.startSearch(string, path, self.chk_case.get_active(), self.set_result_status)
 
     def set_result_status(self, tab):
         results = tab.results
@@ -309,24 +330,6 @@ class ViziGrepWindow(Window):
             self.lbl_matches.set_text('')
             self.lbl_files.set_text('')
 
-    def escape_regex_str(self, regex):
-        if '(' in regex:
-            regex = regex.replace('(', '\\(')  # Escape (
-        if ')' in regex:
-            regex = regex.replace(')', '\\)')  # Escape )
-            
-        return regex
-    
-    def apply_tags(self, txtbuf, rstr, taglist):
-        tag_fixed = txtbuf.get_tag_table().lookup('fixed')
-        
-        txtbuf.apply_tag(tag_fixed, txtbuf.get_start_iter(), txtbuf.get_end_iter())
-        for tagtuple in taglist:
-            (sidx, length, tag) = tagtuple
-            sitr = txtbuf.get_iter_at_offset(sidx)
-            eitr = txtbuf.get_iter_at_offset(sidx+length)
-            txtbuf.apply_tag(tag, sitr, eitr)
-    
     def clear_results(self):
         self.getActiveTab().getTextBuffer().set_text('')
         self.lbl_matches.set_text('')
@@ -399,6 +402,7 @@ class ViziGrepWindow(Window):
             self.activate_result(itr)
             return True
     
+    # FIXME: Should this belong to VizigepTab?
     def activate_result(self, itr):
         tab = self.getActiveTab()
         if not tab.results: return True
@@ -441,6 +445,7 @@ class ViziGrepWindow(Window):
         txtview.get_window(Gtk.TextWindowType.TEXT).set_cursor(cursor)
         return False
 
+    # FIXME: Should this belong to VizigepTab?
     # Locate start/end of tag at given iterator
     def get_tag_pos(self, itr, tag):
         itr_end = itr.copy()

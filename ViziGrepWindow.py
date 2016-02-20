@@ -163,18 +163,17 @@ class ViziGrepWindow(Window):
     def btn_search_clicked(self, data):
         self.clear_results()
         tab = self.getActiveTab()
-        txtbuf = tab.getTextBuffer()
         string = self.cbox_search.get_active_text()
         
         path = Path.pretty(self.cbox_path.get_active_text())
         self.cbox_path.get_child().set_text(path)
         
         if not string.strip():
-            txtbuf.set_text("You forgot to provide a search string")
+            tab.getTextBuffer().set_text("You forgot to provide a search string")
             self.cbox_search.get_child().grab_focus()
             return True
         if not path.strip():
-            txtbuf.set_text("You forgot to provide a search folder")
+            tab.getTextBuffer().set_text("You forgot to provide a search folder")
             self.cbox_path.get_child().grab_focus()
             return True
         
@@ -184,28 +183,27 @@ class ViziGrepWindow(Window):
         tab.setTitleText(string + " : " + path)
         tab.setSpinner(True)
         
-        new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done))
+        new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done, tab))
         new_thread.start()
 
-    def grep_thread(self, string, path, donefn):
+    def grep_thread(self, string, path, donefn, tab):
         try:
-            results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
+            tab.results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
             ex = None
         except Exception as e:
-            results = None
+            tab.results = None
             ex = e
-        GObject.idle_add(donefn, results, ex)
+        GObject.idle_add(donefn, tab, ex)
         
-    def grep_thread_done(self, results, exception):
-        tab = self.getActiveTab() # FIXME: Don't assume active is what we want! Need to pass the appropriate "something" 
-        if results:
+    def grep_thread_done(self, tab, exception):
+        if tab.results:
             try:
-                self.set_results(results)
+                self.set_results(tab.results)
             except Exception as e:
                 print type(e)
                 print traceback.format_exc()
-            self.add_path_history(results.search_path)
-            self.add_search_history(results.search_string)
+            self.add_path_history(tab.results.search_path)
+            self.add_search_history(tab.results.search_string)
         else:
             txtbuf = tab.getTextBuffer()
             if isinstance(exception, GrepException):
@@ -482,8 +480,6 @@ class ViziGrepWindow(Window):
     def switched_tab(self, notebook, junkPagePtr, pageIdx):
         tab = notebook.get_nth_page(pageIdx)
         self.set_result_status(tab.results)
-    
-    ### Tabs ###
     
     def initNotebook(self):
         # Notebooks contain 3 built-in tabs by default. Remove all of them.

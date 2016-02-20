@@ -200,6 +200,44 @@ class VizigrepTab(Gtk.ScrolledWindow):
             sitr = txtbuf.get_iter_at_offset(sidx)
             eitr = txtbuf.get_iter_at_offset(sidx+length)
             txtbuf.apply_tag(tag, sitr, eitr)
+    
+    def activate_result(self, itr):
+        if not self.results: return True
+        if len(self.results) <= itr.get_line():
+            return True
+        result = self.results[itr.get_line()]
+        
+        for tag in itr.get_tags(): #FIXME: Create a findTagByType function?
+            if tag.get_property('name') == 'link':
+                (itr, itr_end) = self.get_tag_pos(itr, tag)
+                filename = self.getTextBuffer().get_text(itr, itr_end, False)
+                filename = os.path.join(self.results.search_path, filename)
+                filename = Path.full(filename)
+                
+                cmdList = []
+                for itm in self.app.prefs.get('editor').split(' '):
+                    if '$1' in itm:
+                        itm = itm.replace('$1', filename)
+                    if '$n' in itm:
+                        itm = itm.replace('$n', result.linenum)
+                    cmdList.append(itm)
+                subprocess.Popen(cmdList)
+                return True
+        return False
+    
+    # Locate start/end of tag at given iterator
+    def get_tag_pos(self, itr, tag):
+        itr_end = itr.copy()
+
+        # Find start of tag
+        while (not itr.begins_tag(tag)):
+            itr.backward_char()
+
+        # Find end of tag
+        while (not itr_end.ends_tag(tag)):
+            itr_end.forward_char()
+
+        return (itr, itr_end)
 
 class ViziGrepWindow(Window):
     gtk_builder_file   = "ui/vizigrep.glade"
@@ -389,7 +427,7 @@ class ViziGrepWindow(Window):
         if (event_button.button != 1): return False
         (cx, cy) = txtview.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, event_button.x, event_button.y)
         itr = txtview.get_iter_at_location(cx, cy)
-        link_activated = self.activate_result(itr)
+        link_activated = self.getActiveTab().activate_result(itr)
        
         if not link_activated:
             txtview.grab_focus()
@@ -399,39 +437,9 @@ class ViziGrepWindow(Window):
         if Gdk.keyval_name(event_key.keyval) in ["Return", "KP_Enter"]:
             txtbuf = txtview.get_buffer()
             itr = txtbuf.get_iter_at_mark( txtbuf.get_insert() )
-            self.activate_result(itr)
+            self.getActiveTab().activate_result(itr)
             return True
     
-    # FIXME: Should this belong to VizigepTab?
-    def activate_result(self, itr):
-        tab = self.getActiveTab()
-        if not tab.results: return True
-
-        if len(tab.results) <= itr.get_line():
-            return True
-        result = tab.results[itr.get_line()]
-        
-        for tag in itr.get_tags():
-            if tag.get_property('name') == 'link':
-                (itr, itr_end) = self.get_tag_pos(itr, tag)
-                filename = tab.getTextBuffer().get_text(itr, itr_end, False)
-                filename = os.path.join(tab.results.search_path, filename)
-                filename= Path.full(filename)
-                
-                cmdList = []
-                for itm in self.prefs.get('editor').split(' '):
-                    if '$1' in itm:
-                        itm = itm.replace('$1', filename)
-                    if '$n' in itm:
-                        itm = itm.replace('$n', result.linenum)
-
-                    cmdList.append(itm)
-                    print itm
-
-                subprocess.Popen(cmdList)
-                return True
-        return False
-        
     def results_mouse_motion(self, txtview, event):
         (cx, cy) = txtview.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, event.x, event.y)
         itr = txtview.get_iter_at_location(cx, cy)
@@ -445,21 +453,6 @@ class ViziGrepWindow(Window):
         txtview.get_window(Gtk.TextWindowType.TEXT).set_cursor(cursor)
         return False
 
-    # FIXME: Should this belong to VizigepTab?
-    # Locate start/end of tag at given iterator
-    def get_tag_pos(self, itr, tag):
-        itr_end = itr.copy()
-
-        # Find start of tag
-        while (not itr.begins_tag(tag)):
-            itr.backward_char()
-
-        # Find end of tag
-        while (not itr_end.ends_tag(tag)):
-            itr_end.forward_char()
-
-        return (itr, itr_end)
-        
     def options_clicked(self, lbl):
         PreferencesWindow(self.app).activate()
         return True #Prevents attempted activation of link button's URI

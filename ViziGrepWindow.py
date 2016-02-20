@@ -17,8 +17,9 @@ class TextTag:
 # This is a scrolledWindow subclass. We add it directly to the notebook in the
 # main window. We subclass it to add helper/convenience functions.
 class VizigrepTab(Gtk.ScrolledWindow):
-    def __init__(self, notebook):
+    def __init__(self, app, notebook):
         Gtk.ScrolledWindow.__init__(self)
+        self.app = app
         self.notebook = notebook
         self.results = None
         self.isSearching = False
@@ -36,6 +37,10 @@ class VizigrepTab(Gtk.ScrolledWindow):
         box.pack_start(label, True, True, 0)
         box.pack_start(spinner, True, True, 0)
         box.get_children()[0].show() # Always show label
+        
+        self.ge = GrepEngine()
+        self.ge.exclude_dirs = self.app.prefs.get('exclude-dirs')
+        self.ge.exclude_files = self.app.prefs.get('exclude-files')
     
     def getIndex(self):
         return self.notebook.page_num(self)
@@ -74,9 +79,6 @@ class ViziGrepWindow(Window):
         Window.__init__(self, app, self.gtk_builder_file, self.window_name, True)
         self.app = app
         self.prefs = app.prefs
-        self.ge = GrepEngine()
-        self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
-        self.ge.exclude_files = self.prefs.get('exclude-files')
 
         self.gtk_window.connect('delete_event', self.close)
         self.gtk_window.connect('key-press-event', self.win_keypress)
@@ -185,7 +187,7 @@ class ViziGrepWindow(Window):
 
     def grep_thread(self, string, path, donefn, tab):
         try:
-            tab.results = self.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
+            tab.results = tab.ge.grep(string, path, self.prefs.get('match-limit'), self.chk_case.get_active())
             ex = None
         except Exception as e:
             tab.results = None
@@ -480,7 +482,7 @@ class ViziGrepWindow(Window):
             self.notebook.remove_page(-1)
         
     def initNewTab(self):
-        newTab = VizigrepTab(self.notebook)
+        newTab = VizigrepTab(self.app, self.notebook)
         
         # Connect Signal handlers
         txtview = newTab.getTextView()

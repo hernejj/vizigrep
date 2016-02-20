@@ -23,9 +23,14 @@ class GrepEngine:
         stdErrFile = tempfile.TemporaryFile()
         stdOutFile = tempfile.TemporaryFile()
         
-        grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
-        grepProc.wait()
-        time.sleep(5) # FOR TESTING ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
+        time.sleep(10) # FOR TESTING ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.grepProc.wait()
+        
+        # Handle case where operation was cancelled
+        if self.grepProc.returncode < 0:
+            return
+        
         # Read data from stdout/stderror
         stdOutFile.seek(0)
         output = stdOutFile.read().decode('utf-8', 'replace')
@@ -34,9 +39,9 @@ class GrepEngine:
         errMsg = stdErrFile.read()
         stdErrFile.close()
         
-        if grepProc.returncode == 1:
+        if self.grepProc.returncode == 1:
             raise NoResultsException()
-        if grepProc.returncode == 2:
+        if self.grepProc.returncode == 2:
             raise GrepException(errMsg)
 
         return self.parse_output(output, max_matches, searchPath, string)
@@ -92,6 +97,9 @@ class GrepEngine:
                 argList.append('--exclude=%s' % d)
         
         return argList
+    
+    def cancel(self):
+        self.grepProc.terminate()
 
 class GrepResult():
     def __init__(self, filename, result_string, linenum=None):

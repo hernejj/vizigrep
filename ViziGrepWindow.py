@@ -149,7 +149,7 @@ class ViziGrepWindow(Window):
 
     def btn_search_clicked(self, data):
         self.clear_results()
-        txtbuf = self.getActiveTextBuffer()
+        txtbuf = self.getActiveTab().getTextBuffer()
         string = self.cbox_search.get_active_text()
         
         path = Path.pretty(self.cbox_path.get_active_text())
@@ -192,7 +192,7 @@ class ViziGrepWindow(Window):
             self.add_path_history(results.search_path)
             self.add_search_history(results.search_string)
         else:
-            txtbuf = self.getActiveTextBuffer() # FIXME: Don't assume active is what we want! Need to pass the appropriate "something" 
+            txtbuf = self.getActiveTab().getTextBuffer() # FIXME: Don't assume active is what we want! Need to pass the appropriate "something" 
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)
             elif isinstance(exception, NoResultsException):
@@ -210,7 +210,7 @@ class ViziGrepWindow(Window):
         self.enabled = False
         for widget in self.deactivate_on_search:
             widget.set_sensitive(False)
-        self.getActiveTextView().set_sensitive(False)
+        self.getActiveTab().getTextView().set_sensitive(False)
         self.notebook.set_sensitive(False)
         
             
@@ -218,14 +218,14 @@ class ViziGrepWindow(Window):
         self.enabled = True
         for widget in self.deactivate_on_search:
             widget.set_sensitive(True)
-        self.getActiveTextView().set_sensitive(True)
+        self.getActiveTab().getTextView().set_sensitive(True)
         self.notebook.set_sensitive(True)
             
     def set_results(self, results):
-        key = self.getActiveTextBuffer() #Don't assume active! Pass something in here! 
-        self.resultsDict[key] = results
+        key = self.getActiveTab().getTextBuffer() # FIXME: Don't assume active! Pass something in here! 
+        self.resultsDict[key] = results # FIXME: Key off tab, not text buffer!
         
-        txtbuf = self.getActiveTextBuffer() # FIXME: Dupe?
+        txtbuf = self.getActiveTab().getTextBuffer() # FIXME: Dupe?
         tag_link = txtbuf.get_tag_table().lookup('link')
         tag_red = txtbuf.get_tag_table().lookup('red')
         tag_green = txtbuf.get_tag_table().lookup('green')
@@ -327,7 +327,7 @@ class ViziGrepWindow(Window):
     
     # FIXME: Can pass something in here...
     def clear_results(self):
-        self.getActiveTextBuffer().set_text('')
+        self.getActiveTab().getTextBuffer().set_text('')
         self.lbl_matches.set_text('')
         self.lbl_files.set_text('')
         
@@ -399,7 +399,7 @@ class ViziGrepWindow(Window):
             return True
 
     def activate_result(self, txtview, itr):
-        key = self.getActiveTextBuffer()
+        key = self.getActiveTab().getTextBuffer() # FIXME: key off tab
         if not key in self.resultsDict:
             return False
         results = self.resultsDict[key]
@@ -494,7 +494,7 @@ class ViziGrepWindow(Window):
         return newTab.getIndex()
         
     def deleteActiveTab(self):
-        key = self.getActiveTextBuffer()
+        key = self.getActiveTab().getTextBuffer() # FIXME: Key off tab
         if key in self.resultsDict:
             del self.resultsDict[key]
                 
@@ -524,10 +524,6 @@ class ViziGrepWindow(Window):
             spinner.stop()
             spinner.hide()
         
-    def getActiveTextView(self):
+    def getActiveTab(self):
         tabIdx = self.notebook.get_current_page()
-        tab = self.notebook.get_nth_page(tabIdx)
-        return tab.get_child()
-        
-    def getActiveTextBuffer(self):
-        return self.getActiveTextView().get_buffer()
+        return self.notebook.get_nth_page(tabIdx)

@@ -135,7 +135,11 @@ class ViziGrepWindow(Window):
             return True
         
         self.disable_all()
-        self.spinner.start()
+        
+        # Update Tab label widgets
+        self.setTabText(string + " : " + path)
+        self.setTabSpinner(True)
+        
         new_thread = Thread(target=self.grep_thread, args=(string, path, self.grep_thread_done))
         new_thread.start()
 
@@ -169,7 +173,7 @@ class ViziGrepWindow(Window):
                 txtbuf.set_text("Unexpected Error: " + str(exception))
                 print type(exception)
                 print traceback.format_exc()
-        self.spinner.stop()
+        self.setTabSpinner(False)
         self.enable_all()
 
     def disable_all(self):
@@ -264,10 +268,6 @@ class ViziGrepWindow(Window):
         self.set_result_status(results)
         txtbuf.set_text(rstr)
         self.apply_tags(txtbuf, rstr, taglist)
-        
-        # Tab text
-        tabText = self.cbox_search.get_active_text() + " : " + Path.pretty(results.search_path)
-        self.setTabText(tabText)
 
     def set_result_status(self, results):
         if results:
@@ -459,8 +459,16 @@ class ViziGrepWindow(Window):
         scrollWin = Gtk.ScrolledWindow()
         scrollWin.add(newTextView)
         tabIdx = self.notebook.append_page(scrollWin)
-        self.setTabText("[New tab]", scrollWin)
-    
+        
+        # Construct tab label and hidden spinner
+        box = Gtk.Box(Gtk.Orientation.HORIZONTAL, spacing=6)
+        label = Gtk.Label('[New tab]')
+        spinner = Gtk.Spinner()
+        self.notebook.set_tab_label(scrollWin, box)
+        box.pack_start(label, True, True, 0)
+        box.pack_start(spinner, True, True, 0)
+        box.get_children()[0].show() # Always show label
+        
         # Signal handlers
         newTextView.connect('button-press-event', self.results_clicked)
         newTextView.connect('motion-notify-event', self.results_mouse_motion)
@@ -481,7 +489,22 @@ class ViziGrepWindow(Window):
         if not child:
             tabIdx = self.notebook.get_current_page()
             child = self.notebook.get_nth_page(tabIdx)
-        self.notebook.set_tab_label_text(child, text)
+        
+        label = self.notebook.get_tab_label(child).get_children()[0]
+        label.set_text(text)
+        
+    def setTabSpinner(self, active, child=None):
+        if not child:
+            tabIdx = self.notebook.get_current_page()
+            child = self.notebook.get_nth_page(tabIdx)
+        
+        spinner = self.notebook.get_tab_label(child).get_children()[1]
+        if active:
+            spinner.show()
+            spinner.start()
+        else:
+            spinner.stop()
+            spinner.hide()
         
     def getActiveTextView(self):
         tabIdx = self.notebook.get_current_page()

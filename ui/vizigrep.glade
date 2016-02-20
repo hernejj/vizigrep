@@ -197,18 +197,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSpinner" id="spinner">
-                <property name="width_request">20</property>
-                <property name="height_request">20</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">1</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

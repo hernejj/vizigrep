@@ -39,8 +39,6 @@ class VizigrepTab(Gtk.ScrolledWindow):
         box.get_children()[0].show() # Always show label
         
         self.ge = GrepEngine()
-        self.ge.exclude_dirs = self.app.prefs.get('exclude-dirs')
-        self.ge.exclude_files = self.app.prefs.get('exclude-files')
     
     def getIndex(self):
         return self.notebook.page_num(self)
@@ -174,6 +172,10 @@ class ViziGrepWindow(Window):
             return True
         
         self.disable_all()
+        
+        # Pass excludes to tab's grep engine
+        tab.ge.exclude_dirs = self.app.prefs.get('exclude-dirs')
+        tab.ge.exclude_files = self.app.prefs.get('exclude-files')
         
         # Update Tab label widgets
         tab.setTitleText(string + " : " + path)

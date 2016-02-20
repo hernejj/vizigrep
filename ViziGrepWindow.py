@@ -90,7 +90,7 @@ class ViziGrepWindow(Window):
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
         self.deactivate_on_search = [self.btn_search, self.lbl_path, self.lbl_options, 
-                                    self.cbox_search, self.cbox_path, self.lbl_new_tab, self.lbl_close_tab]
+                                    self.cbox_search, self.cbox_path, self.lbl_close_tab]
         self.enabled = True
         
         self.initNotebook()

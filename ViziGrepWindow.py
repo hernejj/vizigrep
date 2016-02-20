@@ -20,6 +20,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
     def __init__(self, notebook):
         Gtk.ScrolledWindow.__init__(self)
         self.notebook = notebook
+        self.results = None
         
         newTextView = Gtk.TextView()
         self.createTags(newTextView.get_buffer())
@@ -59,7 +60,6 @@ class ViziGrepWindow(Window):
         Window.__init__(self, app, self.gtk_builder_file, self.window_name, True)
         self.app = app
         self.prefs = app.prefs
-        self.resultsDict = {}
         self.ge = GrepEngine()
         self.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         self.ge.exclude_files = self.prefs.get('exclude-files')
@@ -222,10 +222,10 @@ class ViziGrepWindow(Window):
         self.notebook.set_sensitive(True)
             
     def set_results(self, results):
-        key = self.getActiveTab().getTextBuffer() # FIXME: Don't assume active! Pass something in here! 
-        self.resultsDict[key] = results # FIXME: Key off tab, not text buffer!
+        tab = self.getActiveTab() # FIXME: Don't assume active! Pass something in here! 
+        tab.results = results
         
-        txtbuf = self.getActiveTab().getTextBuffer() # FIXME: Dupe?
+        txtbuf = tab.getTextBuffer()
         tag_link = txtbuf.get_tag_table().lookup('link')
         tag_red = txtbuf.get_tag_table().lookup('red')
         tag_green = txtbuf.get_tag_table().lookup('green')
@@ -397,19 +397,17 @@ class ViziGrepWindow(Window):
             itr = txtbuf.get_iter_at_mark( txtbuf.get_insert() )
             self.activate_result(txtview, itr)
             return True
-
+    
+    # FIXME: Won't need to pass in txtview
     def activate_result(self, txtview, itr):
-        key = self.getActiveTab().getTextBuffer() # FIXME: key off tab
-        if not key in self.resultsDict:
-            return False
-        results = self.resultsDict[key]
-        result = results[itr.get_line()]
+        tab = self.getActiveTab()
+        result = tab.results[itr.get_line()]
         
         for tag in itr.get_tags():
             if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = txtview.get_buffer().get_text(itr, itr_end, False)
-                filename = os.path.join(results.search_path, filename)
+                filename = os.path.join(tab.results.search_path, filename)
                 filename= Path.full(filename)
                 
                 cmdList = []
@@ -468,13 +466,8 @@ class ViziGrepWindow(Window):
         return True #Prevents attempted activation of link button's URI
     
     def switched_tab(self, notebook, junkPagePtr, pageIdx):
-        key = notebook.get_nth_page(pageIdx).get_child().get_buffer()
-
-        if key in self.resultsDict:
-            results = self.resultsDict[key]
-        else:
-            results = None
-        self.set_result_status(results)
+        tab = notebook.get_nth_page(pageIdx)
+        self.set_result_status(tab.results)
     
     ### Tabs ###
     
@@ -494,10 +487,6 @@ class ViziGrepWindow(Window):
         return newTab.getIndex()
         
     def deleteActiveTab(self):
-        key = self.getActiveTab().getTextBuffer() # FIXME: Key off tab
-        if key in self.resultsDict:
-            del self.resultsDict[key]
-                
         if self.notebook.get_n_pages() == 1:
             self.clear_results()
         else:

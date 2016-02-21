@@ -68,7 +68,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
         self.results = None
         ex = None
         try:
-            self.results = self.ge.grep(searchString, path, self.app.prefs.get('match-limit'))
+            self.results = self.ge.grep(searchString, path)
         except Exception as e:
             ex = e
         
@@ -100,7 +100,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
         self.setSpinner(False)
         self.isSearching = False
     
-    def set_results(self, ):
+    def set_results(self):
         results = self.results
         
         txtbuf = self.getTextBuffer()

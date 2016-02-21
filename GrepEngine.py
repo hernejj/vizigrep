@@ -16,9 +16,10 @@ class GrepEngine:
         self.exclude_dirs = []
         self.exclude_files = []
         self.case_sensitive = True
+        self.max_matches = 0
         self.cancelled = False
 	
-    def grep(self, string, searchPath, max_matches):
+    def grep(self, string, searchPath):
         self.cancelled = False
         self.check_regex(string)
         searchPath = Path.full(searchPath)
@@ -46,7 +47,7 @@ class GrepEngine:
         if self.grepProc.returncode == 2:
             raise GrepException(errMsg)
 
-        return self.parse_output(output, max_matches, searchPath, string)
+        return self.parse_output(output, searchPath, string)
     
     def construct_args_list(self, string, realPath):
         argList = ['/bin/grep', '-Irn']
@@ -59,7 +60,7 @@ class GrepEngine:
         argList.append(realPath)
         return argList
     
-    def parse_output(self, output, max_matches, searchPath, searchString):
+    def parse_output(self, output, searchPath, searchString):
         results = GrepResults()
         results.search_path = searchPath
         results.search_string = searchString
@@ -70,7 +71,7 @@ class GrepEngine:
             
             if (not filename) or (not text) or (not linenum):
                 continue
-            if (max_matches > 0) and len(results) == max_matches:
+            if (self.max_matches > 0) and len(results) == self.max_matches:
                 break
             
             # Ignore case where we have malformed data in output

@@ -96,9 +96,7 @@ class ViziGrepWindow(Window):
             return
 
         self.clear_results()
-   
         string = self.cbox_search.get_active_text()
-        
         path = Path.pretty(self.cbox_path.get_active_text())
         self.cbox_path.get_child().set_text(path)
         
@@ -117,6 +115,7 @@ class ViziGrepWindow(Window):
         # Pass parameters to tab's grep engine
         tab.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         tab.ge.exclude_files = self.prefs.get('exclude-files')
+        tab.ge.max_matches = self.app.prefs.get('match-limit')
         tab.ge.case_sensitive = self.chk_case.get_active()
         
         # Update Tab label widgets

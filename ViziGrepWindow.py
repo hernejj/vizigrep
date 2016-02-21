@@ -11,7 +11,6 @@ class ViziGrepWindow(Window):
 
     def __init__(self, app):
         Window.__init__(self, app, self.gtk_builder_file, self.window_name, True)
-        self.app = app
         self.prefs = app.prefs
 
         self.gtk_window.connect('delete_event', self.close)
@@ -116,8 +115,8 @@ class ViziGrepWindow(Window):
         self.add_search_history(string)
         
         # Pass excludes to tab's grep engine # FIXME: handle case sensitivity this way as well.
-        tab.ge.exclude_dirs = self.app.prefs.get('exclude-dirs')
-        tab.ge.exclude_files = self.app.prefs.get('exclude-files')
+        tab.ge.exclude_dirs = self.prefs.get('exclude-dirs')
+        tab.ge.exclude_files = self.prefs.get('exclude-files')
         
         # Update Tab label widgets
         tab.setTitleText(string + " : " + path)

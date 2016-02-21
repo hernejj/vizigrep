@@ -59,30 +59,30 @@ class VizigrepTab(Gtk.ScrolledWindow):
         txtbuf.create_tag("green", foreground="Dark Green")
         txtbuf.create_tag("bg1", background="#DDDDDD")
     
-    def startSearch(self, searchString, path, caseSensitive, doneCallback):
+    def startSearch(self, searchString, path, doneCallback):
         self.isSearching = True
-        new_thread = Thread(target=self.grep_thread, args=(searchString, path, caseSensitive, doneCallback))
+        new_thread = Thread(target=self.grep_thread, args=(searchString, path, doneCallback))
         new_thread.start()
     
-    def grep_thread(self, searchString, path, caseSensitive, doneCallback):
+    def grep_thread(self, searchString, path, doneCallback):
         self.results = None
         ex = None
         try:
-            self.results = self.ge.grep(searchString, path, self.app.prefs.get('match-limit'), caseSensitive)
+            self.results = self.ge.grep(searchString, path, self.app.prefs.get('match-limit'))
         except Exception as e:
             ex = e
         
-        GObject.idle_add(self.grep_thread_done, ex, caseSensitive)
+        GObject.idle_add(self.grep_thread_done, ex)
         GObject.idle_add(doneCallback, self) # Call main window's callback
     
-    def grep_thread_done(self, exception, caseSensitive):
+    def grep_thread_done(self, exception):
         txtbuf = self.getTextBuffer()
         
         if self.ge.cancelled:
             txtbuf.set_text("The search was cancelled")
         elif self.results:
             try:
-                self.set_results(caseSensitive)
+                self.set_results()
             except Exception as e:
                 print type(e)
                 print traceback.format_exc()
@@ -100,7 +100,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
         self.setSpinner(False)
         self.isSearching = False
     
-    def set_results(self, caseSensitive):
+    def set_results(self, ):
         results = self.results
         
         txtbuf = self.getTextBuffer()
@@ -144,7 +144,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
                     rstr += " "*(max_lnlen-len(r.linenum))
                 rstr += ':'
                 
-            if caseSensitive:
+            if self.ge.case_sensitive:
                 m = re.search(string, r.str)
             else:
                 m = re.search(string, r.str, re.IGNORECASE)

@@ -114,15 +114,16 @@ class ViziGrepWindow(Window):
         self.add_path_history(path)
         self.add_search_history(string)
         
-        # Pass excludes to tab's grep engine # FIXME: handle case sensitivity this way as well.
+        # Pass parameters to tab's grep engine
         tab.ge.exclude_dirs = self.prefs.get('exclude-dirs')
         tab.ge.exclude_files = self.prefs.get('exclude-files')
+        tab.ge.case_sensitive = self.chk_case.get_active()
         
         # Update Tab label widgets
         tab.setTitleText(string + " : " + path)
         tab.setSpinner(True)
 
-        tab.startSearch(string, path, self.chk_case.get_active(), self.set_result_status)
+        tab.startSearch(string, path, self.set_result_status)
 
     def set_result_status(self, tab):
         results = tab.results

@@ -15,13 +15,14 @@ class GrepEngine:
     def __init__(self):
         self.exclude_dirs = []
         self.exclude_files = []
+        self.case_sensitive = True
         self.cancelled = False
 	
-    def grep(self, string, searchPath, max_matches, case_sensitive):
+    def grep(self, string, searchPath, max_matches):
         self.cancelled = False
         self.check_regex(string)
         searchPath = Path.full(searchPath)
-        argList = self.construct_args_list(string, searchPath, case_sensitive)
+        argList = self.construct_args_list(string, searchPath)
         stdErrFile = tempfile.TemporaryFile()
         stdOutFile = tempfile.TemporaryFile()
         
@@ -47,9 +48,9 @@ class GrepEngine:
 
         return self.parse_output(output, max_matches, searchPath, string)
     
-    def construct_args_list(self, string, realPath, case_sensitive):
+    def construct_args_list(self, string, realPath):
         argList = ['/bin/grep', '-Irn']
-        if not case_sensitive:
+        if not self.case_sensitive:
             argList.append('-i')
         argList = argList + self.arg_exclude_list()
 

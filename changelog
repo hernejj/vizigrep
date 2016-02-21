@@ -1,7 +1,10 @@
 1.3
+    * Allow simultaneous searches in separate tabs
     * Auto-navigate to new tab upon creation
+    * Moved Spinner to within tab titles
     * Bugfix: Improve handling of some special chars
     * Bugfix: Unreverse case sensitivty matching
+    * Bugfix: Status bar now shows correct stats when switching tabs
 1.2
     * Add tabbed interface for displaying multiple search results
     * bugfix: Properly handle parenthesis when matching and displaying

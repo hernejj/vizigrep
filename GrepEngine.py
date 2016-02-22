@@ -62,7 +62,7 @@ class GrepEngine:
         if self.grepProc.returncode > 1:
             raise GrepException(errMsg)
 
-        return self.parse_output(output, searchPath, string)
+        return self.parse_output(output, searchPath, string, is_remote)
 
     def build_grep_args(self, string, realPath):
         argList = ['/bin/grep', '-Irn']
@@ -78,10 +78,11 @@ class GrepEngine:
     def build_ssh_args(self, user, host):
         return ['ssh', '-o', 'PasswordAuthentication=no', '-o', 'PubkeyAuthentication=yes', '-o BatchMode=yes', '%s@%s' % (user, host)]
         
-    def parse_output(self, output, searchPath, searchString):
+    def parse_output(self, output, searchPath, searchString, is_remote):
         results = GrepResults()
         results.search_path = searchPath
         results.search_string = searchString
+        results.is_remote = is_remote
         
         for line in output.splitlines():
             (filename, sep, rest) = line.partition(':')

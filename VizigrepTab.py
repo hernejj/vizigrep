@@ -194,7 +194,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
             txtbuf.apply_tag(tag, sitr, eitr)
     
     def activate_result(self, itr):
-        if not self.results: return True
+        if not self.results or self.results.is_remote: return True
         if len(self.results) <= itr.get_line():
             return True
         result = self.results[itr.get_line()]

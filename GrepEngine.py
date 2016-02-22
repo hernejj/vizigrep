@@ -1,4 +1,4 @@
-import subprocess, os, tempfile, time
+import subprocess, os, tempfile, time, re
 import Path
 
 class NoResultsException(Exception):
@@ -19,10 +19,54 @@ class GrepEngine:
         self.max_matches = 0
         self.cancelled = False
 	
+    def remote_params(self, searchPath):
+        # FIXME: Require at least one
+        m = re.match('(.+)@(.+):(.+)', searchPath)
+        if (m):
+            return (m.group(1), m.group(2), m.group(3))
+        return (None, None, None)
+	    
     def grep(self, string, searchPath):
+        (user, host, r_path) = self.remote_params(searchPath)
+        is_remote = (user != None) 
+        if is_remote: searchPath = r_path
+        
         self.cancelled = False
         self.check_regex(string)
         searchPath = Path.full(searchPath)
+                
+        if is_remote:
+            return self.grep_remote(string, searchPath, user, host)
+        return self.grep_local(string, searchPath)
+    
+    def grep_remote(self, string, searchPath, user, host):
+        argList = ['ssh', '-o', 'PasswordAuthentication=no', '-o', 'PubkeyAuthentication=yes', '-o BatchMode=yes', '%s@%s' % (user, host)] + self.construct_args_list(string, searchPath)
+        stdErrFile = tempfile.TemporaryFile()
+        stdOutFile = tempfile.TemporaryFile()
+        
+        self.grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
+        self.grepProc.wait()
+        
+        # Handle case where operation was cancelled
+        if self.grepProc.returncode < 0:
+            return
+        
+        # Read data from stdout/stderror
+        stdOutFile.seek(0)
+        output = stdOutFile.read().decode('utf-8', 'replace')
+        stdOutFile.close()
+        stdErrFile.seek(0)
+        errMsg = stdErrFile.read()
+        stdErrFile.close()
+        
+        if self.grepProc.returncode == 1:
+            raise NoResultsException()
+        if self.grepProc.returncode > 1:
+            raise GrepException(errMsg)
+
+        return self.parse_output(output, searchPath, string)
+
+    def grep_local(self, string, searchPath):
         argList = self.construct_args_list(string, searchPath)
         stdErrFile = tempfile.TemporaryFile()
         stdOutFile = tempfile.TemporaryFile()

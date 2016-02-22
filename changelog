@@ -1,5 +1,6 @@
 1.3
     * Allow simultaneous searches in separate tabs
+    * Remote searches via ssh (key based authentication)
     * Auto-navigate to new tab upon creation
     * Moved Spinner to within tab titles
     * Bugfix: Improve handling of some special chars

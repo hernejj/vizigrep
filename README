@@ -39,6 +39,19 @@ the filenames will open that file in your chosen text editor.  You may also hold
 down the Shift key and use the arrow keys to select and copy a portion of the
 results.
 
+A new search Tab can be created via keyboard shortcut Ctrl+T.
+A search Tab can be closed via keyboard shortcut Ctrl+W.
+
+Remote Search
+---------------
+Vizigrep supports searching files on remote systems via ssh. Before using this
+feature you will need to ensure that key based authentication is set up between
+your system and the system containing the files you wish to search. For more
+information see: https://help.ubuntu.com/community/SSH/OpenSSH/Keys.
+
+To perform a remote search you should specify your search path as follows:
+    user@host:/path/to/remote/files
+
 License
 -------------
 This application is released under the GNU General Public License v2. A full

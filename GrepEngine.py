@@ -18,6 +18,7 @@ class GrepEngine:
         self.case_sensitive = True
         self.max_matches = 0
         self.cancelled = False
+        self.is_remote = False
 	
     def remote_params(self, searchPath):
         m = re.match('(.+)@(.+):(.+)', searchPath)
@@ -27,8 +28,8 @@ class GrepEngine:
 	    
     def grep(self, string, searchPath):
         # Figure out if we're executig a local grep, or remote grep via ssh
-        (user, host, searchPath) = self.remote_params(searchPath)
-        is_remote = (user != None) 
+        #(user, host, searchPath) = self.remote_params(searchPath)
+        #self.is_remote = (user != None) 
         
         self.cancelled = False
         self.check_regex(string)
@@ -36,7 +37,7 @@ class GrepEngine:
     
         # Construct args for grep command execution
         argList = self.build_grep_args(string, searchPath)
-        if is_remote:
+        if self.is_remote:
             argList = self.build_ssh_args(user, host) + argList
         
         # Run command   
@@ -62,7 +63,7 @@ class GrepEngine:
         if self.grepProc.returncode > 1:
             raise GrepException(errMsg)
 
-        return self.parse_output(output, searchPath, string, is_remote)
+        return self.parse_output(output, searchPath, string, self.is_remote)
 
     def build_grep_args(self, string, realPath):
         argList = ['/bin/grep', '-Irn']

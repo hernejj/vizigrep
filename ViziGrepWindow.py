@@ -207,7 +207,7 @@ class ViziGrepWindow(Window):
             return True
     
     def results_mouse_motion(self, txtview, event):
-        if self.getActiveTab().results.is_remote: return True
+        if self.getActiveTab().results and self.getActiveTab().results.is_remote: return True
         (cx, cy) = txtview.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, event.x, event.y)
         itr = txtview.get_iter_at_location(cx, cy)
 

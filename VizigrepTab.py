@@ -17,6 +17,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
         self.isSearching = False
         
         newTextView = Gtk.TextView()
+        newTextView.set_editable(False)
         self.createTags(newTextView.get_buffer())
         self.add(newTextView)
         self.notebook.append_page(self)

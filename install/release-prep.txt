@@ -4,27 +4,34 @@ Things to do to make a release
 
 2. Update .version with correction version number
 
-3. Test release:
+3. Update debian/changelog
+  
+  3a. Create new section in changelog for this version
+      cd install/ubuntu-installer/
+      dch --check-dirname-level 0 --newversion 1.2-1
+  
+  3b. Change "UNRELEASED; urgency=medium" to "unstable; urgency=low"
 
-    3a. cd install/ubuntu-installer/
+  3c. Fill in changelog with needed bullet points.
+    
+4. Test release:
+
+    4a. cd install/ubuntu-installer/
         ./make-test-tgz.sh
         
-    3b. Create test deb.
+    4b. Create test deb.
         cd install/ubuntu-installer/
         ./make-deb.sh
     
-    3c. Install and test install/ubuntu-installer/deb/vizigrep_____.deb
+    4c. Install and test install/ubuntu-installer/deb/vizigrep_____.deb
 
-4. Ensure install/ubuntu-installer/debian/changelog is up to date and contains
-   a section for the new release
-   
-5. Commit the above changes, tag release and push to Github.
+6. Commit the above changes, tag release and push to Github.
    git commit -a -m'Release v1.2'
    git tag v1.2
    git push
    git push origin --tags
 
-6. Make deb install data
+7. Make deb install data
    cd install/ubuntu-installer/
    rm v1.2.tar.gz
    ./make-deb.sh

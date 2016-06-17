@@ -122,7 +122,7 @@ class testCases(unittest.TestCase):
     #    self.assertTrue(len(results) == 2)
     #    self.checkResult(results[0], 'xpad.c', "	status = urb->status;", '637')
     #    self.checkResult(results[1], 'xpad.c', "	status = urb->status;", '706')
-    
+
     def checkResult(self, result, fn, line, linenum):
         self.assertTrue(result.fn == fn)
         self.assertTrue(result.str == line)

@@ -48,7 +48,7 @@ class testCases(unittest.TestCase):
         self.assertTrue(matched_text == expected_match)
     
     def escape_regex_str(self, regex):
-        if '\\' in regex: 
+        if '\\' in regex:
             regex = regex.replace('\\', '\\\\')  # Escape \
         return regex
 ##########

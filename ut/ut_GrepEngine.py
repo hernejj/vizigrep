@@ -50,7 +50,6 @@ class testCases(unittest.TestCase):
         self.assertTrue(len(results) == 1)
         self.checkResult(results[0], 'Space File', 'space_marker', '1')
         
-    
     ### Broken Regex ###
     
     def testStartsWithStar(self):

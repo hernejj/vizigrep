@@ -6,11 +6,11 @@ DOCDIR = $(DESTDIR)/usr/share/doc/vizigrep
 clean:
 	rm -f *.py[co] */*.py[co]
 install:
-	mkdir -p $(BINDIR)
-	mkdir -p $(MANDIR)
-	mkdir -p $(SHAREDIR)
-	mkdir -p $(APPSDIR)
-	mkdir -p $(DOCDIR)
+	install -d $(BINDIR)
+	install -d $(MANDIR)
+	install -d $(SHAREDIR)
+	install -d $(APPSDIR)
+	install -d $(DOCDIR)
 	cp  *.py $(SHAREDIR)/
 	cp -r guiapp $(SHAREDIR)/
 	cp -r ui $(SHAREDIR)/

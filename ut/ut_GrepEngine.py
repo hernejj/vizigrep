@@ -1,8 +1,8 @@
 #!/usr/bin/python
-import unittest, sys, os, shutil
+import unittest, sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, GrepException, BadRegexException
+from GrepEngine import GrepEngine, NoResultsException, GrepException, BadRegexException
 
 class testCases(unittest.TestCase):
 
@@ -22,7 +22,7 @@ class testCases(unittest.TestCase):
 
     def testNoMatches(self):
         with self.assertRaises(NoResultsException):
-            results = self.ge.grep('idonotexistidonotexistidonotexist', self.path)
+            self.ge.grep('idonotexistidonotexistidonotexist', self.path)
 
     def testIgnoreDirSimple(self):
         self.ge.exclude_dirs.append('FolderA')
@@ -35,12 +35,12 @@ class testCases(unittest.TestCase):
     def testIgnoreDirWithSpaceInPath(self):
         self.ge.exclude_dirs.append('Space A')
         with self.assertRaises(NoResultsException):
-            results = self.ge.grep('space_marker', self.path)
+            self.ge.grep('space_marker', self.path)
         self.ge.exclude_dirs = []
         
     def testGrepGivesErrorMessage(self):
         with self.assertRaises(GrepException):
-            results = self.ge.grep('a[]b', self.path)
+            self.ge.grep('a[]b', self.path)
     
     ### Search path ###
     
@@ -55,23 +55,23 @@ class testCases(unittest.TestCase):
     
     def testStartsWithStar(self):
         with self.assertRaises(BadRegexException):
-            results = self.ge.grep('*foo', self.path)
+            self.ge.grep('*foo', self.path)
 
     def testDoubleStar(self):
         with self.assertRaises(BadRegexException):
-            results = self.ge.grep('foo**', self.path)
+            self.ge.grep('foo**', self.path)
         
     def testEmptyString(self):
         with self.assertRaises(BadRegexException):
-            results = self.ge.grep('', self.path)
+            self.ge.grep('', self.path)
     
     def testAllDots(self):
         with self.assertRaises(BadRegexException):
-            results = self.ge.grep('...', self.path)
+            self.ge.grep('...', self.path)
             
     def testDotStar(self):
         with self.assertRaises(BadRegexException):
-            results = self.ge.grep('.*', self.path)
+            self.ge.grep('.*', self.path)
             
     ### Test Special Chars & Shell Escaping ###
     

@@ -1,8 +1,8 @@
 #!/usr/bin/python
-import unittest, sys, os, shutil, getpass
+import unittest, sys, os, getpass
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from GrepEngine import GrepEngine, GrepResult, GrepResults, NoResultsException, GrepException, BadRegexException
+from GrepEngine import GrepEngine, NoResultsException
 
 class testCases(unittest.TestCase):
 
@@ -25,7 +25,7 @@ class testCases(unittest.TestCase):
 
     def testNoMatches(self):
         with self.assertRaises(NoResultsException):
-            results = self.ge.grep('idonotexistidonotexistidonotexist', self.path)
+            self.ge.grep('idonotexistidonotexistidonotexist', self.path)
 
     def testIgnoreDirSimple(self):
         self.ge.exclude_dirs.append('FolderA')

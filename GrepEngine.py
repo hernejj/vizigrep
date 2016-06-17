@@ -1,4 +1,4 @@
-import subprocess, os, tempfile, time, re
+import subprocess, tempfile, re
 import Path
 
 class NoResultsException(Exception):
@@ -37,8 +37,8 @@ class GrepEngine:
     
         # Construct args for grep command execution
         argList = self.build_grep_args(string, searchPath)
-        if self.is_remote:
-            argList = self.build_ssh_args(user, host) + argList
+        #if self.is_remote:
+        #    argList = self.build_ssh_args(user, host) + argList
         
         # Run command   
         stdErrFile = tempfile.TemporaryFile()

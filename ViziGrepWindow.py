@@ -28,10 +28,10 @@ class ViziGrepWindow(Window):
         self.initNotebook()
         self.initNewTab()
 
-    # GtkComboBoxes have an internal GtkToggleButton widget that accepts focus. This is 
+    # GtkComboBoxes have an internal GtkToggleButton widget that accepts focus. This is
     # quite annoying to a user trying to navigate via keyboard so we disable it's focus.
     def cbox_disable_togglebutton_focus(self, widget, data):
-        if isinstance(widget,Gtk.ToggleButton):
+        if isinstance(widget, Gtk.ToggleButton):
             widget.set_can_focus(False)
 
     def activate(self):
@@ -70,7 +70,7 @@ class ViziGrepWindow(Window):
             # If a number key was pressed, switch to corresponding tab
             numberPressed = self.__GdkNumKey2Int(kb_event.keyval)
             if numberPressed:
-                self.notebook.set_current_page(numberPressed-1)
+                self.notebook.set_current_page(numberPressed - 1)
                 return True
         return False
     
@@ -178,7 +178,7 @@ class ViziGrepWindow(Window):
         if len(search_list) > 0:
             self.cbox_search.get_child().set_text(search_list[0])
         for string in search_list:
-            self.cbox_search.append_text(string)        
+            self.cbox_search.append_text(string)
         
     def reload_path_box(self):
         self.cbox_path.get_model().clear()
@@ -222,20 +222,20 @@ class ViziGrepWindow(Window):
 
     def options_clicked(self, lbl):
         PreferencesWindow(self.app).activate()
-        return True #Prevents attempted activation of link button's URI
+        return True # Prevents attempted activation of link button's URI
     
     def new_tab_clicked(self, lbl=None):
         tabIdx = self.initNewTab()
         self.notebook.show_all()
         self.notebook.set_current_page(tabIdx)
-        return True #Prevents attempted activation of link button's URI
+        return True # Prevents attempted activation of link button's URI
     
     def close_tab_clicked(self, lbl=None):
         tab = self.getActiveTab()
         if tab.isSearching:
             tab.ge.cancel()
         self.deleteActiveTab()
-        return True #Prevents attempted activation of link button's URI
+        return True # Prevents attempted activation of link button's URI
     
     def switched_tab(self, notebook, junkPagePtr, pageIdx):
         tab = notebook.get_nth_page(pageIdx)

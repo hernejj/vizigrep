@@ -67,5 +67,3 @@ class Preferences:
     def list_sort(self, prefname):
         self.pdict[prefname] = self.get(prefname)
         self.pdict[prefname].sort()
-            
-

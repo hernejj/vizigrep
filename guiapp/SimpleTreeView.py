@@ -24,12 +24,12 @@ class SimpleTreeView:
     
     def get_selected(self):
         model, itr = self.tv.get_selection().get_selected()
-        if (itr == None): return None
+        if (itr is None): return None
         return model.get_value(itr, self.selected_col_id)
     
     def get_selected_path(self):
         model, itr = self.tv.get_selection().get_selected()
-        if (itr == None): return None
+        if (itr is None): return None
         return model.get_path(itr)
     
     def get_topmost_path(self):
@@ -89,7 +89,7 @@ class SimpleTreeView:
     def select_item(self, item):
         model = self.tv.get_model()
         itr = model.get_iter_first()
-        if (itr == None): return False
+        if (itr is None): return False
         
         itemItr = self.search_for_item(model, itr, item)
         if itemItr:

@@ -11,7 +11,7 @@ class SuperGtkBuilder(Gtk.Builder):
         self.populate_window_with_ui_elements(window_object)
 
     # Create a data-member in window_object to represent each ui element
-    # found in the GtkBuilder UI file.            
+    # found in the GtkBuilder UI file.
     def populate_window_with_ui_elements(self, window_object):
         for ui_element in self.get_objects():
             if isinstance(ui_element, Gtk.TreeSelection): continue

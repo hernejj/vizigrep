@@ -59,7 +59,7 @@ class PreferencesWindow(Window):
         else:
             self.prefs.set('editor', custom_editor_cmd)
         
-    def load_linenum(self):    
+    def load_linenum(self):
         self.chk_linenum.set_active(self.prefs.get('show-line-numbers'))
 
     def save_linenum(self):
@@ -72,7 +72,7 @@ class PreferencesWindow(Window):
         self.prefs.set('alternate-row-color', self.chk_alternate_row_color.get_active())
         
     def init_files_list(self):
-        column = Gtk.TreeViewColumn("File Name",  Gtk.CellRendererText(), text=0)
+        column = Gtk.TreeViewColumn("File Name", Gtk.CellRendererText(), text=0)
         self.tree_files.append_column(column)
 
     def add_file(self, btn):
@@ -96,7 +96,7 @@ class PreferencesWindow(Window):
     
     def remove_file(self, btn):
         model, itr = self.tree_files.get_selection().get_selected()
-        if (itr == None): return True
+        if (itr is None): return True
         
         text = self.tree_files.get_model().get_value(itr, 0)
         self.prefs.list_remove('exclude-files', text)
@@ -117,7 +117,7 @@ class PreferencesWindow(Window):
         self.prefs.set('exclude-files', lst)
         
     def init_dirs_list(self):
-        column = Gtk.TreeViewColumn("Folder Name",  Gtk.CellRendererText(), text=0)
+        column = Gtk.TreeViewColumn("Folder Name", Gtk.CellRendererText(), text=0)
         self.tree_dirs.append_column(column)
     
     def add_dir(self, btn):
@@ -141,13 +141,12 @@ class PreferencesWindow(Window):
     
     def remove_dir(self, btn):
         model, itr = self.tree_dirs.get_selection().get_selected()
-        if (itr == None): return True
+        if (itr is None): return True
         
         text = self.tree_dirs.get_model().get_value(itr, 0)
         self.prefs.list_remove('exclude-dirs', text)
         self.load_dirs_list()
         return True
-
 
     def load_dirs_list(self):
         model = Gtk.ListStore(str)
@@ -168,7 +167,7 @@ class PreferencesWindow(Window):
         if match_limit == 0:
             self.chk_matchlimit.set_active(False)
             self.txt_matchlimit.set_text('')
-        else:    
+        else:
             self.chk_matchlimit.set_active(True)
             self.txt_matchlimit.set_text(str(match_limit))
     
@@ -182,5 +181,3 @@ class PreferencesWindow(Window):
             self.prefs.set('match-limit', mint)
         else:
             self.prefs.set('match-limit', 0)
-        
-        

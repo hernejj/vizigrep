@@ -7,7 +7,7 @@ from gi.repository import Gtk, GObject
 # message boxes to the user and getting a button-clicked type response. It can be
 # used in the main thread (gtk main) or in a 2ndary thread. All message boxes are
 # modal which means the rest of the GUI is unresponsive while a message box is being
-# displayed. Also, code execution blocks which waiting for the user's response to 
+# displayed. Also, code execution blocks which waiting for the user's response to
 # the message box.
 #
 # THREADING NOTE: While each mbox function can work in a threaded environment, this
@@ -37,7 +37,7 @@ from gi.repository import Gtk, GObject
 #   Gtk.ResponseType.NO     - "NO" button clicked
 #
 #
-class mbox: 
+class mbox:
     # Indicates the user's response to the message box (which button was clicked).
     response = None
     log = None
@@ -45,9 +45,8 @@ class mbox:
     # Creates an "error" dialog with a window title "Error" and a single close
     # button. The given message is displayed to the user.
     def error(self, message_text, threaded=False):
-       if self.log: self.log.error(message_text)
-       return self.mbox(Gtk.MessageType.QUESTION, message_text, "Error", Gtk.ButtonsType.CLOSE, threaded)
-
+        if self.log: self.log.error(message_text)
+        return self.mbox(Gtk.MessageType.QUESTION, message_text, "Error", Gtk.ButtonsType.CLOSE, threaded)
 
     # Creates a dialog to ask the user a yes/no question. Yes and No buttons are
     # presented to the user.
@@ -95,7 +94,7 @@ class mbox:
         mbox.set_position(Gtk.WindowPosition.CENTER)
         
         # Set window title, if it exists
-        if (window_title != None): mbox.set_title(window_title)
+        if (window_title is not None): mbox.set_title(window_title)
 
         # Display  message box and collect response
         response = mbox.run()
@@ -117,7 +116,7 @@ class mbox:
         mbox.set_position(Gtk.WindowPosition.CENTER)
 
         # Set window title, if it exists
-        if (window_title != None): mbox.set_title(window_title)
+        if (window_title is not None): mbox.set_title(window_title)
 
         # Clear any previous response
         self.response = None
@@ -128,13 +127,13 @@ class mbox:
         GObject.idle_add(mbox.show)
 
         # Await response, then return it  FIXME: Can I do this??
-        while (self.response == None): time.sleep(0.1)  
+        while (self.response is None): time.sleep(0.1)
         return self.response
 
     # The user clicked a button on the mbox. We'll save the response that indicates
     # which button the user clicked and destroy the mbox.
     def mbox_t_response(self, mbox, response_id):
-        self.response = response_id  #fixme: need lock!
+        self.response = response_id  # fixme: need lock!
         mbox.destroy()
         return False
 
@@ -147,4 +146,3 @@ class mbox:
         response = self.error(message_text, threaded)
         Gtk.main_quit()
         return response
-

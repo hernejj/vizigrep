@@ -4,7 +4,7 @@ from SuperGtkBuilder import SuperGtkBuilder
 class Window:
 
     # The Window this object represents.
-    gtk_window = None           
+    gtk_window = None
 
     # GtkBuilder object containing GUI elements.
     builder = None

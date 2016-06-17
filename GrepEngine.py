@@ -19,17 +19,17 @@ class GrepEngine:
         self.max_matches = 0
         self.cancelled = False
         self.is_remote = False
-	
+
     def remote_params(self, searchPath):
         m = re.match('(.+)@(.+):(.+)', searchPath)
         if (m):
             return (m.group(1), m.group(2), m.group(3))
         return (None, None, searchPath)
-	    
+
     def grep(self, string, searchPath):
         # Figure out if we're executig a local grep, or remote grep via ssh
         #(user, host, searchPath) = self.remote_params(searchPath)
-        #self.is_remote = (user != None) 
+        #self.is_remote = (user != None)
         
         self.cancelled = False
         self.check_regex(string)
@@ -40,7 +40,7 @@ class GrepEngine:
         #if self.is_remote:
         #    argList = self.build_ssh_args(user, host) + argList
         
-        # Run command   
+        # Run command
         stdErrFile = tempfile.TemporaryFile()
         stdOutFile = tempfile.TemporaryFile()
         self.grepProc = subprocess.Popen(argList, stdout=stdOutFile, stderr=stdErrFile)
@@ -75,16 +75,16 @@ class GrepEngine:
         argList.append(string)
         argList.append(realPath)
         return argList
-    
+
     def build_ssh_args(self, user, host):
         return ['ssh', '-o', 'PasswordAuthentication=no', '-o', 'PubkeyAuthentication=yes', '-o BatchMode=yes', '%s@%s' % (user, host)]
-        
+
     def parse_output(self, output, searchPath, searchString, is_remote):
         results = GrepResults()
         results.search_path = searchPath
         results.search_string = searchString
         results.is_remote = is_remote
-        
+
         for line in output.splitlines():
             (filename, sep, rest) = line.partition(':')
             (linenum, sep, text) = rest.partition(':')
@@ -111,7 +111,7 @@ class GrepEngine:
             raise BadRegexException("Search string cannot start with *")
         if '**' in regex:
             raise BadRegexException("Search string cannot contain **")
-        if regex.strip().replace('.','') == '':
+        if regex.strip().replace('.', '') == '':
             raise BadRegexException("Search string is way too vague")
         if regex.strip() == '.*':
             raise BadRegexException("Search string is way too vague")
@@ -168,4 +168,3 @@ class GrepResults(list):
                 count += 1
                 fdict[r.fn] = True
         return count
-        

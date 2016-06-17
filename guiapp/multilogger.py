@@ -66,7 +66,7 @@ class MultiLogger:
             print e
             return False
 
-        # Remember path to log file.        
+        # Remember path to log file.
         self.logfile_path = logfile_path
         
         return True
@@ -138,12 +138,12 @@ class MultiLogger:
         self.logfile = None
         self.logfile_lock.release()
 
-    # Writes a given piece of data (meant to be a single line of text) to the log file. 
+    # Writes a given piece of data (meant to be a single line of text) to the log file.
     # The data will be prepended with date/time information and a component identifier.
     def write(self, data, level='Info', component=None):
 
         # Get component (if it exists) ==> caller's class
-        if component == None:
+        if component is None:
             try:
                 component = str(inspect.stack()[1][0].f_locals['self'].__module__)
             except KeyError:
@@ -154,7 +154,7 @@ class MultiLogger:
         if (not self.logfile): return
 
         # Get the date/time this data is being logged.
-        time_str = time.asctime()        
+        time_str = time.asctime()
 
         # Concatenate time, componenet and data
         log_line = '{0} [{1:8.8}] - {2:18.18} : {3}'.format(time_str, level, component, data)
@@ -192,4 +192,4 @@ class MultiLogger:
         component = component.replace(' ', '') # Remove spaces
         component = component.ljust(18)[0:18] # Ensure string is exactly 18 characters
     
-        self.write(data.replace('\n',' \\n '), level='Error', component=component)
+        self.write(data.replace('\n', ' \\n '), level='Error', component=component)

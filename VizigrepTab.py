@@ -132,17 +132,17 @@ class VizigrepTab(Gtk.ScrolledWindow):
             
             # Spaces to pad out filename
             if max_fnlen > len(r.fn):
-                rstr += ' '*(max_fnlen-len(r.fn))
+                rstr += ' ' * (max_fnlen - len(r.fn))
             
             # : after filename
             rstr += ':'
         
-            # Line number and : 
+            # Line number and :
             if (self.app.prefs.get('show-line-numbers')):
                 taglist.append( (len(rstr), len(r.linenum), tag_green) )
                 rstr += r.linenum
                 if max_lnlen > len(r.linenum):
-                    rstr += " "*(max_lnlen-len(r.linenum))
+                    rstr += " " * (max_lnlen - len(r.linenum))
                 rstr += ':'
                 
             if self.ge.case_sensitive:
@@ -163,7 +163,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
             
             # Spaces to pad out line contents
             if max_txtlen > len(r.str):
-                rstr += ' '*(max_txtlen-len(r.str))
+                rstr += ' ' * (max_txtlen - len(r.str))
             
             rstr += '\n'
             
@@ -172,7 +172,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
             if (self.app.prefs.get('alternate-row-color')):
                 if (lineNum % 2 == 1):
                     taglist.append( (lineStartIdx, lineLength, tag_bg1) )
-            lineNum+=1
+            lineNum += 1
             
         txtbuf.set_text(rstr)
         self.apply_tags(txtbuf, rstr, taglist)
@@ -191,7 +191,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
         for tagtuple in taglist:
             (sidx, length, tag) = tagtuple
             sitr = txtbuf.get_iter_at_offset(sidx)
-            eitr = txtbuf.get_iter_at_offset(sidx+length)
+            eitr = txtbuf.get_iter_at_offset(sidx + length)
             txtbuf.apply_tag(tag, sitr, eitr)
     
     def activate_result(self, itr):
@@ -200,7 +200,7 @@ class VizigrepTab(Gtk.ScrolledWindow):
             return True
         result = self.results[itr.get_line()]
         
-        for tag in itr.get_tags(): #FIXME: Create a findTagByType function?
+        for tag in itr.get_tags(): # FIXME: Create a findTagByType function?
             if tag.get_property('name') == 'link':
                 (itr, itr_end) = self.get_tag_pos(itr, tag)
                 filename = self.getTextBuffer().get_text(itr, itr_end, False)
@@ -231,4 +231,3 @@ class VizigrepTab(Gtk.ScrolledWindow):
             itr_end.forward_char()
 
         return (itr, itr_end)
-

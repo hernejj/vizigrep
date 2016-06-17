@@ -2,7 +2,7 @@
 Name=vizigrep
 GenericName=Vizigrep
 Comment=Search text files
-Keywords=vizigrep;grep;search
+Keywords=vizigrep;grep;search;
 Exec=vizigrep
 Terminal=false
 Type=Application

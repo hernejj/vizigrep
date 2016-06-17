@@ -5,7 +5,7 @@ required for uploading the package to a Debian repository. The output files are
 put into ./deb.
 
 make-deb.sh has a few dependencies. Make sure to install them:
-    devscripts python-all-dev debhelper dh-python
+    devscripts build-essential python-all-dev debhelper dh-python lintian lintian4python
 
 This script downloads a source package from the project's Github page. By default
 it will use the package obtained by downloading the tag v$VERSION where $VERSION

@@ -96,8 +96,8 @@ class GrepEngine:
             
             # Ignore case where we have malformed data in output
             try:
-                lnstr = int(linenum)
-            except Exception as e:
+                int(linenum)
+            except:
                 continue
             
             results.append(GrepResult(Path.relativeTo(filename, searchPath), text, linenum))

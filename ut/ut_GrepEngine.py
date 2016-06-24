@@ -29,8 +29,8 @@ class testCases(unittest.TestCase):
         results = self.ge.grep('file', self.path)
         self.ge.exclude_dirs = []
         self.assertTrue(len(results) == 2)
-        self.checkResult(results[0], "File1", "This is a test file", "1")
-        self.checkResult(results[1], "File2", "Another file!", "1")
+        self.checkResult(results[1], "File1", "This is a test file", "1")
+        self.checkResult(results[0], "File2", "Another file!", "1")
     
     def testIgnoreDirWithSpaceInPath(self):
         self.ge.exclude_dirs.append('Space A')

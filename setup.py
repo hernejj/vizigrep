@@ -18,12 +18,17 @@ class CleanCommand(Command):
     def run(self):
         os.system('rm -rf ./build ./dist ./*.egg-info')
 
-#data_files=[('ui', ['ui/vizigrep.glade', 'ui/prefs-window.glade'])],
 setup(name='vizigrep',
       version='1.3.0',
       packages=['vizigrep', 'vizigrep.guiapp'],
       cmdclass={'clean': CleanCommand},
       package_data={'vizigrep': ['ui/*']},
+
+      # This puts the .desktop file int /usr/share/applications when run via
+      # debuild. When we run ./setup.py install manually then it gets places in
+      # the module installation folder: /usr/local/lib/python2.7/dist-packages/vizigrep-*/share/
+      data_files=[('share/applications', ['vizigrep.desktop'])],
+
       entry_points={
           'gui_scripts': [
               'vizigrep = vizigrep.main:main'

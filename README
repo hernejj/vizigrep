@@ -21,6 +21,11 @@ command or start vizigrep from your desktop's application menu.
 If you have cloned the Git repository and would like to run vizigrep from the
 cloned copy simply run 'python run.py'.
 
+./setup.py install is not meant to be run directly. You can do it, but the icon
+and .desktop files are not properly installed. It is best to either run from the
+cloned copy or generate and install the deb package. See
+install/ubuntu-installer/readme.txt for details.
+
 Navigation
 ------------
 Vizigrep is very intuitively navigated using only the mouse.  Simply choose a 

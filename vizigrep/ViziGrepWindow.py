@@ -5,8 +5,10 @@ from PreferencesWindow import PreferencesWindow
 from VizigrepTab import VizigrepTab
 import Path
 
+import os
+
 class ViziGrepWindow(Window):
-    gtk_builder_file   = "ui/vizigrep.glade"
+    gtk_builder_file   = os.path.join(os.path.dirname(__file__), 'ui', 'vizigrep.glade')
     window_name        = "win_main"
 
     def __init__(self, app):

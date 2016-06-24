@@ -2,8 +2,10 @@ from gi.repository import Gtk
 
 from guiapp.Window import Window
 
+import os
+
 class PreferencesWindow(Window):
-    gtk_builder_file   = "ui/prefs-window.glade"
+    gtk_builder_file   = os.path.join(os.path.dirname(__file__), 'ui', 'prefs-window.glade')
     window_name        = "win_prefs"
 
     def __init__(self, app):

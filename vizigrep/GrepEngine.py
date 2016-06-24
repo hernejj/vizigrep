@@ -137,6 +137,9 @@ class GrepResult():
         self.fn = filename
         self.str = result_string
         self.linenum = linenum
+    
+    def __str__(self):
+        return '%s:%s    %s' % (self.fn, self.linenum, self.str)
 
 class GrepResults(list):
     def max_fnlen(self):

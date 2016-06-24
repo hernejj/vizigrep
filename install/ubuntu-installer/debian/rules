@@ -1,36 +1,7 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
-build: build-arch build-indep
-build-arch:
-build-indep: build-stamp
-build-stamp:
-	dh_testdir
-	$(MAKE)
-	touch $@
-clean:
-	dh_testdir
-	dh_testroot
-	dh_clean
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	$(MAKE) DESTDIR=$(CURDIR)/debian/vizigrep install
-binary-arch:
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs
-	dh_installdocs
-	dh_installexamples
-	dh_compress
-	dh_python2
-	dh_link
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-binary: binary-indep
-.PHONY: build clean binary-indep binary install configure
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export PYBUILD_NAME=vizigrep
+%:
+	dh $@ --with python2 --buildsystem=pybuild

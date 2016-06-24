@@ -19,8 +19,7 @@ If you installed Vizigrep you should be able to simply execute the 'vizigrep'
 command or start vizigrep from your desktop's application menu.
 
 If you have cloned the Git repository and would like to run vizigrep from the
-cloned copy simply run 'python vizigrep'.  The folder containing the code must
-be your current working directory for this to work.
+cloned copy simply run 'python run.py'.
 
 Navigation
 ------------

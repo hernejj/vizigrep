@@ -24,10 +24,14 @@ setup(name='vizigrep',
       cmdclass={'clean': CleanCommand},
       package_data={'vizigrep': ['ui/*']},
 
-      # This puts the .desktop file int /usr/share/applications when run via
-      # debuild. When we run ./setup.py install manually then it gets places in
-      # the module installation folder: /usr/local/lib/python2.7/dist-packages/vizigrep-*/share/
-      data_files=[('share/applications', ['vizigrep.desktop'])],
+      # These files go to the right location when we run via debuild. However,
+      # When we run ./setup.py install manually then their install locations are
+      # relative to the module installation folder:
+      # /usr/local/lib/python2.7/dist-packages/vizigrep-*/share/
+      data_files=[
+          ('share/applications', ['vizigrep.desktop']),
+          ('share/vizigrep', ['vizigrep.svg']),
+      ],
 
       entry_points={
           'gui_scripts': [

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import unittest, sys, os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'vizigrep')))
 from GrepEngine import GrepEngine, NoResultsException, GrepException, BadRegexException
 
 class testCases(unittest.TestCase):

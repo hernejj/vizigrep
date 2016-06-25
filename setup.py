@@ -31,6 +31,7 @@ setup(name='vizigrep',
       data_files=[
           ('share/applications', ['vizigrep.desktop']),
           ('share/vizigrep', ['vizigrep.svg']),
+          ('share/doc/vizigrep', ['changelog']),
       ],
 
       entry_points={

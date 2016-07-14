@@ -27,6 +27,11 @@ class ViziGrepWindow(Window):
         self.cbox_path.forall(self.cbox_disable_togglebutton_focus, None)
         self.cbox_search.forall(self.cbox_disable_togglebutton_focus, None)
         
+        self.lbl_path.set_has_tooltip(False)
+        self.lbl_options.set_has_tooltip(False)
+        self.lbl_new_tab.set_has_tooltip(False)
+        self.lbl_close_tab.set_has_tooltip(False)
+
         self.initNotebook()
         self.initNewTab()
 

@@ -1,3 +1,5 @@
+import gi
+gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GObject, GtkSource
 
 # GtkBuilder that will populate the given object (representing a Window) with

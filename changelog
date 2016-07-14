@@ -1,3 +1,5 @@
+1.4
+  * Gtk: Minor Gtk style and api fixes
 1.3
   * Allow simultaneous searches in separate tabs
   * Auto-navigate to new tab upon creation

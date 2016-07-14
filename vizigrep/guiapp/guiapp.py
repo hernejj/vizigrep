@@ -27,7 +27,9 @@ class GuiApp:
     def initLogging(self):
         self.logFilePath = os.path.join(self.appHomeDir, self.shortName + '.log')
         self.log = multilogger.MultiLogger()
-        self.log.open_logfile(self.logFilePath)
+        
+        if not self.log.open_logfile(self.logFilePath):
+            self.log = None
 
     def initPrefs(self):
         self.prefsFilePath = os.path.join(self.appHomeDir, self.shortName + '.prefs')

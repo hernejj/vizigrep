@@ -40,7 +40,7 @@ class Preferences:
             pickle.dump(self.pdict, f)
             f.close()
         except Exception as e:
-            raise e
+            print e
 
     def get(self, prefname):
         if prefname in self.pdict:

@@ -16,6 +16,7 @@ def main(args=None):
     app.mbox.log = app.log # FIXME: Silly to have this here
 
     GObject.threads_init()
+    app.checkAppHomeDirPermissions()
     vgw = ViziGrepWindow(app)
     vgw.activate()
     Gtk.main()

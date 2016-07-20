@@ -41,9 +41,12 @@ class ViziGrepWindow(Window):
         if isinstance(widget, Gtk.ToggleButton):
             widget.set_can_focus(False)
 
-    def activate(self):
+    def activate(self, searchPath=None):
         self.reload_search_box()
         self.reload_path_box()
+        if searchPath:
+            self.cbox_path.get_child().set_text(Path.pretty(searchPath))
+        
         self.chk_case.set_active(self.prefs.get('case-sensitive'))
         self.cbox_search.get_child().grab_focus()
         self.gtk_window.show_all()

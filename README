@@ -26,6 +26,9 @@ and .desktop files are not properly installed. It is best to either run from the
 cloned copy or generate and install the deb package. See
 install/ubuntu-installer/readme.txt for details.
 
+Vizigrep accepts an optional command line argument that, if specified, will be
+used to populate the search path field.
+
 Navigation
 ------------
 Vizigrep is very intuitively navigated using only the mouse.  Simply choose a 

@@ -19,7 +19,7 @@ class CleanCommand(Command):
         os.system('rm -rf ./build ./dist ./*.egg-info')
 
 setup(name='vizigrep',
-      version='1.3',
+      version='1.4',
       packages=['vizigrep', 'vizigrep.guiapp'],
       cmdclass={'clean': CleanCommand},
       package_data={'vizigrep': ['ui/*']},

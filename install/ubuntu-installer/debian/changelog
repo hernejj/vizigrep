@@ -1,3 +1,11 @@
+vizigrep (1.4-1) unstable; urgency=low
+
+  * Added command line argument to set search path on startup
+  * Gtk: Minor Gtk style and api fixes
+  * deb: Added missing dependency on gir1.2-gtksource-3.0
+
+ -- Jason J. Herne <hernejj@gmail.com>  Wed, 20 Jul 2016 19:11:42 -0400
+
 vizigrep (1.3-1) unstable; urgency=low
 
   * Initial release (Closes: #702990)

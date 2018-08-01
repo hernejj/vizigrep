@@ -28,23 +28,23 @@ class GuiApp:
         if not os.access(self.appHomeDir, os.W_OK):
             self.__homeDirError(self.appHomeDir)
             return
-        
+
         path = os.path.join(self.appHomeDir, self.shortName + '.prefs')
         if not os.access(path, os.W_OK):
             self.__homeDirError(path)
             return
-    
+
     def __homeDirError(self, path):
         msg = 'Your user does not have write permission for file %s, this means %s will be unable to save preferences and data' % (path, self.shortName)
         if self.mbox:
             self.mbox.error(msg)
         else:
-            print msg
-        
+            print(msg)
+
     def initLogging(self):
         self.logFilePath = os.path.join(self.appHomeDir, self.shortName + '.log')
         self.log = multilogger.MultiLogger()
-        
+
         if not self.log.open_logfile(self.logFilePath):
             self.log = None
 

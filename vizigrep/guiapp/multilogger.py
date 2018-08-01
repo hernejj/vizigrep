@@ -63,7 +63,7 @@ class MultiLogger:
             self.reduce_logfile(logfile_path)
             self.logfile = open(logfile_path, 'a')
         except Exception as e:
-            print e
+            print(e)
             return False
 
         # Remember path to log file.
@@ -167,7 +167,7 @@ class MultiLogger:
         self.logfile.flush()
 
         # Write to stdout - Not on Windows, causes "Bad File Descriptor" messages
-        if (self.stdout and (not platform.system() == "Windows") ): print log_line
+        if (self.stdout and (not platform.system() == "Windows") ): print(log_line)
 
         # Release lock
         self.logfile_lock.release()

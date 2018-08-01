@@ -85,8 +85,8 @@ class VizigrepTab(Gtk.ScrolledWindow):
             try:
                 self.set_results()
             except Exception as e:
-                print type(e)
-                print traceback.format_exc()
+                print(type(e))
+                print(traceback.format_exc())
         elif exception:
             if isinstance(exception, GrepException):
                 txtbuf.set_text("Grep error: %s" % exception.output)
@@ -96,8 +96,8 @@ class VizigrepTab(Gtk.ScrolledWindow):
                 txtbuf.set_text("Search string error: %s" % str(exception))
             else:
                 txtbuf.set_text("Unexpected Error: " + str(exception))
-                print type(exception)
-                print traceback.format_exc()
+                print(type(exception))
+                print(traceback.format_exc())
         self.setSpinner(False)
         self.isSearching = False
     

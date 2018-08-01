@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 
-from guiapp.Window import Window
+from vizigrep.guiapp.Window import Window
 
 import os
 

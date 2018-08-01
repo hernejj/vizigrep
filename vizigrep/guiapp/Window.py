@@ -1,5 +1,5 @@
 from gi.repository import GObject
-from SuperGtkBuilder import SuperGtkBuilder
+from vizigrep.guiapp.SuperGtkBuilder import SuperGtkBuilder
 
 class Window:
 

@@ -1,5 +1,5 @@
 from gi.repository import Gtk
-from SuperGtkBuilder import SuperGtkBuilder
+from vizigrep.guiapp.SuperGtkBuilder import SuperGtkBuilder
 
 class Tab:
 

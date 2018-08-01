@@ -1,5 +1,5 @@
 import subprocess, tempfile, re
-import Path
+from vizigrep import Path
 
 class NoResultsException(Exception):
     pass

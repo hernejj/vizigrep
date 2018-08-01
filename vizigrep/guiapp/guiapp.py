@@ -1,8 +1,8 @@
 import os
 
-import multilogger
-import preferences
-import mbox
+from vizigrep.guiapp import multilogger
+from vizigrep.guiapp import preferences
+from vizigrep.guiapp import mbox
 
 class GuiApp:
 

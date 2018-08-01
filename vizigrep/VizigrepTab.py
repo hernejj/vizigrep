@@ -3,8 +3,8 @@ from gi.repository import Gtk, GObject
 import subprocess, re, os, traceback
 from threading import Thread
 
-from GrepEngine import GrepEngine, NoResultsException, GrepException, BadRegexException
-import Path
+from vizigrep.GrepEngine import GrepEngine, NoResultsException, GrepException, BadRegexException
+from vizigrep import Path
 
 # This is a scrolledWindow subclass. We add it directly to the notebook in the
 # main window. We subclass it to add helper/convenience functions.

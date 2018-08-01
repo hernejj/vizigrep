@@ -1,9 +1,9 @@
 from gi.repository import Gtk, Gdk
 
-from guiapp.Window import Window
-from PreferencesWindow import PreferencesWindow
-from VizigrepTab import VizigrepTab
-import Path
+from vizigrep.guiapp.Window import Window
+from vizigrep.PreferencesWindow import PreferencesWindow
+from vizigrep.VizigrepTab import VizigrepTab
+from vizigrep import Path
 
 import os
 

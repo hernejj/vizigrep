@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Copyright: Jason J. Herne (hernejj@gmail.com)
 # License: GPL-v2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt)
 
@@ -8,7 +7,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject
 from vizigrep.guiapp.guiapp import GuiApp
-from ViziGrepWindow import ViziGrepWindow
+from vizigrep.ViziGrepWindow import ViziGrepWindow
 
 def main(args=None):
     app = GuiApp('vizigrep')
@@ -26,6 +25,3 @@ def main(args=None):
     vgw = ViziGrepWindow(app)
     vgw.activate(argSearchPath)
     Gtk.main()
-
-if __name__ == "__main__":
-    main()

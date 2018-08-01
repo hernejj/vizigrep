@@ -1,4 +1,4 @@
-import os, stat, time, thread, inspect, platform
+import os, stat, time, threading, inspect, platform
 
 # Multilogger is a multithread-friendly logging service that logs information
 # to a data source (currently a local file is the only supported data source).
@@ -13,7 +13,7 @@ class MultiLogger:
     logfile_path    = None
 
     # Lock protecting logfile.
-    logfile_lock    = thread.allocate_lock()
+    logfile_lock    = threading.Lock()
 
     # Options affecting behavior of this multilogger.
     stdout          = False         # Print logged data to stdout.

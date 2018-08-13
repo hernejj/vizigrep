@@ -40,7 +40,7 @@ cd ..
 mkdir -p  deb
 mv *.deb *.dsc *.build *.changes  deb/
 mv  $ORIG_TAR_NAME deb/
-mv $PROGRAM_NAME'_'$VERSION'-1.debian.tar.gz' deb/
+mv $PROGRAM_NAME'_'$VERSION'-1.debian.tar.xz' deb/
 
 # Cleanup
 rm -rf $PKG_TREE_NAME

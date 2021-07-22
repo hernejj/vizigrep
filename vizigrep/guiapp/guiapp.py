@@ -30,9 +30,12 @@ class GuiApp:
             return
 
         path = os.path.join(self.appHomeDir, self.shortName + '.prefs')
-        if not os.access(path, os.W_OK):
-            self.__homeDirError(path)
-            return
+        try:
+            fp = open(path)
+        except IOError as e:
+            if e.errno == errno.EACCES:
+                self.__homeDirError(path)
+                return
 
     def __homeDirError(self, path):
         msg = 'Your user does not have write permission for file %s, this means %s will be unable to save preferences and data' % (path, self.shortName)
